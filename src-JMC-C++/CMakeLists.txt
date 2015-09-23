@@ -32,7 +32,9 @@ set (PROJECT_initRNGproject_SRCS
   matrices.cpp
   randomgenerator.cpp)
 
-add_compile_options(-fopenmp -g -O3)
+set_directory_properties(PROPERTIES COMPILE_OPTIONS "-fopenmp;-g;-O3")
+#add_compile_options(-fopenmp -g -O3)
+
 add_executable(general ${PROJECT_general_SRCS})
 target_link_libraries(general -ldcmt -lgomp)
 
