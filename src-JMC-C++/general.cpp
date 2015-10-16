@@ -6,6 +6,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#ifdef _OPENMP
+   #include <omp.h>
+#endif
 #include <omp.h>
 #include <cstdlib>
 #include <stdexcept>
