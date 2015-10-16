@@ -9,7 +9,6 @@
 #ifdef _OPENMP
    #include <omp.h>
 #endif
-#include <omp.h>
 #include <cstdlib>
 #include <stdexcept>
 #include <vector>
