@@ -690,7 +690,7 @@ After validating this new analysis, we click on the option ``are
 drawn from posterior distributions'' and on the \fbox{\textsf{VALIDATE}}
 button.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 15:47:39 bias2 screen1\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 15-47-39 bias2 screen1\string".png}
 
 The screen immediately following is similar to that for parameter
 estimation (see section 3.5.1). The proposed (and potentially modifiable)
@@ -701,7 +701,7 @@ dataset} (hence defining the distributions from which the parameter
 values of the \emph{pods} will be drawn) and (ii) proceed the parameter
 estimations for each pod.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 15:51:23 bias2 screen 2\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 15-51-23 bias2 screen 2\string".png}
 
 The default number of pods (i.e. test data sets with parameter values
 drawn in this case from posterior distributions) is 500 but it can
@@ -711,7 +711,7 @@ measures.
 After validating, we get back to the analysis panel with a third analysis
 defined (named bias2).
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 16:00:31 bias 2 screen 3\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 16-00-31 bias 2 screen 3\string".png}
 
 As for bias1 analysis, the bias2 analysis takes some time to run because
 it simulates hundreds test datasets (usually between 500 and 5,000
@@ -719,7 +719,7 @@ pods) and on each one, a full ABC estimation is performed. Then after
 some time, the analysis is finished and one can view results by clicking
 click on the \fbox{\textsf{View results}} button.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 17:22:43 bias2 screen 5\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-27 17-22-43 bias2 screen 5\string".png}
 
 Outputs are similar to those of the bias1 analysis except that the
 pod's parameters have been drawn from the posterior distributions
@@ -818,14 +818,14 @@ data, a divergence scenario (scenario 1) or a split scenario in which
 the population 3 originates from an admixture between the populations
 1 and 2 (scenario 2) :
 
-\includegraphics[scale=0.25]{\string"gui_pictures/Capture du 2015-06-29 16:51:52 scenarios 1 et 2\string".png}
+\includegraphics[scale=0.25]{\string"gui_pictures/Capture du 2015-06-29 16-51-52 scenarios 1 et 2\string".png}
 
 We first built a reference table with 1,000,000 simulated datasets
 (500,000 for each scenario) summarized with the same statistics as
 above and drawing parameter values into the prior distributions described
 in the next screen.
 
-\includegraphics[scale=0.25]{\string"gui_pictures/Capture du 2015-06-29 16:36:01 prior demo3\string".png}
+\includegraphics[scale=0.25]{\string"gui_pictures/Capture du 2015-06-29 16-36-01 prior demo3\string".png}
 
 We then define a new analysis that we call \texttt{comp1} :\\
 
@@ -886,7 +886,7 @@ the right scenario has the highest posterior probability.\\
  Let's define a new analysis, \texttt{conf1} as below:\\
 
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 09:37:34 conf1 screen1\string".png}\\
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 09-37-34 conf1 screen1\string".png}\\
 
 
 As for the previous analysis, it is possible to replace original summary
@@ -910,7 +910,7 @@ combinations into prior distributions (cf. Prior based error).
 
 Let's first consider \textit{posterior based error computations}.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 09:48:18 conf1 screen2\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 09-48-18 conf1 screen2\string".png}
 
 To compute \textquotedblleft{}posterior\textquotedblright{} error
 rates, we simulate a large number of pseudo-observed datasets (pods)
@@ -923,7 +923,7 @@ procedure for estimating their respective posterior probabilities
 (as in section 3.5.4) and measure the proportion of times the right
 scenario has the highest posterior probability.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 09:55:46 conf1 screen3\string".png}\\
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 09-55-46 conf1 screen3\string".png}\\
 Here we choose to draw pods in the \textit{s}=500 (over 1,000,000)
 simulated datasets closest to the observed dataset. Scenario probabilities
 are estimated using both the direct approach (on the 500 closest datasets)
@@ -932,7 +932,7 @@ are processed on a total of 1,000 test datasets (pods).
 
 Once the treatment is finished, we click on ``view results''.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10:20:32 conf1 screen4\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10-20-32 conf1 screen4\string".png}
 
 The \textit{posterior error rate} (also named ``posterior predictive
 error'') is given as a proportion of wrongly identified scenarios
@@ -963,7 +963,7 @@ best classifier and/or set of summary statistics (Pudlo et al. 2015).
 We start a new confidence analysis (\texttt{conf2)} from the analyses
 pannel below, using again the linear discriminant analysis option.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10:47:13 conf2 screen1\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10-47-13 conf2 screen1\string".png}
 
 Once having clicked on ``validate'' and ``Prior based error'',
 two options are proposed:
@@ -976,12 +976,12 @@ from parameter prior distributions under a GIVEN scenario. This corresponds
 to the confidence in scenario choice option that was initially available
 in the previous version of the program (DIYABC v2.0).
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10:50:57 conf2 screen3\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10-50-57 conf2 screen3\string".png}
 
 When clicking and validating the GLOBAL (prior error rate) option
 we go to the following screen.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10:58:48 conf2 screen4\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 10-58-48 conf2 screen4\string".png}
 
 This screen is similar to that for posterior error rate except that
 pods are NOT drawn from the \textit{s} simulated datasets closest
@@ -994,7 +994,7 @@ processed on a total of 1,000 test datasets (pods).
 
 Once the treatment is finished, we click on ``view results''.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 11:23:35 conf2 screen5\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 11-23-35 conf2 screen5\string".png}
 
 The prior error rate (also named ``prior predictive error) is given
 as a proportion of wrongly identified scenarios over the 1,000 test
@@ -1019,14 +1019,14 @@ error'' + ``Scenario specific (default option before version 2.1)''.
 In the following screen we choose to simulate pods under scenario
 1 drawing parameter values into prior distributions.
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 12:20:38 conf3 screen2\string".png}
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 12-20-38 conf3 screen2\string".png}
 
 After validating default values for historical and mutational parameters,
 we launch the analysis. When it is done, we click on the \fbox{\textsf{View
 results}} button and get the following screen:\\
 
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 12:24:48 conf3 screen4\string".png}\\
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 12-24-48 conf3 screen4\string".png}\\
 
 
 Posterior probabilities (with 95\% credibility intervals) are given
@@ -1035,7 +1035,7 @@ there is a summary of results, $i.e.$ the number of times each scenario
 has the highest posterior probability under each approach:\\
 
 
-\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 12:26:01 conf3 screen6\string".png}\\
+\includegraphics[scale=0.4]{\string"gui_pictures/Capture du 2015-06-29 12-26-01 conf3 screen6\string".png}\\
 
 
 We can deduce the so-called \textit{type I error for scenario 1},
