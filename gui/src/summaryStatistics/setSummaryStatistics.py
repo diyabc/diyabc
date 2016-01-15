@@ -3,13 +3,14 @@
 import sys
 import time
 import os
+import itertools
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtGui
 
 class SetSummaryStatistics(QFrame):
-    """ ecran de selection des summary statistics 
+    """ ecran de selection des summary statistics
     superclasse abstraite regroupant les méthodes communes aux setsumstats msat et seq
     les deux classes filles n'ont pas la même interface graphique, l'import de l'UI n'est donc pas
     effectué ici
@@ -50,7 +51,7 @@ class SetSummaryStatistics(QFrame):
 
     def allPressed(self):
         """ clic sur bouton 'all' ou 'none'. analyse les informations pour
-        savoir ce qu'il faut cocher ou décocher 
+        savoir ce qu'il faut cocher ou décocher
         """
         button_name = str(self.sender().objectName())
         checkname = button_name.replace('Button','').replace('all','').replace('none','').lower()
@@ -143,6 +144,24 @@ class SetSummaryStatistics(QFrame):
                 QMessageBox.information(self,"Value error","This admixture summary statistic is already set")
             else:
                 self.addAdmixSampleGui(int(val1),int(val2),int(val3))
+
+    def allAdmix(self):
+        """ add all admix sample combinations
+        """
+        self.noneAdmix()
+        for i in range(self.parent.parent.data.nsample):
+            s = set(range(self.parent.parent.data.nsample))
+            s.remove(i)
+            for j in itertools.combinations(s, 2) :
+                self.addAdmixSampleGui(i+1, j[0]+1, j[1]+1)
+
+    def noneAdmix(self):
+        """ remove all admix samples
+        """
+        while len(self.admixSampleList) > 0 :
+            for box in self.admixSampleList:
+                box.hide()
+                self.admixSampleList.remove(box)
 
     def getSumConf(self):
         """ retourne un tuple contenant le nombre de statistiques demandés

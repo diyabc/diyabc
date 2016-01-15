@@ -65,6 +65,8 @@ class SetSummaryStatisticsMsat(SetSummaryStatistics,formSetSummaryStatisticsMsat
         QObject.connect(self.ui.noneMl3Button,SIGNAL("clicked()"),self.allPressed)
 
         QObject.connect(self.ui.addAdmixButton,SIGNAL("clicked()"),self.addAdmix)
+        QObject.connect(self.ui.allAdmixButton,SIGNAL("clicked()"),self.allAdmix)
+        QObject.connect(self.ui.noneAdmixButton,SIGNAL("clicked()"),self.noneAdmix)
 
         self.ui.horizontalLayout_4.setAlignment(Qt.AlignLeft)
         self.ui.horizontalLayout_2.setAlignment(Qt.AlignLeft)

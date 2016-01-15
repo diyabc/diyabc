@@ -113,9 +113,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-568</y>
         <width>853</width>
-        <height>1173</height>
+        <height>1299</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1934,10 +1934,39 @@ population 2</string>
                    </layout>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="addAdmixButton">
-                    <property name="text">
-                     <string>add</string>
+                   <widget class="QFrame" name="admixButtonsFrame">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
                     </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Plain</enum>
+                    </property>
+                    <property name="lineWidth">
+                     <number>0</number>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_3">
+                     <item>
+                      <widget class="QPushButton" name="addAdmixButton">
+                       <property name="text">
+                        <string>add</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="allAdmixButton">
+                       <property name="text">
+                        <string>all</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="noneAdmixButton">
+                       <property name="text">
+                        <string>none</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                   <item>

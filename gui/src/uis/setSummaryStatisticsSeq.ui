@@ -131,9 +131,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-24</y>
+        <y>-18</y>
         <width>845</width>
-        <height>615</height>
+        <height>651</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -2009,25 +2009,6 @@ nucleotide at segregating sites</string>
                 <number>1</number>
                </property>
                <item>
-                <widget class="QPushButton" name="addAdmixButton">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>add</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
                   <widget class="QComboBox" name="adm1Combo"/>
@@ -2039,6 +2020,51 @@ nucleotide at segregating sites</string>
                   <widget class="QComboBox" name="adm3Combo"/>
                  </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QFrame" name="admixButtonsFrame">
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <item>
+                   <widget class="QPushButton" name="addAdmixButton">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>28</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>28</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>add</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="allAdmixButton">
+                    <property name="text">
+                     <string>all</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="noneAdmixButton">
+                    <property name="text">
+                     <string>none</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_29">

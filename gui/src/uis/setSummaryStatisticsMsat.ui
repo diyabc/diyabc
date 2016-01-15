@@ -128,9 +128,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>869</width>
-        <height>660</height>
+        <y>-76</y>
+        <width>853</width>
+        <height>730</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1802,19 +1802,51 @@ population 2</string>
                 </layout>
                </item>
                <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_31"/>
+               </item>
+               <item>
+                <widget class="QFrame" name="frame_2">
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="lineWidth">
+                  <number>0</number>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_32">
+                  <item>
+                   <widget class="QPushButton" name="addAdmixButton">
+                    <property name="text">
+                     <string>add</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="allAdmixButton">
+                    <property name="text">
+                     <string>all</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="noneAdmixButton">
+                    <property name="text">
+                     <string>none</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_29">
                  <item>
                   <widget class="QLabel" name="maxAdmLabel">
                    <property name="text">
                     <string>Maximum likelihood
 (Choisy et al, 2004)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="addAdmixButton">
-                   <property name="text">
-                    <string>add</string>
                    </property>
                   </widget>
                  </item>
