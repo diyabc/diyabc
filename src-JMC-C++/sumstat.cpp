@@ -108,7 +108,7 @@ extern DataC dataobs;
 					//cout<<"avant la boucle i\n";
 					//cout<<"dataobs.ssize[cat][samp]="<<dataobs.ssize[cat][samp]<<"\n";
 					for (int i=0;i<sasize;i++){
-						if ((this->locuslist[loc].haplosnp[samp][i] == g0)/*and(this->dat[cat][samp][i])*/) this->locuslist[loc].freq[samp][0] +=1.0;
+						if (this->locuslist[loc].haplosnp[samp][i] == g0)/*and(this->dat[cat][samp][i])*/ this->locuslist[loc].freq[samp][0] +=1.0;
 					}
 					//cout<<"apres la boucle i\n";
 					this->locuslist[loc].freq[samp][0] /=sasize;
@@ -1222,7 +1222,7 @@ long double ParticleC::cal_nha2p(int gr,int st){
     vector <int> nuvar;
     if(samplesize(kloc,samp0)+samplesize(kloc,samp1)>0) {
       *OK=true;
-      if (not this->locuslist[kloc].dnavar==0) {
+      if (not (this->locuslist[kloc].dnavar==0)) {
 	for (j=0;j<this->locuslist[kloc].dnavar;j++) {
 	  c0='\0';ident=true;
 	  for (int i=0;i<dataobs.ssize[cat][samp0];i++) {
@@ -1280,7 +1280,7 @@ long double ParticleC::cal_nha2p(int gr,int st){
     int isamp,samp,di,mdl=0,nd=0, cat=this->locuslist[kloc].type % 5;
     if(samplesize(kloc,samp0)+samplesize(kloc,samp1)>0) {
       *OK=true;
-      if (not this->locuslist[kloc].dnavar==0) {
+      if (not (this->locuslist[kloc].dnavar==0)) {
 	for (isamp=0;isamp<2;isamp++) {
 	  if (isamp==0) samp=samp0; else samp=samp1;
 	  //cout<<" sample "<<samp<<"   ss="<< this->locuslist[kloc].ss[samp]<<"\n";
@@ -1328,7 +1328,7 @@ long double ParticleC::cal_nha2p(int gr,int st){
     int di,mdl=0,nd=0,cat=this->locuslist[kloc].type % 5;
     if(samplesize(kloc,samp0)+samplesize(kloc,samp1)) {
       *OK=true;
-      if (not this->locuslist[kloc].dnavar==0) {
+      if (not (this->locuslist[kloc].dnavar==0)) {
 	for (int i=0;i<dataobs.ssize[cat][samp0];i++) {
 	  if (this->locuslist[kloc].haplodna[samp0][i]!=SEQMISSING) {
 	    //cout <<"coucou i\n";

@@ -320,8 +320,9 @@ string convertInt4(int number)
 void doinitRNG(string rngpar){
 	string progressfilename=path+"RNG_progress.txt";
 	vector<string> ss;
-	int ns, number_of_threads = 16, number_of_computers = 1;
-	int seed = time(NULL);
+	size_t ns;
+	int number_of_threads = 16, number_of_computers = 1;
+	time_t seed = time(NULL);
 	bool force = false;
 	int countRNGs;
 
@@ -364,7 +365,7 @@ void doinitRNG(string rngpar){
 			                   (number_of_computers *number_of_threads)-1, 4172, &countRNGs);
 	// Fixons les graines
 	for (int i = 0; i < countRNGs; ++i)
-		sgenrand_mt(i + seed, mtss0[i]);
+		sgenrand_mt(i + (int)seed, mtss0[i]);
 	cout << "End of RNGs initializations\n";
 
 

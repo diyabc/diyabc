@@ -220,9 +220,7 @@ vector <int> melange2(MwcGen mw, int k, int n) {
 		//this->nconditions = source.nconditions;
 		this->naccept = source.naccept;
 		this->ntentes = source.ntentes;
-		if (source.matQ != NULL) {
-			for (int i=0;i<4;i++) {for (int j=0;j<4;j++) this->matQ[i][j] = source.matQ[i][j];}
-		}
+		for (int i=0;i<4;i++) {for (int j=0;j<4;j++) this->matQ[i][j] = source.matQ[i][j];}
 		return *this;
 	}
 
@@ -1706,7 +1704,7 @@ void ParticleC::put_one_mutation(int loc) {
 		}
 		int br, numut=-1;
 		bool trouve;
-		if((debuglevel==31)) {
+		if(debuglevel==31) {
 			double lontree=0.0;
 			for (br=0;br<this->gt[loc].nbranches;br++) lontree+=this->gt[loc].branches[br].length;
 			lontreemoy+=lontree;
