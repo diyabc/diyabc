@@ -8,7 +8,7 @@
 #include <time.h>
 #include <math.h>
 #include <algorithm>
-
+#include <limits>
 /*
 
 #ifndef MATRICES
@@ -586,7 +586,7 @@ double pnorm5(double x,double mu, double sigma){
     if (sigma<=0.0) {if (x<mu) return 0.0; else return 1.0;}
     pp = (x-mu)/sigma;
     if (pp<0) y=-pp; else y=pp;
-    eps = 0.5*DBL_EPSILON;
+    eps = 0.5*std::numeric_limits<double>::epsilon();
     if (y<=0.67448975) {
         if (y>eps) {
             xsq=pp*pp;

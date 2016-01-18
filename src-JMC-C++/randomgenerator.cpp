@@ -25,8 +25,12 @@ using namespace std;
 
 double sqr(double x) {return x*x;}
 
+#ifdef _MSC_VER
+extern __declspec(thread) mt_struct* r;
+#else
 extern mt_struct* r;
-//#pragma omp threadprivate(r)
+#pragma omp threadprivate(r)
+#endif
 
 extern string path;
 
