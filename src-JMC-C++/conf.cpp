@@ -402,7 +402,8 @@ bool doAFD;
         vector<string> ss, ss1;
 		float *stat_obs;
 		long double **matC;
-		double duree,debut,clock_zero,prop[2],propcordirprior,propcorlogprior,propcordirposterior,propcorlogposterior;
+		double duree,prop[2],propcordirprior,propcorlogprior,propcordirposterior,propcorlogposterior;
+		clock_t debut;
         doAFD=false;
         bool posterior=false;
 		long double **phistar;
@@ -410,7 +411,8 @@ bool doAFD;
         posteriorscenC **postsd,*postsr;
         string shist,smut;shist=smut="";
 		nrecb=nrecc=0;
-		clock_zero=0.0;debut=walltime(&clock_zero);
+//		clock_zero=0.0;debut=walltime(&clock_zero);
+		debut = clock(); 
         //cout <<"debut de doconf\n";
         progressfilename = path + ident + "_progress.txt";
         //strcpy(progressfilename,path);
@@ -724,7 +726,7 @@ bool doAFD;
 		f11<<"Test data     True scenario    Direct     Logistic \n";
 		for (int i=0;i<nrecc;i++) f11<<setw(6)<<respost[i].number<<setw(14)<<respost[i].truescen<<setw(14)<<respost[i].directscen<<setw(12)<<respost[i].logisticscen<<"\n";
 		}
-		duree=walltime(&debut);
+		duree=walltime(debut);
 		f11<<"\nTotal duration ="<<TimeToStr(duree)<<"\n";
 		
 		f11.close();

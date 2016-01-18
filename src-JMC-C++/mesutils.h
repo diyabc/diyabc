@@ -7,7 +7,7 @@
 using namespace std;
 #include <string>
 #include <vector>
-
+#include <time.h>
 struct matC
 {
   long double v;
@@ -23,7 +23,7 @@ struct compC
   bool operator () (matC const & lhs, matC const & rhs) const;
 };
 
-double walltime (double * t0);
+double walltime (clock_t &t0);
 int getwordint (std::string s, int num);
 double getwordfloat (std::string s, int num);
 std::string * splitwords (std::string s, std::string sep, int * k);

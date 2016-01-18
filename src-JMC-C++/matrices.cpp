@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath>
 #include <stdio.h>
+#ifdef _MSC_VER
+#include <iso646.h>
+#endif
 #include "matrices.h"
 
 using namespace std;

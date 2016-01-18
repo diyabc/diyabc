@@ -10,6 +10,9 @@
 
 #include <string>
 #include <vector>
+#ifdef _MSC_VER
+#include <iso646.h>
+#endif
 
 /**
 *  Structure LocusC : définition de la structure LocusC

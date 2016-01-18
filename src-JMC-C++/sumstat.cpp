@@ -784,7 +784,7 @@ extern DataC dataobs;
     delta=li[1]-li[0];
 	//cout<<"delta ="<<delta<<"\n";
     delete []li;
-    return make_pair<long double, long double>(li0,delta);
+    return make_pair(li0,delta);
   }
 
   long double ParticleC::cal_Aml3p(int gr,int st){

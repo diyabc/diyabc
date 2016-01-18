@@ -5,6 +5,7 @@
  *      Author: ppudlo
  */
 #include <vector>
+#include <iso646.h>
 
 extern"C"{
 #include "../dcmt0.6.1/include/dc.h"

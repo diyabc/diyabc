@@ -1,0 +1,3 @@
+[submodule "wingetopt"]
+	path = wingetopt
+	url = https://github.com/alex85k/wingetopt

@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include <vector>
 #include <time.h>
+#include <algorithm>
 
 #include "mesutils.h"
 #include "randomgenerator.h"
@@ -344,7 +345,7 @@ string  getligne(ifstream file) {
 	int DataC::testfile(string filename){
 		//cout<<"debut de testfile fichier "<<filename<<"\n";
 		ifstream file0(filename.c_str(), ios::in);
-		if (file0 == NULL) {cout<<"file0=NULL\n";return -1;}
+		if (!file0.is_open()) {cout<<"file0=NULL\n";return -1;}
 	    int nss;
 	    string ligne;
 	    vector<string> ss;
@@ -422,7 +423,7 @@ string  getligne(ifstream file) {
 		vector<string> ss;
 		ifstream file(filename.c_str(), ios::in);
 		this->maf=0.0;
-		if (file == NULL) {
+		if (!file.is_open()) {
 			this->message = "Data.cpp File "+filename+" not found";
 			return 1;
 		} else this->message="";
@@ -964,7 +965,7 @@ string  getligne(ifstream file) {
 		size_t j,j0,j1;
         stringstream out;
 		ifstream file(filename.c_str(), ios::in);
-		if (file == NULL) {
+		if (!file.is_open()) {
 			this->message = "Data.cpp File "+filename+" not found";
 			return 1;
 		} else this->message="";

@@ -3,8 +3,12 @@
 #include <string.h>
 #include <string>
 #include <sstream>
+#ifdef _MSC_VER
+#include "../wingetopt/src/getopt.h"
+#include <iso646.h>
+#else
 #include <unistd.h>
-#include <sys/time.h>
+#endif
 #include <sys/stat.h>
 #ifdef _OPENMP
    #include <omp.h>
@@ -137,7 +141,8 @@ int nrecneeded,nenr=100,nenrOK,*neOK,*netot;
 int debuglevel=0;
 int num_threads=0;
 string sremtime,scurfile;
-double clock_zero=0.0,debut,duree,debutf,dureef,time_file=0.0,time_reftable=0.0,debutr,dureer,remtime;
+double duree,debutf,dureef,time_file=0.0,time_reftable=0.0,remtime;
+clock_t debut,debutr;
 ofstream fd;
 
 bool RNG_must_be_saved;
@@ -186,7 +191,7 @@ void analyseRNG(string & modpar) {
 	string RNGfilename = modpar;
 
 	ifstream fichier(RNGfilename.c_str(), ios::in|ios::binary);
-	if(fichier == NULL){
+	if(!fichier.is_open()){
 		stringstream erreur;
 		    		 erreur << "File " << RNGfilename << " does not exist.\n"
     			  << "I cannot analyse it.\n";
@@ -228,7 +233,7 @@ try {
     bool flagp=false,flagi=false,flags=false,simOK,stoprun=false;
     string message,soptarg,estpar,comppar,confpar,acplpar,biaspar,modpar, rngpar, randforpar;
 
-    debut=walltime(&clock_zero);
+    debut= clock();
     srand (time(NULL));
     seed = rand() % 1000;
 	while((optchar = getopt(argc,argv,"i:p:z:r:e:s:b:c:qkf:g:d:hmqj:a:t:n:w:xyl:o:R:F:Q")) !=-1) {
@@ -493,7 +498,7 @@ try {
 
     	 RNG_filename = path + string("RNG_state_") + convertInt4(computer_identity) + string(".bin");
     	 ifstream test_file(RNG_filename.c_str(), ios::in);
-    	 if(test_file == NULL){
+    	 if(!test_file.is_open()){
     		 stringstream erreur;
     		 erreur << "File " << RNG_filename << " does not exist.\n"
     			  << "Use option -n to create it before doing anything else.\n";
@@ -564,8 +569,7 @@ try {
                                 }
                                 cout<<"nparammax="<<header.nparamtot+3*header.ngroupes<<"\n";
                                 firsttime=true;stoprun=false;
-								clock_zero=0.0;
-                                debutr=walltime(&clock_zero);
+								debutr = clock();
 								if (not header.drawuntil) {
 									neOK = new int[header.nscenarios];
 									netot= new int[header.nscenarios];
@@ -782,7 +786,7 @@ try {
 		RNG_must_be_saved = false;
 	}
 	/* Fin: pour le nouveau RNG      */
-	duree=walltime(&debut);
+	duree=walltime(debut);
     if (debuglevel<0) cout<<"durée ="<<TimeToStr(duree)<<"\n";
     //int aaa;
     //cin>>aaa;

@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
-#include <sys/time.h>
+#include <time.h>
 #include <math.h>
 #include <algorithm>
 
@@ -29,26 +29,11 @@ using namespace std;
 /**
  * calcule le temps écoulé depuis t0 (récupéré sur internet)
  */
-double walltime( double *t0 )
+double walltime( clock_t &t0 )
 {
-  double mic, time;
-  double mega = 0.000001;
-  struct timeval tp;
-  struct timezone tzp;
-  static long base_sec = 0;
-  static long base_usec = 0;
-
-  (void) gettimeofday(&tp,&tzp);
-  if (base_sec == 0)
-    {
-      base_sec = tp.tv_sec;
-      base_usec = tp.tv_usec;
-    }
-
-  time = (double) (tp.tv_sec - base_sec);
-  mic = (double) (tp.tv_usec - base_usec);
-  time = (time + mic * mega) - *t0;
-  return(time);
+	clock_t t;
+	t = clock() - t0;
+	return ((float)t) / CLOCKS_PER_SEC;
 }
 /**
  * renvoit la valeur entière contenue dans la num-ième sous-chaîne de s
@@ -594,7 +579,7 @@ double pnorm5(double x,double mu, double sigma){
     double d[8] = {22.266688044328115691,235.38790178262499861,1519.377599407554805,6485.558298266760755,18615.571640885098091,34900.952721145977266,38912.003286093271411,19685.429676859990727};
     double p[6] = {0.21589853405795699,0.1274011611602473639,0.022235277870649807,0.001421619193227893466,2.9112874951168792e-5,0.02307344176494017303};
     double q[5] = {1.28426009614491121,0.468238212480865118,0.0659881378689285515,0.00378239633202758244,7.29751555083966205e-5};
-    double DBL_EPSILON=2.2204460492503131E-16;
+//    double DBL_EPSILON=2.2204460492503131E-16;
     double sqrt2PI=2.506628274631000502415765284811;
     double pp,xden,xnum,temp,eps,xsq,y,cum;
 

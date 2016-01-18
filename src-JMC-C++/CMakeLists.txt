@@ -35,16 +35,20 @@ set (PROJECT_initRNGproject_SRCS
 add_executable(general ${PROJECT_general_SRCS})
 add_executable(initRNGproject ${PROJECT_initRNGproject_SRCS})
 
+set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")
+
 find_package(OpenMP)
 if (OPENMP_FOUND)
-  set_directory_properties(PROPERTIES COMPILE_OPTIONS "-fopenmp;-g;-O3")
-  target_link_libraries(general -ldcmt -lgomp)
-  target_link_libraries(initRNGproject -ldcmt -lgomp)
-else ()
-  set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")
-  target_link_libraries(general -ldcmt)
-  target_link_libraries(initRNGproject -ldcmt)    
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
+target_link_libraries(general dcmt)
+target_link_libraries(initRNGproject dcmt)    
+
+if (MSVC)
+  target_link_libraries(general wingetopt)
+  target_link_libraries(initRNGproject wingetopt)
+endif()
 
 

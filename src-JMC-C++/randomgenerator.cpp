@@ -26,7 +26,7 @@ using namespace std;
 double sqr(double x) {return x*x;}
 
 extern mt_struct* r;
-#pragma omp threadprivate(r)
+//#pragma omp threadprivate(r)
 
 extern string path;
 
@@ -345,7 +345,7 @@ void doinitRNG(string rngpar){
 	// Quitter si RNG_state_0000.bin existe deja
 	string firstRNGfile = path + "RNG_state_0000.bin";
 	ifstream test_file(firstRNGfile.c_str(), ios::in);
-	if((test_file != NULL) && (force == false)){
+	if((test_file.is_open()) && (force == false)){
 		cout << "Some files saving the RNG states already exist." << endl
 		     << "Use f flag if you want to overwrite it." << endl;
 		test_file.close();

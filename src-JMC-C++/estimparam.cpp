@@ -1370,7 +1370,7 @@ bool deltanul;
         if (sd>0.0) bw=coefbw*exp(-0.2*log((double)n))*sd;
         else bw=1.0;
         //cout<<"calculdensite  sd="<<sd<<"    bw="<<bw<<"\n";
-#pragma omp parallel for shared(dens,z,x,bw) private(denom,i) if(multithread)
+#pragma omp parallel for shared(dens,z,x,bw) private(denom) if(multithread)
         for (int j=0;j<ncl;j++) {
             dens[j]=0.0;
             for (int i=0;i<n;i++) dens[j] +=exp(lnormal_dens(z[i],x[j],bw));

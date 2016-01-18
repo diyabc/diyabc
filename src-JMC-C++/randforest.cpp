@@ -1476,8 +1476,8 @@ cout<<"\n\n";*/
 	
 	void dorandfor(string opt,int seed) {
 		cout<<"\nDébut de dorandfor\n";
-		double clock_zero=0.0,debut,duree;
-		debut=walltime(&clock_zero);
+		double duree; clock_t debut;
+		debut = clock();
         time_t rawtime;
         time ( &rawtime );
         struct tm * timeinfo;
@@ -1572,7 +1572,7 @@ cout<<"\n\n";*/
 		calposterior(seed);
 		var_importance3(repmin);
 		
-		duree=walltime(&debut);
+		duree=walltime(debut);
 		cout<<"\n\ndurée totale ="<<TimeToStr(duree)<<"\n";
 		fout<<"\n\nTotal duration ="<<TimeToStr(duree)<<"\n";
 		fout.close();

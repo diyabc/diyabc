@@ -1265,7 +1265,7 @@ int HeaderC::readHeader(string headerfilename){
 	//cout<<"debut de readheader\n";
 	//cout<<"readHeader headerfilename = "<<headerfilename<<"\n";
 	ifstream file(headerfilename.c_str(), ios::in);
-	if (file == NULL) {
+	if (!file.is_open()) {
 		this->message = "Header file "+headerfilename+" not found";
 		cout<<this->message<<"\n";
 		throw std::runtime_error(this->message);
@@ -1645,7 +1645,7 @@ int HeaderC::readHeadersim(string headersimfilename){
 //	if (debuglevel==2) cout<<"debut de readheadersim\n";
 	//cout<<"readHeader headerfilename = "<<headerfilename<<"\n";
 	ifstream file(headersimfilename.c_str(), ios::in);
-	if (file == NULL) {
+	if (!file.is_open()) {
 		this->message = "HeaderSim  File "+string(headersimfilename)+" not found";
 		cout<<this->message<<"\n";
 		return 1;
