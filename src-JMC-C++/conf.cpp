@@ -65,6 +65,7 @@ extern bool deltanul;
 extern vector <ScenarioC> scenario;
 
 string nomficonfresult;
+ofstream ftrace2;
 
 class resdata
 {
@@ -241,6 +242,18 @@ bool doAFD;
         return sp;
     }
  
+/**
+* ecrit les paramvv et les sumstat dans un fichier
+*/
+		void traceconf(int p) {
+			cout<<"Ecriture dans le fichier trace de l'enregistrement "<<p<<"\n";
+			ftrace2.precision(5);
+                        ftrace2<<enreg[p].numscen<<'\t';
+			for (int j=0;j<nparamcom;j++) ftrace2<<enreg[p].param[j]<<'\t';
+			for (int j=0;j<header.nstat;j++) ftrace2<<enreg[p].stat[j]<<'\t';
+			ftrace2<<'\n';
+		}
+	
 	void traitenreg(string s, int nrec, int nseld, int nselr,int nrecp, int nlogreg, double *prop) {
  		float *stat_obs;
 		int ncs1,nsel;
@@ -260,6 +273,7 @@ bool doAFD;
 			if (prior) resprior[p].truescen=enreg[p].numscen;else respost[p].truescen=enreg[p].numscen; 
 			rt.cal_dist(nrec,nsel,stat_obs,false,true);
 			iprog +=6;fprog.open(progressfilename.c_str());fprog<<iprog<<"   "<<nprog<<"\n";fprog.close();
+            traceconf(p);
 			if (doAFD) stat_obs = transfAFD(nsel,p);
 			postsd = comp_direct(nseld);
 			ncs1=ncs-1;
@@ -279,6 +293,7 @@ bool doAFD;
 				delete []postsr;
 			}
 			cout<<"ncordir="<<ncdir<<"   ncorlog="<<nclog<<"\n";
+
 		}
 		rt.desalloue_enrsel(nsel);
 		if (nlogreg==1) liberecmat(rt.nscen, nselr, rt.nstat);
@@ -397,28 +412,26 @@ bool doAFD;
     void doconf(string opt, int seed) {
         int nstatOK,ncs1,*nbestdir,*nbestlog,*scenchoibackup,nscenchoibackup;
         int nrec = 0,nreca, nsel=0,nsel0=0,nseld = 0,nselr = 0,ns, nrecpos = 0,ntest = 0, np,ng,npv, nlogreg = 0, ncond,nrecb;
-		//int ncordir,ncorlog,ncdir,nclog,ii,jj;
-        string s,s0,s1;
+        //int ncordir,ncorlog,ncdir,nclog,ii,jj;
+        string s, s0,s1, nomfitrace;
         vector<string> ss, ss1;
-		float *stat_obs;
-		long double **matC;
-		double duree,prop[2],propcordirprior,propcorlogprior,propcordirposterior,propcorlogposterior;
-		clock_t debut;
+        float *stat_obs;
+        long double **matC;
+		double duree, prop[2], propcordirprior, propcorlogprior, propcordirposterior, propcorlogposterior; clock_t debut;
         doAFD=false;
         bool posterior=false;
-		long double **phistar;
-		int nphistarOK;
+        long double **phistar;
+        int nphistarOK;
         posteriorscenC **postsd,*postsr;
         string shist,smut;shist=smut="";
-		nrecb=nrecc=0;
-//		clock_zero=0.0;debut=walltime(&clock_zero);
-		debut = clock(); 
+        nrecb=nrecc=0;
+		/* clock_zero=0.0;debut=walltime(&clock_zero); */ debut = clock();
         //cout <<"debut de doconf\n";
         progressfilename = path + ident + "_progress.txt";
         //strcpy(progressfilename,path);
         //strcat(progressfilename,ident);
         //strcat(progressfilename,"_progress.txt");
-
+        cout<<"Nom du fichier trace : "<<nomfitrace<<"\n";
 		scurfile = path + "pseudo-observed_datasets_"+ ident +".txt";
         cout<<scurfile<<"\n";
         cout<<"options : "<<opt<<"\n";
@@ -538,7 +551,10 @@ bool doAFD;
 			delete [] rt.scenchoisi;
 			rt.scenchoisi = new int[rt.nscen];
 			for (int j=0;j<rt.nscen;j++) rt.scenchoisi[j]=j+1;
+	        nomfitrace = path + ident+"_traceprior.txt";
+            ftrace2.open(nomfitrace.c_str());
 			pperror(true,nrec,nrecb,nsel0,nseld,nselr,nlogreg,seed,prop);
+			ftrace2.close();
 			propcordirprior=prop[0];
 			propcorlogprior=prop[1];
 			cout<<"\nProportion of times the scenario is correctly chosen\n";
@@ -563,7 +579,10 @@ bool doAFD;
 			delete [] rt.scenchoisi;
 			rt.scenchoisi = new int[rt.nscen];
 			for (int j=0;j<rt.nscen;j++) rt.scenchoisi[j]=j+1;
+	        nomfitrace = path + ident+"_traceposterior.txt";
+            ftrace2.open(nomfitrace.c_str());
 			pperror(false,nrec,nrecc,nsel0,nseld,nselr,nlogreg,seed,prop);
+			ftrace2.close();
 			propcordirposterior=prop[0];
 			propcorlogposterior=prop[1];
 			cout<<"\nProportion of times the scenario is correctly chosen\n";
@@ -654,6 +673,8 @@ bool doAFD;
         	//vector<int> nbestlog(rt.nscenchoisi);
 			for(int s=0;s<rt.nscenchoisi;s++){nbestdir[s]=0;nbestlog[s]=0;}
 			nstatOK = rt.cal_varstat();
+	        nomfitrace = path + ident+"_trace.txt";
+            ftrace2.open(nomfitrace.c_str());
 			for (int p=0;p<ntest;p++) {
 				for (int j=0;j<rt.nstat;j++) stat_obs[j]=enreg[p].stat[j];
 				cout<<"\nComputing confidence in scenario choice for scenario "<<rt.scenchoisi[0]<<"\n";
@@ -663,7 +684,8 @@ bool doAFD;
 				//cout<<"apres cal_dist\n";
 				iprog +=6;fprog.open(progressfilename.c_str());fprog<<iprog<<"   "<<nprog<<"\n";fprog.close();
 				//cout<<"avant transfAFD\n";
-				if (doAFD) stat_obs = transfAFD(nsel,p);
+	            traceconf(p);
+			    if (doAFD) stat_obs = transfAFD(nsel,p);
 				//if (ite==1) stat_obs = transfAFD(nrec,nsel,p);
 				//cout<<"avant postsd\n";
 				postsd = comp_direct(nseld);
@@ -705,6 +727,7 @@ bool doAFD;
 				f11<<"\n";f11.flush();
 				cout<<"\n";
 			}
+                ftrace2.close();
 			rt.desalloue_enrsel(nsel);
 			if (nlogreg==1) liberecmat(rt.nscenchoisi, nselr, rt.nstat);
 			f11<<"\nNumber of times the scenario has the highest posterior probability\nTotal  ";

@@ -29,17 +29,20 @@ class NodeRC
  {
 public:
 	int pere,filsG,filsD,nvar,nsets,npassages,nsetG,nsetD,model,imax;
-	double cutval,disval,disval2,delta;
+	double cutval,disval,disval2,delta,modmoy;
 	bool terminal,gauche;
 	vector <int>indvar;
 	vector <int>numset;
 	vector <int>numsetG;
 	vector <int>numsetD;
 	int regle3(vector <VMC> vm, vector <int>b, MwcGen& mw);	
-	double calGinimin(vector <VMC>& vm,double &cutval, vector <int> modfreq);
+	double calGinimin(vector <VMC>& vm,double &cutvalc, vector <int> modfreq);
 	double calGini(vector <VMC>& vm, double cutval);
+	double calvarmin(vector <VMC>& vm, double &cutvalc);
+	double calvarmoy(vector <VMC>& vm, double cutval);	
 	vector <int> calmodfreq(vector <VMC> vm);	
 	int getdisval(MwcGen& mw);
+	double getdisval2(MwcGen& mw);
 //	double caldisval(int nscen, int nsets, const vector<VMC>&vm, double val, vector <int>& nn);	
 	~NodeRC() {
 		if (not indvar.empty()) indvar.clear();
@@ -58,13 +61,14 @@ public:
 	bool fin;
 	
 	vector <int> numset;
-	vector <int> indsel;
+	//vector <int> indsel;
 	vector <int> score;
 	vector <int> index;
 	vector <NodeRC> node;
 	vector <bool> varused;
+	vector <bool> sim_participe;
 	
-	void initree(int seed, int i);
+	void initree(int i,bool init);
 	int infermodel(const vector <double>& stat);
 	int infermodel2(double* stat);
 	void ecris(int num);
@@ -73,14 +77,18 @@ public:
 	void deletree();
 	void ecrifich(ofstream& foret);
 	void lifich(ifstream& foret);
-	
+	void buildtree1(int seed, int i, int rep);
+	void buildtree2(int seed, int i, int rep);
+	void estim();
+	double inferobs(vector <double>&  stat);
 	~TreeC() {
 		if (not numset.empty()) numset.clear();
-		if (not indsel.empty()) indsel.clear();
+		//if (not indsel.empty()) indsel.clear();
 		if (not score.empty()) score.clear();
 		if (not index.empty()) index.clear();
 		if (not node.empty()) node.clear();
 		if (not varused.empty()) varused.clear();
+		if (not sim_participe.empty()) sim_participe.clear();
 	}
 	TreeC & operator= (TreeC  const & source);
 };
@@ -91,8 +99,7 @@ public:
 	int ntrees,ntot,nsets,nstat,nmodel,nvar,nsel,nstatclass,nbootsamp;
 	
 	vector <int>model;
-	vector <int>indsel;
-	vector <vector <int> >nimportance;
+	//vector <int>indsel;
 	vector <vector <double> > vote;
 	vector <double>varimp;
 	vector <vector <double> > stat;
@@ -101,6 +108,7 @@ public:
 	vector <double> statobs;
 	vector <int> bootsamp;
 	vector <string> statname;
+	vector <bool> bienestime;
 	
 	void growtrees(int seed, int rep);
 	double training_accuracy();
@@ -110,18 +118,15 @@ public:
 	int bestmodel3(int k, int nscen,double* stat);
 	void var_importance();
 	void var_importance2();
-    void dimimportance();
 	void readstat(bool LD);
 	void ecrifich(string nomfi);
 	
 	~RFC(){
 		if (not model.empty()) model.clear();
-		if (not indsel.empty()) indsel.clear();
-		if (not nimportance.empty()) nimportance.clear();
+		//if (not indsel.empty()) indsel.clear();
 		if (not vote.empty()) vote.clear();
 		if (not varimp.empty()) varimp.clear();
 		if (not stat.empty()) stat.clear();
-		if (not importance.empty()) importance.clear();
 		if (not tree.empty()) tree.clear();
 		if (not statobs.empty()) statobs.clear();
 		if (not bootsamp.empty()) bootsamp.clear();
