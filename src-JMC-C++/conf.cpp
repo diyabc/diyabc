@@ -10,15 +10,15 @@
 #include <cstdlib>
 #include <vector>
 #include <time.h>
-#include "bias\.hpp"
-#include "reftable\.hpp"
-#include "header\.hpp"
-#include "matrices\.hpp"
-#include "mesutils\.hpp"
-#include "particleset\.hpp"
-#include "comparscen\.hpp"
-#include "estimparam\.hpp"
-#include "modchec\.hpp"
+#include "bias.hpp"
+#include "reftable.hpp"
+#include "header.hpp"
+#include "matrices.hpp"
+#include "mesutils.hpp"
+#include "particleset.hpp"
+#include "comparscen.hpp"
+#include "estimparam.hpp"
+#include "modchec.hpp"
 
 /*
 #ifndef HEADER

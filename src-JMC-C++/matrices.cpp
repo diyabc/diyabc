@@ -7,7 +7,7 @@
 #ifdef _MSC_VER
 #include <iso646.h>
 #endif
-#include "matrices\.hpp"
+#include "matrices.hpp"
 
 using namespace std;
 

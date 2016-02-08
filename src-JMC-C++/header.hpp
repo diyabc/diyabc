@@ -10,10 +10,10 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include "data\.hpp"
-#include "history\.hpp"
-#include "particuleC\.hpp"
-#include "header\.hpp"
+#include "data.hpp"
+#include "history.hpp"
+#include "particuleC.hpp"
+#include "header.hpp"
 
 class MutParameterC
 {

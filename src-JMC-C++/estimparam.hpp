@@ -8,7 +8,7 @@
 #ifndef ESTIMPARAM_H_
 #define ESTIMPARAM_H_
 #include <string>
-#include "history\.hpp"
+#include "history.hpp"
 
 /**
 * définition de la densité d'un paramètre

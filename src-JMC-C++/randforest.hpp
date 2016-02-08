@@ -8,12 +8,12 @@
 #ifndef RANDFOREST_H_
 #define RANDFOREST_H_
 
-#include "randomgenerator\.hpp"
+#include "randomgenerator.hpp"
 #include <string>
 #include <iostream>
 #include <vector>
-#include "reftable\.hpp"
-#include "particleset\.hpp"
+#include "reftable.hpp"
+#include "particleset.hpp"
 
 struct VMC {
 	int ind;

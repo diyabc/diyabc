@@ -10,9 +10,9 @@
 #include <cstdlib>
 using namespace std;
 
-#include "randomgenerator\.hpp"
-#include "mesutils\.hpp"
-#include "history\.hpp"
+#include "randomgenerator.hpp"
+#include "mesutils.hpp"
+#include "history.hpp"
 
 
 vector <string> histparname;

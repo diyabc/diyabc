@@ -8,7 +8,7 @@
 #ifndef PARTICLESET_H_
 #define PARTICLESET_H_
 
-#include "particuleC\.hpp"
+#include "particuleC.hpp"
 
 
 /**

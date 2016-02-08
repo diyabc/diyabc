@@ -13,13 +13,13 @@
 #include <time.h>
 
 
-#include "header\.hpp"
-#include "reftable\.hpp"
-#include "matrices\.hpp"
-#include "mesutils\.hpp"
-#include "particleset\.hpp"
-#include "acploc\.hpp"
-#include "estimparam\.hpp"
+#include "header.hpp"
+#include "reftable.hpp"
+#include "matrices.hpp"
+#include "mesutils.hpp"
+#include "particleset.hpp"
+#include "acploc.hpp"
+#include "estimparam.hpp"
 /*
 #ifndef HEADER
 #include "header.cpp"

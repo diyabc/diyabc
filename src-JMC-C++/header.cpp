@@ -19,12 +19,12 @@
 #include <stdexcept>
 #include <time.h>
 
-#include "randomgenerator\.hpp"
-#include "mesutils\.hpp"
-#include "data\.hpp"
-#include "history\.hpp"
-#include "particuleC\.hpp"
-#include "history\.hpp"
+#include "randomgenerator.hpp"
+#include "mesutils.hpp"
+#include "data.hpp"
+#include "history.hpp"
+#include "particuleC.hpp"
+#include "history.hpp"
 
 
 extern int debuglevel;
@@ -40,7 +40,7 @@ extern int debuglevel;
 #endif
 */
 
-#include "header\.hpp"
+#include "header.hpp"
 
 extern string * stat_type;
 extern int* stat_num;

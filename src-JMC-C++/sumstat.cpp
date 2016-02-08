@@ -13,11 +13,11 @@
 #include <string>
 #include <cstdlib>
 
-#include "randomgenerator\.hpp"
-#include "mesutils\.hpp"
-#include "data\.hpp"
-#include "history\.hpp"
-#include "particuleC\.hpp"
+#include "randomgenerator.hpp"
+#include "mesutils.hpp"
+#include "data.hpp"
+#include "history.hpp"
+#include "particuleC.hpp"
 
 extern int debuglevel;
 extern DataC dataobs;

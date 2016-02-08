@@ -9,8 +9,8 @@
 #define REFTABLE_H_
 #include <string>
 #include <fstream>
-#include "history\.hpp"
-#include "header\.hpp"
+#include "history.hpp"
+#include "header.hpp"
 
 class enregC {
 public:

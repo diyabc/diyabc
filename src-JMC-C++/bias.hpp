@@ -10,10 +10,10 @@
 #include <vector>
 #include <string>
 
-#include "header\.hpp"
-#include "matrices\.hpp"
-#include "mesutils\.hpp"
-#include "particleset\.hpp"
+#include "header.hpp"
+#include "matrices.hpp"
+#include "mesutils.hpp"
+#include "particleset.hpp"
 
 
 struct enreC {

@@ -27,24 +27,24 @@ set(PROJECT_general_SRCS
 )
 
 set(PROJECT_general_HEADERS
-  acploc.h
-  bias.h
-  comparscen.h
-  conf.h
-  data.h
-  estimparam.h
-  global.h
-  header.h
-  history.h
-  matrices.h
-  mesutils.h
-  modchec.h
-  particleset.h
-  particuleC.h
-  randforest.h
-  randomgenerator.h
-  reftable.h
-  simfile.h
+  acploc.hpp
+  bias.hpp
+  comparscen.hpp
+  conf.hpp
+  data.hpp
+  estimparam.hpp
+  global.hpp
+  header.hpp
+  history.hpp
+  matrices.hpp
+  mesutils.hpp
+  modchec.hpp
+  particleset.hpp
+  particuleC.hpp
+  randforest.hpp
+  randomgenerator.hpp
+  reftable.hpp
+  simfile.hpp
 )
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
 

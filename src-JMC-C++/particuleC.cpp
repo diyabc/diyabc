@@ -21,10 +21,10 @@
 
 
 
-#include "randomgenerator\.hpp"
-#include "mesutils\.hpp"
-#include "data\.hpp"
-#include "history\.hpp"
+#include "randomgenerator.hpp"
+#include "mesutils.hpp"
+#include "data.hpp"
+#include "history.hpp"
 
 /*
 #ifndef RANDOMGENERATOR
@@ -49,7 +49,7 @@
 #define SUMSTAT
 #endif
 */
-#include "particuleC\.hpp"
+#include "particuleC.hpp"
 
 
 using namespace std;

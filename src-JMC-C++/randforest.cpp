@@ -9,16 +9,16 @@
 #include <iostream>
 #include <string>
 #include <cstring>
-#include "randforest\.hpp"
-#include "mesutils\.hpp"
-#include "matrices\.hpp"
+#include "randforest.hpp"
+#include "mesutils.hpp"
+#include "matrices.hpp"
 #include <stdlib.h>
-#include "randomgenerator\.hpp"
+#include "randomgenerator.hpp"
 #include <algorithm>
 #include <vector>
 #include <math.h>
 #include <iomanip>
-#include "particleset\.hpp"
+#include "particleset.hpp"
 #include <time.h>
 
 #define LOG2 0.69314718055994530942;

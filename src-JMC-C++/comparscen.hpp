@@ -8,9 +8,9 @@
 #ifndef COMPARSCEN_H_
 #define COMPARSCEN_H_
 #include <string>
-#include "header\.hpp"
-#include "matrices\.hpp"
-#include "mesutils\.hpp"
+#include "header.hpp"
+#include "matrices.hpp"
+#include "mesutils.hpp"
 
 
 struct matligneC

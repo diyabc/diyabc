@@ -10,9 +10,9 @@
 #include <cmath>
 #include <iomanip>
 
-#include "comparscen\.hpp"
-#include "reftable\.hpp"
-#include "header\.hpp"
+#include "comparscen.hpp"
+#include "reftable.hpp"
+#include "header.hpp"
 /*
 #ifndef HEADER
 #include "header.cpp"

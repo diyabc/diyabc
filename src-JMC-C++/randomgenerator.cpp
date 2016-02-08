@@ -16,8 +16,8 @@
 extern"C"{
 #include "../dcmt0.6.1/include/dc.h"
 }
-#include "mesutils\.hpp"
-#include "randomgenerator\.hpp"
+#include "mesutils.hpp"
+#include "randomgenerator.hpp"
 //#include <time.h>
 
 //#define MODULO 16777216

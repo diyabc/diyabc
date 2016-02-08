@@ -14,13 +14,13 @@
 #else
 #include <dirent.h>
 #endif
-#include "randomgenerator\.hpp"
-#include "mesutils\.hpp"
-#include "history\.hpp"
-#include "data\.hpp"
-#include "particuleC\.hpp"
-#include "header\.hpp"
-#include "reftable\.hpp"
+#include "randomgenerator.hpp"
+#include "mesutils.hpp"
+#include "history.hpp"
+#include "data.hpp"
+#include "particuleC.hpp"
+#include "header.hpp"
+#include "reftable.hpp"
 
 //#ifndef MESUTILS
 //#include "mesutils.cpp"

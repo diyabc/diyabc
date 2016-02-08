@@ -9,7 +9,7 @@
 #define HISTORY_H_
 
 #include <string>
-#include "randomgenerator\.hpp"
+#include "randomgenerator.hpp"
 
 
 /**
