@@ -7,12 +7,12 @@
 #include <vector>
 #include <string>
 
-#include "header.h"
-#include "reftable.h"
-#include "matrices.h"
-#include "mesutils.h"
-#include "particleset.h"
-#include "modchec.h"
+#include "header\.hpp"
+#include "reftable\.hpp"
+#include "matrices\.hpp"
+#include "mesutils\.hpp"
+#include "particleset\.hpp"
+#include "modchec\.hpp"
 /*
 #ifndef HEADER
 #include "header.cpp"
@@ -40,7 +40,7 @@
 #define PARTICLESET
 #endif
 */
-#include "simfile.h"
+#include "simfile\.hpp"
 #include <stdlib.h>
 #include <math.h>
 #include <iomanip>

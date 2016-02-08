@@ -10,7 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include "randomgenerator.h"
+#include "randomgenerator\.hpp"
 #ifdef _MSC_VER
 #include "../wingetopt/src/getopt.h"
 #include <iso646.h>

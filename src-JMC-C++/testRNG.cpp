@@ -10,7 +10,7 @@
 #include <iostream>
 #include <omp.h>
 using namespace std;
-#include "randomgenerator.h"
+#include "randomgenerator\.hpp"
 
 
 mt_struct* r;

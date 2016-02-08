@@ -23,10 +23,10 @@
 #define REFTABLE
 #endif
 */
-#include "header.h"
-#include "reftable.h"
-#include "particuleC.h"
-#include "particleset.h"
+#include "header\.hpp"
+#include "reftable\.hpp"
+#include "particuleC\.hpp"
+#include "particleset\.hpp"
 
 using namespace std;
 

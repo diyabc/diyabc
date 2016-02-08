@@ -12,14 +12,14 @@
 #include <iomanip>
 
 
-#include "bias.h"
-#include "estimparam.h"
-#include "reftable.h"
-#include "header.h"
-#include "matrices.h"
-#include "mesutils.h"
-#include "particleset.h"
-#include "modchec.h"
+#include "bias\.hpp"
+#include "estimparam\.hpp"
+#include "reftable\.hpp"
+#include "header\.hpp"
+#include "matrices\.hpp"
+#include "mesutils\.hpp"
+#include "particleset\.hpp"
+#include "modchec\.hpp"
 
 /*
 #ifndef HEADER

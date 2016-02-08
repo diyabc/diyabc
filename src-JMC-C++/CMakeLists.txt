@@ -26,13 +26,35 @@ set(PROJECT_general_SRCS
   modchec.cpp
 )
 
+set(PROJECT_general_HEADERS
+  acploc.h
+  bias.h
+  comparscen.h
+  conf.h
+  data.h
+  estimparam.h
+  global.h
+  header.h
+  history.h
+  matrices.h
+  mesutils.h
+  modchec.h
+  particleset.h
+  particuleC.h
+  randforest.h
+  randomgenerator.h
+  reftable.h
+  simfile.h
+)
+source_group("Include Files" FILES ${PROJECT_general_HEADERS})
+
 set (PROJECT_initRNGproject_SRCS
   initRNGproject.cpp
   mesutils.cpp
   matrices.cpp
   randomgenerator.cpp)
 
-add_executable(general ${PROJECT_general_SRCS})
+add_executable(general ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 add_executable(initRNGproject ${PROJECT_initRNGproject_SRCS})
 
 set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")

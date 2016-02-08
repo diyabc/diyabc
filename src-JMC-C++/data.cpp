@@ -18,9 +18,9 @@
 #include <time.h>
 #include <algorithm>
 
-#include "mesutils.h"
-#include "randomgenerator.h"
-#include "data.h"
+#include "mesutils\.hpp"
+#include "randomgenerator\.hpp"
+#include "data\.hpp"
 
 using namespace std;
 

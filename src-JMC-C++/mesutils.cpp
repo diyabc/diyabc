@@ -17,9 +17,9 @@
 #endif
 */
 
-#include "matrices.h"
-#include "randomgenerator.h"
-#include "mesutils.h"
+#include "matrices\.hpp"
+#include "randomgenerator\.hpp"
+#include "mesutils\.hpp"
 
 using namespace std;
 

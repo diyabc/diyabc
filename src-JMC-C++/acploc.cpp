@@ -9,11 +9,11 @@
 #include <cmath>
 #include <time.h>
 
-#include "matrices.h"
-#include "mesutils.h"
-#include "reftable.h"
-#include "acploc.h"
-#include "header.h"
+#include "matrices\.hpp"
+#include "mesutils\.hpp"
+#include "reftable\.hpp"
+#include "acploc\.hpp"
+#include "header\.hpp"
 
 /*
 #ifndef HEADER
