@@ -5,11 +5,9 @@
  *      Author: ppudlo
  */
 
-#ifndef SIMFILE_H_
-#define SIMFILE_H_
+#pragma once
 
 void dosimfile(int seed);
 void dosimstat(int seed);
-int detpstarOK(int nsel, int scen, long double **phistar);
+int detpstarOK(int nsel, int scen, long double** phistar);
 
-#endif /* SIMFILE_H_ */

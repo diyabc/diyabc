@@ -33,7 +33,6 @@ set(PROJECT_general_HEADERS
   conf.hpp
   data.hpp
   estimparam.hpp
-  global.hpp
   header.hpp
   history.hpp
   matrices.hpp
