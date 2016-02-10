@@ -13,14 +13,13 @@
 /**
  *  Structure LocusC : définition de la structure LocusC
  */
-class LocusC
-{
+class LocusC {
 public:
     std::string name;
     int type; //0 à 14
     int groupe; //numero du groupe auquel appartient le locus
     double coeffcoal; // coefficient pour la coalescence (dépend du type de locus et du sexratio)
-    std::vector<std::vector<long double> > freq;
+    std::vector<std::vector<long double>> freq;
     //Proprietes des locus sequences
     long double pi_A, pi_C, pi_G, pi_T;
     std::vector<long double> mutsit; //array of dnalength elements giving the relative probability of a mutation to a given site of the sequence
@@ -28,127 +27,110 @@ public:
     std::vector<int> sitmut2; //
     int dnalength, dnavar;
     std::vector<int> tabsit; //array of dnalength elements giving the number of a dna site;
-    std::vector<std::vector<std::string> > haplodna; //array[sample][gene copy][nucleotide] tous les nucleotides de chaque individu sont mis à la suite les uns des autres
-    std::vector<std::vector<std::string> > haplodnavar; //seulement les sites variab
+    std::vector<std::vector<std::string>> haplodna; //array[sample][gene copy][nucleotide] tous les nucleotides de chaque individu sont mis à la suite les uns des autres
+    std::vector<std::vector<std::string>> haplodnavar; //seulement les sites variab
     //Proprietes des locus microsatellites
     int mini, maxi, kmin, kmax, motif_size, motif_range, nal;
     double mut_rate, Pgeom, sni_rate, mus_rate, k1, k2;
-    std::vector<std::vector<int> > haplomic; //array[sample][gene copy]
+    std::vector<std::vector<int>> haplomic; //array[sample][gene copy]
     //Propriétés des locus SNP
     bool firstime;
-    std::vector<std::vector<short int> > haplosnp; //array[sample][gene copy] 0,1,9
+    std::vector<std::vector<short int>> haplosnp; //array[sample][gene copy] 0,1,9
     bool mono; //mono=true si un seul allèle dans l'échantillon global
     double weight; //poids du locus=1, sauf quand biais de recrutement
     int nsample, nmisssnp;
     std::vector<int> samplesize;
-    std::vector<std::vector<short int> > ploidie;
+    std::vector<std::vector<short int>> ploidie;
 
 
-    LocusC()
-        {
-            name = "";
-            type = -1;
-            groupe = -1;
-            pi_A = pi_C = pi_G = pi_T = -1.0;
-            dnalength = dnavar = -1;
-            mini = maxi = kmin = kmax = -1;
-            motif_range = motif_size = -1;
-            mut_rate = Pgeom = sni_rate = mus_rate = k1 = k2 = 0.0;
-            firstime = mono = true;
-            weight = 1.0;
-            nsample = 0;
-            nmisssnp = 0;
-        };
+    LocusC() {
+        name = "";
+        type = -1;
+        groupe = -1;
+        pi_A = pi_C = pi_G = pi_T = -1.0;
+        dnalength = dnavar = -1;
+        mini = maxi = kmin = kmax = -1;
+        motif_range = motif_size = -1;
+        mut_rate = Pgeom = sni_rate = mus_rate = k1 = k2 = 0.0;
+        firstime = mono = true;
+        weight = 1.0;
+        nsample = 0;
+        nmisssnp = 0;
+    };
 
-    ~LocusC()
-        {
-            if (not mutsit.empty()) mutsit.clear();
-            if (not sitmut.empty()) sitmut.clear();
-            if (not sitmut2.empty()) sitmut2.clear();
-            if (not tabsit.empty()) tabsit.clear();
-            if (not freq.empty())
-            {
-                int imax = (int)freq.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not freq[i].empty()) freq[i].clear();
-                }
+    ~LocusC() {
+        if (not mutsit.empty()) mutsit.clear();
+        if (not sitmut.empty()) sitmut.clear();
+        if (not sitmut2.empty()) sitmut2.clear();
+        if (not tabsit.empty()) tabsit.clear();
+        if (not freq.empty()) {
+            int imax = (int)freq.size();
+            for (int i = 0; i < imax; i++) {
+                if (not freq[i].empty()) freq[i].clear();
             }
-            if (not haplomic.empty())
-            {
-                int imax = (int)haplomic.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not haplomic[i].empty()) haplomic[i].clear();
-                }
+        }
+        if (not haplomic.empty()) {
+            int imax = (int)haplomic.size();
+            for (int i = 0; i < imax; i++) {
+                if (not haplomic[i].empty()) haplomic[i].clear();
             }
-            if (not haplodna.empty())
-            {
-                int imax = (int)haplodna.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not haplodna[i].empty()) haplodna[i].clear();
-                }
+        }
+        if (not haplodna.empty()) {
+            int imax = (int)haplodna.size();
+            for (int i = 0; i < imax; i++) {
+                if (not haplodna[i].empty()) haplodna[i].clear();
             }
-            if (not haplodnavar.empty())
-            {
-                int imax = (int)haplodnavar.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not haplodnavar[i].empty()) haplodnavar[i].clear();
-                }
+        }
+        if (not haplodnavar.empty()) {
+            int imax = (int)haplodnavar.size();
+            for (int i = 0; i < imax; i++) {
+                if (not haplodnavar[i].empty()) haplodnavar[i].clear();
             }
-            if (not haplosnp.empty())
-            {
-                int imax = (int)haplosnp.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not haplosnp[i].empty()) haplosnp[i].clear();
-                }
+        }
+        if (not haplosnp.empty()) {
+            int imax = (int)haplosnp.size();
+            for (int i = 0; i < imax; i++) {
+                if (not haplosnp[i].empty()) haplosnp[i].clear();
             }
-            if (not ploidie.empty())
-            {
-                int imax = (int)ploidie.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not ploidie[i].empty()) ploidie[i].clear();
-                }
+        }
+        if (not ploidie.empty()) {
+            int imax = (int)ploidie.size();
+            for (int i = 0; i < imax; i++) {
+                if (not ploidie[i].empty()) ploidie[i].clear();
             }
-        };
+        }
+    };
 
     LocusC& operator=(LocusC const& source);
 
     void libere(bool obs, int nsample);
 };
 
-class MissingHaplo
-{
+class MissingHaplo {
 public:
     int locus, sample, indiv;
     MissingHaplo& operator=(MissingHaplo const& source);
 };
 
-class MissingNuc
-{
+class MissingNuc {
 public:
     int locus, sample, indiv, nuc;
     MissingNuc& operator=(MissingNuc const& source);
 };
 
 
-class DataC
-{
+class DataC {
 public:
     std::string message, title;
-    std::vector<std::vector<std::string> > indivname;
+    std::vector<std::vector<std::string>> indivname;
     int nsample, nsample0, nloc, nmisshap, nmissnuc, nmisssnp, filetype;
     double sexratio, maf;
     std::vector<MissingHaplo> misshap;
     std::vector<MissingNuc> missnuc;
     std::vector<bool> catexist;
-    std::vector<std::vector<int> > ssize;//nombre de copies de gènes (manquantes incluses) par [locustype][sample], locustype variant de 0 à 4.
+    std::vector<std::vector<int>> ssize;//nombre de copies de gènes (manquantes incluses) par [locustype][sample], locustype variant de 0 à 4.
     std::vector<int> nind;
-    std::vector<std::vector<int> > indivsexe;
+    std::vector<std::vector<int>> indivsexe;
     std::vector<LocusC> locus;
 
     /* Méthodes */

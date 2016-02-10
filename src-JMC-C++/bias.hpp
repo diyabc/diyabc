@@ -7,8 +7,7 @@
 
 #include <string>
 
-struct enreC
-{
+struct enreC {
     int numscen;
     double *paramvv, *paramvvC, *paramvvS, *stat;
     std::string* name;

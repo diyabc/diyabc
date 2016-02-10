@@ -8,8 +8,7 @@ using namespace std;
 #include <vector>
 #include <time.h>
 
-struct matC
-{
+struct matC {
     long double v;
     int num;
     int ind;
@@ -19,8 +18,7 @@ struct matC
  * définit l'opérateur de comparaison de deux enregistrements de type matC
  * pour l'utilisation de la fonction sort du module algorithm
  */
-struct compC
-{
+struct compC {
     bool operator ()(matC const& lhs, matC const& rhs) const;
 };
 
@@ -59,8 +57,7 @@ double lnormal_dens(double x, double m, double s);
 double do_del(double temp, double x);
 double pnorm5(double x, double mu, double sigma);
 
-struct rescov
-{
+struct rescov {
     int n;
     long double* mu;
     long double* * cov;
@@ -68,8 +65,7 @@ struct rescov
 
 rescov covarianceponderee(int nl, int nc, long double* * A, long double* w);
 
-struct resAFD
-{
+struct resAFD {
     int nlambda;
     long double proportion;
     long double* lambda;
@@ -85,8 +81,7 @@ int PPCM(int a, int b);
 long double DCVM(int n, int m, long double* x, long double* y);
 void combrank2(int n, int m, long double* x, long double* y, long double* rangx, long double* rangy);
 
-inline std::string char2string(char* c)
-{
+inline std::string char2string(char* c) {
     return std::string(c);
 }
 

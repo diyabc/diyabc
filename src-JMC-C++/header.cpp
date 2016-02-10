@@ -47,8 +47,7 @@ ParticleC particuleobs;
 /**
  * Definition de l'operateur = pour une instance de la classe MutParameterC
  */
-MutParameterC& MutParameterC::operator=(MutParameterC const& source)
-{
+MutParameterC& MutParameterC::operator=(MutParameterC const& source) {
     if (this == &source) return *this;
     this->name = source.name;
     this->groupe = source.groupe;
@@ -178,26 +177,21 @@ return *this;
 */
 
 
-void MutParameterC::ecris()
-{
+void MutParameterC::ecris() {
     cout << "    groupe=" << this->groupe << "   category=" << this->category << "\n";
     //prior.ecris();
 }
 
-void HeaderC::assignloc(int gr)
-{
+void HeaderC::assignloc(int gr) {
     groupe[gr].nloc = 0;
-    for (int loc = 0; loc < dataobs.nloc; loc++)
-    {
+    for (int loc = 0; loc < dataobs.nloc; loc++) {
         if (dataobs.locus[loc].groupe == gr) groupe[gr].nloc++;
     }
     if (debuglevel == 2) cout << "assignloc nloc=" << groupe[gr].nloc << "\n";
     groupe[gr].loc = vector<int>(groupe[gr].nloc);
     int iloc = -1;
-    for (int i = 0; i < dataobs.nloc; i++)
-    {
-        if (dataobs.locus[i].groupe == gr)
-        {
+    for (int i = 0; i < dataobs.nloc; i++) {
+        if (dataobs.locus[i].groupe == gr) {
             iloc++;
             groupe[gr].loc[iloc] = i;
         }
@@ -224,8 +218,7 @@ void HeaderC::assignloc(int gr)
 
   }*/
 
-int HeaderC::readHeaderDebut(ifstream& file)
-{
+int HeaderC::readHeaderDebut(ifstream& file) {
     string s1;
     int nl = 0;
     getline(file, this->datafilename);
@@ -234,8 +227,7 @@ int HeaderC::readHeaderDebut(ifstream& file)
     //cout <<"avant loadfromfile du fichier "<<this->datafilename<<"\n";
     int error = dataobs.loadfromfile(path + this->datafilename);
     //cout<<"apres loadfromfile  error="<<error<<"\n";
-    if (error != 0)
-    {
+    if (error != 0) {
         this->message = dataobs.message;
         throw std::runtime_error(message);
         return error;
@@ -251,8 +243,7 @@ int HeaderC::readHeaderDebut(ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeaderScenarios(ifstream& file)
-{
+int HeaderC::readHeaderScenarios(ifstream& file) {
     //Partie Scenarios
     string s1;
     int nl = 0;
@@ -267,17 +258,14 @@ int HeaderC::readHeaderScenarios(ifstream& file)
     int* nlscen = new int[this->nscenarios];
 
     scenario = vector<ScenarioC>(this->nscenarios);
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         nlscen[i] = getwordint(s1, 3 + i);
     }
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         sl[i] = new string[nlscen[i]];
         getline(file, s1);
         nl++; //cout<<s1<<"\n";
-        if (s1.find("scenario") != 0)
-        {
+        if (s1.find("scenario") != 0) {
             this->message = "Error when reading header.txt file :keyword <scenario> expected at line " + IntToString(nl) + ". Check the number of lines of each scenario at line 4.";
             throw std::runtime_error(message);
             return 1;
@@ -286,22 +274,19 @@ int HeaderC::readHeaderScenarios(ifstream& file)
         scenario[i].prior_proba = getwordfloat(s1, 3);
         scenario[i].nparam = 0;
         scenario[i].nparamvar = 0;
-        for (int j = 0; j < nlscen[i]; j++)
-        {
+        for (int j = 0; j < nlscen[i]; j++) {
             getline(file, sl[i][j]);
             nl++;/*cout<<sl[i][j]<<"\n";*/
         }
         this->message = scenario[i].read_events(nlscen[i], sl[i]);
-        if (this->message != "")
-        {
+        if (this->message != "") {
             this->message = "Error when reading  header.txt file : " + this->message + " in scenario " + IntToString(i + 1);
             return 1;
         }
         //scenario[i].ecris();
         //cout<<"apres read_events\n";
         this->message = scenario[i].checklogic();
-        if (this->message != "")
-        {
+        if (this->message != "") {
             this->message = "Error when reading  header.txt file : " + this->message + " in scenario " + IntToString(i + 1);
             return 1;
         }
@@ -316,8 +301,7 @@ int HeaderC::readHeaderScenarios(ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeaderHistParam(ifstream& file)
-{
+int HeaderC::readHeaderHistParam(ifstream& file) {
     string s1, s2;
     vector<string> ss, ss2;
     int j, k;
@@ -336,8 +320,7 @@ int HeaderC::readHeaderHistParam(ifstream& file)
 
     this->histparam = vector<HistParameterC>(this->nparamtot);
     this->condition.clear();
-    for (int i = 0; i < this->nparamtot; i++)
-    {
+    for (int i = 0; i < this->nparamtot; i++) {
         getline(file, s1);
         //cout<<s1<<"\n";
         splitwords(s1, " ", ss);
@@ -352,11 +335,9 @@ int HeaderC::readHeaderHistParam(ifstream& file)
     }
     //cout<<"apres les readprior\n";
     this->drawuntil = true;
-    if (this->nconditions > 0)
-    {
+    if (this->nconditions > 0) {
         this->condition = vector<ConditionC>(this->nconditions);
-        for (int i = 0; i < this->nconditions; i++)
-        {
+        for (int i = 0; i < this->nconditions; i++) {
             getline(file, s1);
             //cout<<s1<<"\n";
             this->condition[i].readcondition(s1);
@@ -367,20 +348,16 @@ int HeaderC::readHeaderHistParam(ifstream& file)
     if (debuglevel == 2) cout << "header.txt : fin de la lecture de la partie priors des paramètres démographiques\n";
     //retour sur les parametres spécifiques à chaque scenario;
     //cout <<"avant retour sur histparam/scenario\n";fflush(stdin);
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         scenario[i].nparamvar = 0;
-        for (int j = 0; j < scenario[i].nparam; j++)
-        {
+        for (int j = 0; j < scenario[i].nparam; j++) {
             int k = 0;
-            while (scenario[i].histparam[j].name != this->histparam[k].name)
-            {
+            while (scenario[i].histparam[j].name != this->histparam[k].name) {
                 k++;
             }
             //scenario[i].histparam[j].prior = copyprior(this->histparam[k].prior);
             scenario[i].histparam[j].prior = this->histparam[k].prior;
-            if (not this->histparam[k].prior.constant)
-            {
+            if (not this->histparam[k].prior.constant) {
                 //scenario[i].paramvar[scenario[i].nparamvar].prior = copyprior(this->histparam[k].prior);
                 scenario[i].nparamvar++;
             }
@@ -390,16 +367,12 @@ int HeaderC::readHeaderHistParam(ifstream& file)
     }
     //retour sur les conditions spécifiques à chaque scenario
     //cout <<"avant retour sur conditions\n";fflush(stdin);
-    if (this->nconditions > 0)
-    {
-        for (int i = 0; i < this->nscenarios; i++)
-        {
+    if (this->nconditions > 0) {
+        for (int i = 0; i < this->nscenarios; i++) {
             int nc = 0;
-            for (j = 0; j < this->nconditions; j++)
-            {
+            for (j = 0; j < this->nconditions; j++) {
                 int np = 0;
-                for (k = 0; k < scenario[i].nparam; k++)
-                {
+                for (k = 0; k < scenario[i].nparam; k++) {
                     //cout<<this->condition[j].param1<<"   "<<this->condition[j].param2<<"   "<<scenario[i].histparam[k].name<<"  np="<<np<<"\n";
                     if (this->condition[j].param1 == scenario[i].histparam[k].name) np++;
                     if (this->condition[j].param2 == scenario[i].histparam[k].name) np++;
@@ -410,18 +383,14 @@ int HeaderC::readHeaderHistParam(ifstream& file)
             //cout <<"header.scenario["<<i<<"].nconditions="<<scenario[i].nconditions<<"\n";
             scenario[i].condition = vector<ConditionC>(nc);
             nc = 0;
-            while (nc < scenario[i].nconditions)
-            {
-                for (j = 0; j < this->nconditions; j++)
-                {
+            while (nc < scenario[i].nconditions) {
+                for (j = 0; j < this->nconditions; j++) {
                     int np = 0;
-                    for (k = 0; k < scenario[i].nparam; k++)
-                    {
+                    for (k = 0; k < scenario[i].nparam; k++) {
                         if (this->condition[j].param1 == scenario[i].histparam[k].name) np++;
                         if (this->condition[j].param2 == scenario[i].histparam[k].name) np++;
                     }
-                    if (np == 2)
-                    {
+                    if (np == 2) {
                         scenario[i].condition[nc] = this->condition[j];
                         //scenario[i].condition[nc].ecris();
                         nc++;
@@ -430,13 +399,11 @@ int HeaderC::readHeaderHistParam(ifstream& file)
             }
             //cout <<"dans readheader  \n";
         }
-    }
-    else for (int i = 0; i < this->nscenarios; i++) scenario[i].nconditions = 0;
+    } else for (int i = 0; i < this->nscenarios; i++) scenario[i].nconditions = 0;
     return 0;
 }
 
-int HeaderC::readHeaderLoci(ifstream& file)
-{
+int HeaderC::readHeaderLoci(ifstream& file) {
     string s1;
     vector<string> ss;
     int k, k1, k2, nss, gr, grm, nsg, nl, typ;
@@ -444,27 +411,22 @@ int HeaderC::readHeaderLoci(ifstream& file)
     //cout <<"avant partie loci\n";fflush(stdin);
     getline(file, s1); //ligne vide
     getline(file, s1); //cout<<"readHeaderLoci  s1="<<s1<<"\n"; //ligne "loci description"
-    if (dataobs.filetype == 0)
-    { //fichier GENEPOP
+    if (dataobs.filetype == 0) { //fichier GENEPOP
         grm = 1; //nombre maximal de groupes
-        for (int loc = 0; loc < dataobs.nloc; loc++)
-        {
+        for (int loc = 0; loc < dataobs.nloc; loc++) {
             getline(file, s1);
             splitwords(s1, " ", ss);
             nss = ss.size();
             k = 0;
             while (ss[k].find("[") == string::npos) k++;
-            if (ss[k] == "[M]")
-            {
+            if (ss[k] == "[M]") {
                 s1 = ss[k + 1].substr(1, ss[k + 1].length());
                 gr = atoi(s1.c_str());
                 dataobs.locus[loc].groupe = gr;
                 if (gr > grm) grm = gr;
                 dataobs.locus[loc].motif_size = atoi(ss[k + 2].c_str());
                 dataobs.locus[loc].motif_range = atoi(ss[k + 3].c_str());
-            }
-            else if (ss[k] == "[S]")
-            {
+            } else if (ss[k] == "[S]") {
                 s1 = ss[k + 1].substr(1, ss[k + 1].length());
                 gr = atoi(s1.c_str());
                 dataobs.locus[loc].groupe = gr;
@@ -474,9 +436,7 @@ int HeaderC::readHeaderLoci(ifstream& file)
                 //dataobs.locus[loc].dnalength=atoi(ss[k+2].c_str());  //inutile variable déjà renseignée
             }
         }
-    }
-    else
-    { //fichier SNP
+    } else { //fichier SNP
         //cout<<"fichier SNP dans redheaderLoci\n";
         this->ngroupes = getwordint(s1, 3);
         cout << s1 << "\n";
@@ -486,8 +446,7 @@ int HeaderC::readHeaderLoci(ifstream& file)
         groupe[0].type = 2;
         int prem;
         for (int loc = 0; loc < dataobs.nloc; loc++) dataobs.locus[loc].groupe = 0;
-        for (gr = 1; gr <= this->ngroupes; gr++)
-        {
+        for (gr = 1; gr <= this->ngroupes; gr++) {
             groupe[gr].type = 2;
             getline(file, s1);
             splitwords(s1, " ", ss);
@@ -504,8 +463,7 @@ int HeaderC::readHeaderLoci(ifstream& file)
             if (debuglevel == 2) for (int kk = 0; kk <= this->ngroupes; kk++) cout << "groupe[" << kk << "].nloc = " << groupe[kk].nloc << "\n";
             groupe[gr].loc = vector<int>(groupe[gr].nloc);
             k1 = 0;
-            for (k = 0; k < nsg; k++)
-            {
+            for (k = 0; k < nsg; k++) {
                 nl = getwordint(s1, 2 * k + 1);
                 k2 = 0;
                 if (ss[2 * k + 1].find("<A>") != string::npos) typ = 10;
@@ -513,18 +471,15 @@ int HeaderC::readHeaderLoci(ifstream& file)
                 else if (ss[2 * k + 1].find("<X>") != string::npos) typ = 12;
                 else if (ss[2 * k + 1].find("<Y>") != string::npos) typ = 13;
                 else if (ss[2 * k + 1].find("<M>") != string::npos) typ = 14;
-                for (int loc = prem; loc < dataobs.nloc; loc++)
-                {
-                    if (dataobs.locus[loc].type == typ)
-                    {
+                for (int loc = prem; loc < dataobs.nloc; loc++) {
+                    if (dataobs.locus[loc].type == typ) {
                         groupe[gr].loc[k1] = loc;
                         dataobs.locus[loc].groupe = gr;
                         k1++;
                         k2++;
                     }
                     if (k2 == nl) break;
-                    if ((loc + 1 == dataobs.nloc)and (k2 < nl))
-                    {
+                    if ((loc + 1 == dataobs.nloc)and (k2 < nl)) {
                         this->message = "Not enough loci of type ";
                         if (typ == 10) this->message += "<A>";
                         if (typ == 11) this->message += "<H>";
@@ -570,13 +525,11 @@ int HeaderC::readHeaderLoci(ifstream& file)
 }
 
 
-int HeaderC::readHeaderGroupPrior(ifstream& file)
-{
+int HeaderC::readHeaderGroupPrior(ifstream& file) {
     string s1;
     vector<string> ss, ss1;
     int gr, j;
-    if (dataobs.filetype == 0)
-    {
+    if (dataobs.filetype == 0) {
         //cout <<"avant partie group priors\n";fflush(stdin);
         getline(file, s1); //ligne vide
         getline(file, s1); // cout<<"readHeaderGroupPrior s1="<<s1<<"\n"; //ligne "group prior"
@@ -585,14 +538,12 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
         groupe = vector<LocusGroupC>(this->ngroupes + 1);
         this->assignloc(0);
         //cout<<"on attaque les groupes : analyse des priors nombre de groupes="<<this->ngroupes <<"\n";
-        for (gr = 1; gr <= this->ngroupes; gr++)
-        {
+        for (gr = 1; gr <= this->ngroupes; gr++) {
             getline(file, s1);
             //cout<<s1<<"\n";
             splitwords(s1, " ", ss);
             this->assignloc(gr);
-            if (ss[2] == "[M]")
-            {
+            if (ss[2] == "[M]") {
                 groupe[gr].type = 0;
                 getline(file, s1);
                 splitwords(s1, " ", ss1);
@@ -600,11 +551,9 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
                 //cout<<"readHeaderGroupPrior priormutmoy.constant="<<groupe[gr].priormutmoy.constant<<"\n";
                 groupe[gr].priormutmoy.fixed = false;
                 if (groupe[gr].priormutmoy.constant) groupe[gr].mutmoy = groupe[gr].priormutmoy.mini;
-                else
-                {
+                else {
                     groupe[gr].mutmoy = -1.0;
-                    for (int i = 0; i < this->nscenarios; i++)
-                    {
+                    for (int i = 0; i < this->nscenarios; i++) {
                         scenario[i].nparamvar++;
                     }
                 }
@@ -616,11 +565,9 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
                 groupe[gr].priorPmoy.readprior(ss1[1]);
                 groupe[gr].priorPmoy.fixed = false;
                 if (groupe[gr].priorPmoy.constant) groupe[gr].Pmoy = groupe[gr].priorPmoy.mini;
-                else
-                {
+                else {
                     groupe[gr].Pmoy = -1.0;
-                    for (int i = 0; i < this->nscenarios; i++)
-                    {
+                    for (int i = 0; i < this->nscenarios; i++) {
                         scenario[i].nparamvar++;
                     }
                 }
@@ -635,11 +582,9 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
                 groupe[gr].priorsnimoy.readprior(ss1[1]);
                 groupe[gr].priorsnimoy.fixed = false;
                 if (groupe[gr].priorsnimoy.constant) groupe[gr].snimoy = groupe[gr].priorsnimoy.mini;
-                else
-                {
+                else {
                     groupe[gr].snimoy = -1.0;
-                    for (int i = 0; i < this->nscenarios; i++)
-                    {
+                    for (int i = 0; i < this->nscenarios; i++) {
                         scenario[i].nparamvar++;
                     }
                 }
@@ -647,20 +592,16 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
                 splitwords(s1, " ", ss1);
                 groupe[gr].priorsniloc.readprior(ss1[1]);
                 //cout<<"sniloc  ";groupe[gr].priorsniloc.ecris();
-            }
-            else if (ss[2] == "[S]")
-            {
+            } else if (ss[2] == "[S]") {
                 groupe[gr].type = 1;
                 getline(file, s1);
                 splitwords(s1, " ", ss1);
                 groupe[gr].priormusmoy.readprior(ss1[1]);
                 groupe[gr].priormusmoy.fixed = false;
                 if (groupe[gr].priormusmoy.constant) groupe[gr].musmoy = groupe[gr].priormusmoy.mini;
-                else
-                {
+                else {
                     groupe[gr].musmoy = -1.0;
-                    for (int i = 0; i < this->nscenarios; i++)
-                    {
+                    for (int i = 0; i < this->nscenarios; i++) {
                         scenario[i].nparamvar++;
                     }
                 }
@@ -700,19 +641,15 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
                 else if (ss1[1] == "HKY") groupe[gr].mutmod = 2;
                 else if (ss1[1] == "TN") groupe[gr].mutmod = 3;
                 //cout<<"mutmod = "<<groupe[gr].mutmod <<"\n";
-                if (groupe[gr].mutmod > 0)
-                {
+                if (groupe[gr].mutmod > 0) {
                     if (not groupe[gr].priork1moy.constant)
-                        for (int i = 0; i < this->nscenarios; i++)
-                        {
+                        for (int i = 0; i < this->nscenarios; i++) {
                             scenario[i].nparamvar++;
                         }
                 }
-                if (groupe[gr].mutmod == 3)
-                {
+                if (groupe[gr].mutmod == 3) {
                     if (not groupe[gr].priork2moy.constant)
-                        for (int i = 0; i < this->nscenarios; i++)
-                        {
+                        for (int i = 0; i < this->nscenarios; i++) {
                             scenario[i].nparamvar++;
                         }
                 }
@@ -726,40 +663,32 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
         int nsv;
         bool nouveau;
         if (debuglevel == 2) cout << "avant la boucle sur les locus\n";
-        for (int loc = 0; loc < dataobs.nloc; loc++)
-        {
+        for (int loc = 0; loc < dataobs.nloc; loc++) {
             gr = dataobs.locus[loc].groupe;
-            if ((dataobs.locus[loc].type > 4)and (dataobs.locus[loc].type < 10)and (gr > 0))
-            {
+            if ((dataobs.locus[loc].type > 4)and (dataobs.locus[loc].type < 10)and (gr > 0)) {
                 nsv = floor(dataobs.locus[loc].dnalength * (1.0 - 0.01 * groupe[gr].p_fixe) + 0.5);
                 if (debuglevel == 2) cout << "nsv = " << nsv << "\n";
                 if (debuglevel == 2) cout << "mutsit.size = " << dataobs.locus[loc].mutsit.size() << "\n";
                 if (debuglevel == 2) cout << "groupe[gr].gams = " << groupe[gr].gams << "\n";
                 if (debuglevel == 2) cout << "dataobs.locus[loc].dnalength = " << dataobs.locus[loc].dnalength << "\n";
-                for (int i = 0; i < dataobs.locus[loc].dnalength; i++)
-                {
+                for (int i = 0; i < dataobs.locus[loc].dnalength; i++) {
                     dataobs.locus[loc].mutsit[i] = mwc.ggamma3(1.0, groupe[gr].gams);
                 }
                 if (debuglevel == 2) cout << "apres tirage dans gamma3\n";
                 int* sitefix;
                 sitefix = new int[dataobs.locus[loc].dnalength - nsv];
-                for (int i = 0; i < dataobs.locus[loc].dnalength - nsv; i++)
-                {
+                for (int i = 0; i < dataobs.locus[loc].dnalength - nsv; i++) {
                     if (i == 0) sitefix[i] = mwc.rand0(dataobs.locus[loc].dnalength);
-                    else
-                    {
-                        do
-                        {
+                    else {
+                        do {
                             sitefix[i] = mwc.rand0(dataobs.locus[loc].dnalength);
                             nouveau = true;
                             j = 0;
-                            while ((nouveau)and (j < i))
-                            {
+                            while ((nouveau)and (j < i)) {
                                 nouveau = (sitefix[i] != sitefix[j]);
                                 j++;
                             }
-                        }
-                        while (not nouveau);
+                        } while (not nouveau);
                     }
                     dataobs.locus[loc].mutsit[i] = 0.0;
                 }
@@ -774,29 +703,25 @@ int HeaderC::readHeaderGroupPrior(ifstream& file)
     } //fin de la condition fichier=GENEPOP
     else
         //Mise à jour des paramvar
-        for (int i = 0; i < this->nscenarios; i++)
-        {
+        for (int i = 0; i < this->nscenarios; i++) {
             scenario[i].paramvar = vector<double>(scenario[i].nparamvar);
-            for (int j = 0; j < scenario[i].nparamvar; j++)scenario[i].paramvar[j] = -1.0;
+            for (int j = 0; j < scenario[i].nparamvar; j++) scenario[i].paramvar[j] = -1.0;
             //scenario[i].ecris();
         }
 
     return 0;
 }
 
-int HeaderC::readHeaderAllStat(ifstream& file)
-{
+int HeaderC::readHeaderAllStat(ifstream& file) {
     string s1;
     int j, k, gr, nstatgr, nsamp = dataobs.nsample;
     //cout<<"debut de readHeaderAllStat\n";
     //cout<<"nsamp="<<nsamp<<"    "<<"nstat="<<this->nstat<<"\n";
     //cout<<"Lecture bidon du header\n";
     getline(file, s1);//cout<<s1<<"\n";       //ligne vide
-    do
-    {
+    do {
         getline(file, s1);/*cout<<s1<<"\n";*/
-    }
-    while (s1 != "");
+    } while (s1 != "");
     getline(file, this->entete); //ligne entete
     this->entetehist = this->entete.substr(0, this->entete.length() - 14 * (nparamut + nstat));
     if (nparamut > 0) this->entetemut = this->entete.substr(this->entetehist.length(), 14 * nparamut);else this->entetemut = "";
@@ -810,24 +735,18 @@ int HeaderC::readHeaderAllStat(ifstream& file)
     statsnp.resize(0);
     int catsnp;
     k = 0;
-    for (gr = 1; gr <= this->ngroupes; gr++)
-    {
+    for (gr = 1; gr <= this->ngroupes; gr++) {
         // COMPTAGE DES STAT
         nstatgr = 0;
-        if (groupe[gr].type == 0)
-        { //MICROSAT
+        if (groupe[gr].type == 0) { //MICROSAT
             nstatgr += 4 * nsamp; //"NAL","HET","VAR","MGW"
             if (nsamp > 1) nstatgr += 8 * nsamp * (nsamp - 1) / 2; //"N2P","H2P","V2P","FST","LIK","DAS","DM2"
             if (nsamp > 2) nstatgr += nsamp * (nsamp - 1) * (nsamp - 2) / 2; //AML
-        }
-        else if (groupe[gr].type == 1)
-        { //DNA SEQUENCE
+        } else if (groupe[gr].type == 1) { //DNA SEQUENCE
             nstatgr += 8 * nsamp; //"NHA","NSS","MPD","VPD","DTA","PSS","MNS","VNS"
             if (nsamp > 1) nstatgr += 5 * nsamp * (nsamp - 1) / 2; //"NH2","NS2","MP2","MPB","HST"
             if (nsamp > 2) nstatgr += nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"SML"
-        }
-        else if (groupe[gr].type == 2)
-        { //SNP
+        } else if (groupe[gr].type == 2) { //SNP
             nstatgr += 4 * nsamp; //"HP0","HM1","HV1","HMO"
             if (nsamp > 1) nstatgr += 8 * nsamp * (nsamp - 1) / 2;
             //"NP0","NM1","NV1","NMO","FP0","FM1","FV1","FMO"
@@ -838,12 +757,9 @@ int HeaderC::readHeaderAllStat(ifstream& file)
         //DEFINITION DES STAT
         groupe[gr].sumstat = vector<StatC>(nstatgr);//cout<<"dimensionnement\n";
         //cout<<"type du groupe : "<<groupe[gr].type<<"\n";
-        if (groupe[gr].type == 0)
-        { //MICROSAT 
-            for (int i = 1; i <= 4; i++)
-            {
-                for (int sa = 1; sa <= nsamp; sa++)
-                {
+        if (groupe[gr].type == 0) { //MICROSAT 
+            for (int i = 1; i <= 4; i++) {
+                for (int sa = 1; sa <= nsamp; sa++) {
                     groupe[gr].sumstat[k].cat = i;
                     groupe[gr].sumstat[k].samp = sa;
                     s1 = stat_type[i] + "_" + IntToString(gr) + "_" + IntToString(sa);
@@ -852,14 +768,10 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                     k++;
                 }
             }
-            if (nsamp > 1)
-            {
-                for (int i = 5; i <= 11; i++)
-                {
-                    for (int sa = 1; sa <= nsamp; sa++)
-                    {
-                        for (int sa1 = sa + 1; sa1 <= nsamp; sa1++)
-                        {
+            if (nsamp > 1) {
+                for (int i = 5; i <= 11; i++) {
+                    for (int sa = 1; sa <= nsamp; sa++) {
+                        for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
                             groupe[gr].sumstat[k].cat = i;
                             groupe[gr].sumstat[k].samp = sa;
                             groupe[gr].sumstat[k].samp1 = sa1;
@@ -867,8 +779,7 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                             this->entetestat += centre(s1, 14);
                             //cout<<"k="<<k<<"  "<<this->entetestat<<"\n";
                             k++;
-                            if (i == 9)
-                            {
+                            if (i == 9) {
                                 groupe[gr].sumstat[k].cat = i;
                                 groupe[gr].sumstat[k].samp = sa1;
                                 groupe[gr].sumstat[k].samp1 = sa;
@@ -880,18 +791,12 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                     }
                 }
             }
-            if (nsamp > 2)
-            {
-                for (int i = 12; i <= 12; i++)
-                {
-                    for (int sa = 1; sa <= nsamp; sa++)
-                    {
-                        for (int sa1 = 1; sa1 <= nsamp; sa1++)
-                        {
-                            for (int sa2 = 1; sa2 <= nsamp; sa2++)
-                            {
-                                if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1))
-                                {
+            if (nsamp > 2) {
+                for (int i = 12; i <= 12; i++) {
+                    for (int sa = 1; sa <= nsamp; sa++) {
+                        for (int sa1 = 1; sa1 <= nsamp; sa1++) {
+                            for (int sa2 = 1; sa2 <= nsamp; sa2++) {
+                                if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
                                     groupe[gr].sumstat[k].cat = i;
                                     groupe[gr].sumstat[k].samp = sa;
                                     groupe[gr].sumstat[k].samp1 = sa1;
@@ -906,43 +811,32 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                 }
             }
         }
-        if (groupe[gr].type == 1)
-        { //DNA SEQUENCE
-            for (int i = -1; i >= -8; i--)
-            {
-                for (int sa = 1; sa <= nsamp; sa++)
-                {
+        if (groupe[gr].type == 1) { //DNA SEQUENCE
+            for (int i = -1; i >= -8; i--) {
+                for (int sa = 1; sa <= nsamp; sa++) {
                     groupe[gr].sumstat[k].cat = i;
                     groupe[gr].sumstat[k].samp = sa;
                     j = 12;
-                    do
-                    {
+                    do {
                         j++;
-                    }
-                    while (i != stat_num[j]);
+                    } while (i != stat_num[j]);
                     s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa);
                     this->entetestat += centre(s1, 14);
 
                     k++;
                 }
             }
-            if (nsamp > 1)
-            {
-                for (int i = -9; i >= -13; i--)
-                {
-                    for (int sa = 1; sa <= nsamp; sa++)
-                    {
-                        for (int sa1 = sa + 1; sa1 <= nsamp; sa1++)
-                        {
+            if (nsamp > 1) {
+                for (int i = -9; i >= -13; i--) {
+                    for (int sa = 1; sa <= nsamp; sa++) {
+                        for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
                             groupe[gr].sumstat[k].cat = i;
                             groupe[gr].sumstat[k].samp = sa;
                             groupe[gr].sumstat[k].samp1 = sa1;
                             j = 12;
-                            do
-                            {
+                            do {
                                 j++;
-                            }
-                            while (i != stat_num[j]);
+                            } while (i != stat_num[j]);
                             s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
                             this->entetestat += centre(s1, 14);
                             k++;
@@ -950,28 +844,20 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                     }
                 }
             }
-            if (nsamp > 2)
-            {
-                for (int i = -14; i >= -14; i--)
-                {
-                    for (int sa = 1; sa <= nsamp; sa++)
-                    {
-                        for (int sa1 = 1; sa1 <= nsamp; sa1++)
-                        {
-                            for (int sa2 = 1; sa2 <= nsamp; sa2++)
-                            {
-                                if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1))
-                                {
+            if (nsamp > 2) {
+                for (int i = -14; i >= -14; i--) {
+                    for (int sa = 1; sa <= nsamp; sa++) {
+                        for (int sa1 = 1; sa1 <= nsamp; sa1++) {
+                            for (int sa2 = 1; sa2 <= nsamp; sa2++) {
+                                if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
                                     groupe[gr].sumstat[k].cat = i;
                                     groupe[gr].sumstat[k].samp = sa;
                                     groupe[gr].sumstat[k].samp1 = sa1;
                                     groupe[gr].sumstat[k].samp2 = sa2;
                                     j = 12;
-                                    do
-                                    {
+                                    do {
                                         j++;
-                                    }
-                                    while (i != stat_num[j]);
+                                    } while (i != stat_num[j]);
                                     s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
                                     this->entetestat += centre(s1, 14);
                                     k++;
@@ -982,38 +868,29 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                 }
             }
         }
-        if (groupe[gr].type == 2)
-        { //SNP
-            for (int i = 21; i <= 24; i++)
-            {
+        if (groupe[gr].type == 2) { //SNP
+            for (int i = 21; i <= 24; i++) {
                 catsnp = (i - 21) / 4;
-                for (int sa = 1; sa <= nsamp; sa++)
-                {
+                for (int sa = 1; sa <= nsamp; sa++) {
                     groupe[gr].sumstat[k].cat = i;
                     groupe[gr].sumstat[k].samp = sa;
                     j = 25;
-                    do
-                    {
+                    do {
                         j++;
-                    }
-                    while (i != stat_num[j]);
+                    } while (i != stat_num[j]);
                     s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa);
                     this->entetestat += centre(s1, 14);
                     trouve = false;
-                    if (statsnp.size() > 0)
-                    {
-                        for (int jj = 0; jj < (int)statsnp.size(); jj++)
-                        {
+                    if (statsnp.size() > 0) {
+                        for (int jj = 0; jj < (int)statsnp.size(); jj++) {
                             trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp));
-                            if (trouve)
-                            {
+                            if (trouve) {
                                 groupe[gr].sumstat[k].numsnp = jj;
                                 break;
                             }
                         }
                     }
-                    if (not trouve)
-                    {
+                    if (not trouve) {
                         stsnp.cat = catsnp;
                         stsnp.samp = groupe[gr].sumstat[k].samp;
                         stsnp.defined = false;
@@ -1024,41 +901,31 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                 }
             }
             //cout<<"fin des sumstat 21 à 24 statsnp.size ="<<statsnp.size()<<"\n";
-            if (nsamp > 1)
-            {
-                for (int i = 25; i <= 32; i++)
-                {
+            if (nsamp > 1) {
+                for (int i = 25; i <= 32; i++) {
                     catsnp = (i - 21) / 4;
-                    for (int sa = 1; sa <= nsamp; sa++)
-                    {
-                        for (int sa1 = sa + 1; sa1 <= nsamp; sa1++)
-                        {
+                    for (int sa = 1; sa <= nsamp; sa++) {
+                        for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
                             groupe[gr].sumstat[k].cat = i;
                             groupe[gr].sumstat[k].samp = sa;
                             groupe[gr].sumstat[k].samp1 = sa1;
                             j = 25;
-                            do
-                            {
+                            do {
                                 j++;
-                            }
-                            while (i != stat_num[j]);
+                            } while (i != stat_num[j]);
                             s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
                             this->entetestat += centre(s1, 14);
                             trouve = false;
-                            if (statsnp.size() > 0)
-                            {
-                                for (int jj = 0; jj < (int)statsnp.size(); jj++)
-                                {
+                            if (statsnp.size() > 0) {
+                                for (int jj = 0; jj < (int)statsnp.size(); jj++) {
                                     trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1));
-                                    if (trouve)
-                                    {
+                                    if (trouve) {
                                         groupe[gr].sumstat[k].numsnp = jj;
                                         break;
                                     }
                                 }
                             }
-                            if (not trouve)
-                            {
+                            if (not trouve) {
                                 stsnp.cat = catsnp;
                                 stsnp.samp = groupe[gr].sumstat[k].samp;
                                 stsnp.samp1 = groupe[gr].sumstat[k].samp1;
@@ -1072,47 +939,35 @@ int HeaderC::readHeaderAllStat(ifstream& file)
                 }
                 //cout<<"fin des sumstat 25 à 32 statsnp.size ="<<statsnp.size()<<"\n";
             }
-            if (nsamp > 2)
-            {
-                for (int i = 33; i <= 36; i++)
-                {
+            if (nsamp > 2) {
+                for (int i = 33; i <= 36; i++) {
                     catsnp = (i - 21) / 4;
-                    for (int sa = 1; sa <= nsamp; sa++)
-                    {
-                        for (int sa1 = 1; sa1 <= nsamp; sa1++)
-                        {
-                            for (int sa2 = 1; sa2 <= nsamp; sa2++)
-                            {
-                                if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1))
-                                {
+                    for (int sa = 1; sa <= nsamp; sa++) {
+                        for (int sa1 = 1; sa1 <= nsamp; sa1++) {
+                            for (int sa2 = 1; sa2 <= nsamp; sa2++) {
+                                if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
                                     groupe[gr].sumstat[k].cat = i;
                                     groupe[gr].sumstat[k].samp = sa;
                                     groupe[gr].sumstat[k].samp1 = sa1;
                                     groupe[gr].sumstat[k].samp2 = sa2;
                                     j = 25;
-                                    do
-                                    {
+                                    do {
                                         j++;
-                                    }
-                                    while (i != stat_num[j]);
+                                    } while (i != stat_num[j]);
                                     s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
                                     this->entetestat += centre(s1, 14);
                                     //cout<<"samples "<<sa<<", "<<sa1<<" et "<<sa2<<"\n";
                                     trouve = false;
-                                    if (statsnp.size() > 0)
-                                    {
-                                        for (int jj = 0; jj < (int)statsnp.size(); jj++)
-                                        {
+                                    if (statsnp.size() > 0) {
+                                        for (int jj = 0; jj < (int)statsnp.size(); jj++) {
                                             trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1)and (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2));
-                                            if (trouve)
-                                            {
+                                            if (trouve) {
                                                 groupe[gr].sumstat[k].numsnp = jj;
                                                 break;
                                             }
                                         }
                                     }
-                                    if (not trouve)
-                                    {
+                                    if (not trouve) {
                                         stsnp.cat = catsnp;
                                         stsnp.samp = groupe[gr].sumstat[k].samp;
                                         stsnp.samp1 = groupe[gr].sumstat[k].samp1;
@@ -1131,11 +986,9 @@ int HeaderC::readHeaderAllStat(ifstream& file)
         }
         groupe[gr].nstatsnp = statsnp.size();
         //cout<<"groupe[gr].nstatsnp="<<groupe[gr].nstatsnp<<"\n";
-        if (groupe[gr].nstatsnp > 0)
-        {
+        if (groupe[gr].nstatsnp > 0) {
             groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
-            for (int i = 0; i < groupe[gr].nstatsnp; i++)
-            {
+            for (int i = 0; i < groupe[gr].nstatsnp; i++) {
                 groupe[gr].sumstatsnp[i].cat = statsnp[i].cat;
                 groupe[gr].sumstatsnp[i].samp = statsnp[i].samp;
                 groupe[gr].sumstatsnp[i].samp1 = statsnp[i].samp1;
@@ -1155,8 +1008,7 @@ int HeaderC::readHeaderAllStat(ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeaderGroupStat(ifstream& file)
-{
+int HeaderC::readHeaderGroupStat(ifstream& file) {
     string s1;
     vector<string> ss, ss1;
     int j, k, nss, gr;
@@ -1166,8 +1018,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
     getline(file, s1); //ligne vide
     getline(file, s1); //ligne "group group statistics"
     //cout <<"s1="<<s1<<"\n";
-    for (gr = 1; gr <= this->ngroupes; gr++)
-    {
+    for (gr = 1; gr <= this->ngroupes; gr++) {
         getline(file, s1);
         //cout <<"s1="<<s1<<"\n";
         splitwords(s1, " ", ss);
@@ -1184,8 +1035,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
         statsnp.resize(0);
         int catsnp;
         if (debuglevel == 2) cout << "nstat=" << groupe[gr].nstat << "\n";
-        while (k < groupe[gr].nstat)
-        {
+        while (k < groupe[gr].nstat) {
             if (debuglevel == 2) cout << "stat " << k << "    groupe " << gr << "\n";
             getline(file, s1);
             if (debuglevel == 2) cout << "s1=" << s1 << "\n";
@@ -1193,38 +1043,28 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
             nss = ss.size();
             if (debuglevel == 2) cout << ss[0] << "\n";
             j = 0;
-            while (ss[0] != stat_type[j])
-            {
+            while (ss[0] != stat_type[j]) {
                 //if (debuglevel==2)    cout << ss[0] << " " << j << " "<< stat_type[j] << endl;
                 j++;
             }
             if (debuglevel == 2) cout << "j=" << j << "\n";
-            if (groupe[gr].type == 0)
-            { //MICROSAT
-                if (stat_num[j] < 5)
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+            if (groupe[gr].type == 0) { //MICROSAT
+                if (stat_num[j] < 5) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         groupe[gr].sumstat[k].samp = atoi(ss[i].c_str());
                         k++;
                     }
-                }
-                else if (stat_num[j] < 12)
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+                } else if (stat_num[j] < 12) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         splitwords(ss[i], "&", ss1);
                         groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
                         groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
                         k++;
                     }
-                }
-                else if (stat_num[j] == 12)
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+                } else if (stat_num[j] == 12) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         splitwords(ss[i], "&", ss1);
                         groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
@@ -1233,33 +1073,23 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
                         k++;
                     }
                 }
-            }
-            else if (groupe[gr].type == 1)
-            { //DNA SEQUENCE
-                if (stat_num[j] > -9)
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+            } else if (groupe[gr].type == 1) { //DNA SEQUENCE
+                if (stat_num[j] > -9) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         groupe[gr].sumstat[k].samp = atoi(ss[i].c_str());
                         k++;
                     }
-                }
-                else if (stat_num[j] > -14)
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+                } else if (stat_num[j] > -14) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         splitwords(ss[i], "&", ss1);
                         groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
                         groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
                         k++;
                     }
-                }
-                else if (stat_num[j] == -14)
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+                } else if (stat_num[j] == -14) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         splitwords(ss[i], "&", ss1);
                         groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
@@ -1268,40 +1098,31 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
                         k++;
                     }
                 }
-            }
-            else if (groupe[gr].type == 2)
-            { //SNP
+            } else if (groupe[gr].type == 2) { //SNP
                 //cout<<"statnum="<<stat_num[j]<<"\n";
-                if (stat_num[j] < 50)
-                {
+                if (stat_num[j] < 50) {
                     catsnp = (stat_num[j] - 21) / 4;
                     if (debuglevel == 2) cout << "stat_num[" << j << "]=" << stat_num[j] << "   catsnp=" << catsnp << "\n";
                 }
-                if (stat_num[j] < 25)
-                {
+                if (stat_num[j] < 25) {
                     if (debuglevel == 2) cout << "nss=" << nss << "\n";
-                    for (int i = 1; i < nss; i++)
-                    {
+                    for (int i = 1; i < nss; i++) {
                         if (debuglevel == 2) cout << "i=" << i << "\n";
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         groupe[gr].sumstat[k].samp = atoi(ss[i].c_str());
                         trouve = false;
                         if (debuglevel == 2) cout << "statsnp.size=" << statsnp.size() << "\n";
-                        if (statsnp.size() > 0)
-                        {
-                            for (int jj = 0; jj < (int)statsnp.size(); jj++)
-                            {
+                        if (statsnp.size() > 0) {
+                            for (int jj = 0; jj < (int)statsnp.size(); jj++) {
                                 trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp));
-                                if (trouve)
-                                {
+                                if (trouve) {
                                     groupe[gr].sumstat[k].numsnp = jj;
                                     break;
                                 }
                             }
                         }
                         if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-                        if (not trouve)
-                        {
+                        if (not trouve) {
                             stsnp.cat = catsnp;
                             stsnp.samp = groupe[gr].sumstat[k].samp;
                             stsnp.defined = false;
@@ -1313,31 +1134,24 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
                         //cout<<"                          numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
                         k++;
                     }
-                }
-                else if ((stat_num[j] > 24)and (stat_num[j] < 33))
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+                } else if ((stat_num[j] > 24)and (stat_num[j] < 33)) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         splitwords(ss[i], "&", ss1);
                         groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
                         groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
                         trouve = false;
-                        if (statsnp.size() > 0)
-                        {
-                            for (int jj = 0; jj < (int)statsnp.size(); jj++)
-                            {
+                        if (statsnp.size() > 0) {
+                            for (int jj = 0; jj < (int)statsnp.size(); jj++) {
                                 trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1));
-                                if (trouve)
-                                {
+                                if (trouve) {
                                     groupe[gr].sumstat[k].numsnp = jj;
                                     break;
                                 }
                             }
                         }
                         //cout<<"statsnp.size = "<<statsnp.size()<<"   trouve = "<<trouve<<"\n";
-                        if (not trouve)
-                        {
+                        if (not trouve) {
                             stsnp.cat = catsnp;
                             stsnp.samp = groupe[gr].sumstat[k].samp;
                             stsnp.samp1 = groupe[gr].sumstat[k].samp1;
@@ -1348,31 +1162,24 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
                         //cout<<"                      numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
                         k++;
                     }
-                }
-                else if ((stat_num[j] > 32)and (stat_num[j] < 50))
-                {
-                    for (int i = 1; i < nss; i++)
-                    {
+                } else if ((stat_num[j] > 32)and (stat_num[j] < 50)) {
+                    for (int i = 1; i < nss; i++) {
                         groupe[gr].sumstat[k].cat = stat_num[j];
                         splitwords(ss[i], "&", ss1);
                         groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
                         groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
                         groupe[gr].sumstat[k].samp2 = atoi(ss1[2].c_str());
                         trouve = false;
-                        if (statsnp.size() > 0)
-                        {
-                            for (int jj = 0; jj < (int)statsnp.size(); jj++)
-                            {
+                        if (statsnp.size() > 0) {
+                            for (int jj = 0; jj < (int)statsnp.size(); jj++) {
                                 trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1)and (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2));
-                                if (trouve)
-                                {
+                                if (trouve) {
                                     groupe[gr].sumstat[k].numsnp = jj;
                                     break;
                                 }
                             }
                         }
-                        if (not trouve)
-                        {
+                        if (not trouve) {
                             stsnp.cat = catsnp;
                             stsnp.samp = groupe[gr].sumstat[k].samp;
                             stsnp.samp1 = groupe[gr].sumstat[k].samp1;
@@ -1384,9 +1191,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
                         //cout<<"                      numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
                         k++;
                     }
-                }
-                else if (stat_num[j] == 50)
-                {
+                } else if (stat_num[j] == 50) {
                     groupe[gr].sumstat[k].cat = stat_num[j];
                     k++;
                     cout << "k=" << k << "\n";
@@ -1396,11 +1201,9 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
         }
         groupe[gr].nstatsnp = statsnp.size();
         //cout<<"groupe[gr].nstatsnp="<<groupe[gr].nstatsnp<<"\n";
-        if (groupe[gr].nstatsnp > 0)
-        {
+        if (groupe[gr].nstatsnp > 0) {
             groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
-            for (int i = 0; i < groupe[gr].nstatsnp; i++)
-            {
+            for (int i = 0; i < groupe[gr].nstatsnp; i++) {
                 groupe[gr].sumstatsnp[i].cat = statsnp[i].cat;
                 groupe[gr].sumstatsnp[i].samp = statsnp[i].samp;
                 groupe[gr].sumstatsnp[i].samp1 = statsnp[i].samp1;
@@ -1416,37 +1219,30 @@ int HeaderC::readHeaderGroupStat(ifstream& file)
 }
 
 
-int HeaderC::buildSuperScen()
-{
+int HeaderC::buildSuperScen() {
     //cout<<"avant superscen\n";
     this->scen.nevent = 0;
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         if (this->scen.nevent < scenario[i].nevent) this->scen.nevent = scenario[i].nevent;
     }
     this->scen.nn0 = 0;
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         if (this->scen.nn0 < scenario[i].nn0) this->scen.nn0 = scenario[i].nn0;
     }
     this->scen.nsamp = 0;
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         if (this->scen.nsamp < scenario[i].nsamp) this->scen.nsamp = scenario[i].nsamp;
     }
     this->scen.nparam = 0;
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         if (this->scen.nparam < scenario[i].nparam) this->scen.nparam = scenario[i].nparam;
     }
     this->scen.nparamvar = 0;
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         if (this->scen.nparamvar < scenario[i].nparamvar) this->scen.nparamvar = scenario[i].nparamvar;
     }
     this->scen.nconditions = 0;
-    for (int i = 0; i < this->nscenarios; i++)
-    {
+    for (int i = 0; i < this->nscenarios; i++) {
         if (this->scen.nconditions < scenario[i].nconditions) this->scen.nconditions = scenario[i].nconditions;
     }
     this->scen.event = vector<EventC>(this->scen.nevent);
@@ -1479,28 +1275,21 @@ int HeaderC::buildSuperScen()
     return 0;
 }
 
-int HeaderC::buildMutParam()
-{
+int HeaderC::buildMutParam() {
     int gr;
     this->nparamut = 0;
-    for (gr = 1; gr <= this->ngroupes; gr++)
-    {
-        if (groupe[gr].type == 0)
-        {
+    for (gr = 1; gr <= this->ngroupes; gr++) {
+        if (groupe[gr].type == 0) {
             if (not groupe[gr].priormutmoy.constant) this->nparamut++;
             if (not groupe[gr].priorPmoy.constant) this->nparamut++;
             if (not groupe[gr].priorsnimoy.constant) this->nparamut++;
-        }
-        else if (groupe[gr].type == 1)
-        {
+        } else if (groupe[gr].type == 1) {
             if (not groupe[gr].priormusmoy.constant) this->nparamut++;
             //cout<<"calcul de nparamut\n";
-            if (groupe[gr].mutmod > 0)
-            {
+            if (groupe[gr].mutmod > 0) {
                 if (not groupe[gr].priork1moy.constant) this->nparamut++;
             }
-            if (groupe[gr].mutmod == 3)
-            {
+            if (groupe[gr].mutmod == 3) {
                 if (not groupe[gr].priork2moy.constant) this->nparamut++;
             }
             //cout<<"fin du calcul de nparamut = "<<this->nparamut<<"\n";
@@ -1508,12 +1297,9 @@ int HeaderC::buildMutParam()
     }
     this->mutparam = vector<MutParameterC>(this->nparamut);
     this->nparamut = 0;
-    for (gr = 1; gr <= this->ngroupes; gr++)
-    {
-        if (groupe[gr].type == 0)
-        {
-            if (not groupe[gr].priormutmoy.constant)
-            {
+    for (gr = 1; gr <= this->ngroupes; gr++) {
+        if (groupe[gr].type == 0) {
+            if (not groupe[gr].priormutmoy.constant) {
                 this->mutparam[nparamut].name = "µmic_" + IntToString(gr);
                 this->mutparam[nparamut].groupe = gr;
                 this->mutparam[nparamut].category = 0;
@@ -1521,8 +1307,7 @@ int HeaderC::buildMutParam()
                 this->mutparam[nparamut].prior = groupe[gr].priormutmoy;
                 this->nparamut++;
             }
-            if (not groupe[gr].priorPmoy.constant)
-            {
+            if (not groupe[gr].priorPmoy.constant) {
                 this->mutparam[nparamut].name = "pmic_" + IntToString(gr);
                 this->mutparam[nparamut].groupe = gr;
                 this->mutparam[nparamut].category = 1;
@@ -1530,8 +1315,7 @@ int HeaderC::buildMutParam()
                 this->mutparam[nparamut].prior = groupe[gr].priorPmoy;
                 this->nparamut++;
             }
-            if (not groupe[gr].priorsnimoy.constant)
-            {
+            if (not groupe[gr].priorsnimoy.constant) {
                 this->mutparam[nparamut].name = "snimic_" + IntToString(gr);
                 this->mutparam[nparamut].groupe = gr;
                 this->mutparam[nparamut].category = 2;
@@ -1539,11 +1323,8 @@ int HeaderC::buildMutParam()
                 this->mutparam[nparamut].prior = groupe[gr].priorsnimoy;
                 this->nparamut++;
             }
-        }
-        else if (groupe[gr].type == 1)
-        {
-            if (not groupe[gr].priormusmoy.constant)
-            {
+        } else if (groupe[gr].type == 1) {
+            if (not groupe[gr].priormusmoy.constant) {
                 this->mutparam[nparamut].name = "useq_" + IntToString(gr);
                 this->mutparam[nparamut].groupe = gr;
                 this->mutparam[nparamut].category = 3;
@@ -1551,8 +1332,7 @@ int HeaderC::buildMutParam()
                 this->mutparam[nparamut].prior = groupe[gr].priormusmoy;
                 this->nparamut++;
             }
-            if ((groupe[gr].mutmod > 0)and (not groupe[gr].priork1moy.constant))
-            {
+            if ((groupe[gr].mutmod > 0)and (not groupe[gr].priork1moy.constant)) {
                 this->mutparam[nparamut].name = "k1seq_" + IntToString(gr);
                 this->mutparam[nparamut].groupe = gr;
                 this->mutparam[nparamut].category = 4;
@@ -1560,8 +1340,7 @@ int HeaderC::buildMutParam()
                 this->mutparam[nparamut].prior = groupe[gr].priork1moy;
                 this->nparamut++;
             }
-            if ((groupe[gr].mutmod == 3)and (not groupe[gr].priork2moy.constant))
-            {
+            if ((groupe[gr].mutmod == 3)and (not groupe[gr].priork2moy.constant)) {
                 this->mutparam[nparamut].name = "k2seq_" + IntToString(gr);
                 this->mutparam[nparamut].groupe = gr;
                 this->mutparam[nparamut].category = 5;
@@ -1575,8 +1354,7 @@ int HeaderC::buildMutParam()
     return 0;
 }
 
-int HeaderC::readHeaderEntete(ifstream& file)
-{
+int HeaderC::readHeaderEntete(ifstream& file) {
     string s1;
     vector<string> ss;
     int nss;
@@ -1601,21 +1379,18 @@ int HeaderC::readHeaderEntete(ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeader(string headerfilename)
-{
+int HeaderC::readHeader(string headerfilename) {
     string s1; // string s2,**sl,*ss,*ss1,*ss2;
     int error = 0; // int *nlscen,nss,nss1,j,k,gr,grm,k1,cat,nl=0;
     //cout<<"debut de readheader\n";
     //cout<<"readHeader headerfilename = "<<headerfilename<<"\n";
     ifstream file(headerfilename.c_str(), ios::in);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         this->message = "Header file " + headerfilename + " not found";
         cout << this->message << "\n";
         throw std::runtime_error(this->message);
         return 1;
-    }
-    else this->message = "";
+    } else this->message = "";
 
     error = readHeaderDebut(file);
     cout << "----------------------------------------apres readHeaderDebut\n";
@@ -1641,13 +1416,10 @@ int HeaderC::readHeader(string headerfilename)
     cout << "----------------------------------------apres buildSuperScen\n";
     if (error != 0) return error;
 
-    if (not randomforest)
-    {
+    if (not randomforest) {
         error = readHeaderGroupStat(file);
         cout << "----------------------------------------apres readHeaderGroupStat\n";
-    }
-    else
-    {
+    } else {
         error = readHeaderAllStat(file);
         cout << "----------------------------------------apres readHeaderAllStat\n";
     }
@@ -1657,8 +1429,7 @@ int HeaderC::readHeader(string headerfilename)
     cout << "----------------------------------------apres buildMutParam\n";
     if (error != 0) return error;
 
-    if (not randomforest)
-    {
+    if (not randomforest) {
         error = readHeaderEntete(file);
         cout << "----------------------------------------apres readHeaderEntete\n";
         if (error != 0) return error;
@@ -1678,8 +1449,7 @@ int HeaderC::readHeader(string headerfilename)
     return 0;
 }
 
-int HeaderC::readHeadersimDebut(ifstream& file)
-{
+int HeaderC::readHeadersimDebut(ifstream& file) {
     string s1;
     vector<string> ss;
     int nss, *nf, *nm;
@@ -1699,8 +1469,7 @@ int HeaderC::readHeadersimDebut(ifstream& file)
     datasim.indivsexe.resize(datasim.nsample);
     nf = new int[datasim.nsample];
     nm = new int[datasim.nsample];
-    for (int i = 0; i < datasim.nsample; i++)
-    {
+    for (int i = 0; i < datasim.nsample; i++) {
         getline(file, s1);
         splitwords(s1, " ", ss);
         nss = ss.size();
@@ -1714,8 +1483,7 @@ int HeaderC::readHeadersimDebut(ifstream& file)
     cout << "nom générique : " << this->datafilename << "\n";
     cout << "nombre de fichiers à simuler = " << this->nsimfile << "\n";
     cout << "nombre d'échantillons = " << datasim.nsample << "\n";
-    for (int i = 0; i < datasim.nsample; i++)
-    {
+    for (int i = 0; i < datasim.nsample; i++) {
         cout << "Echantillon " << i + 1 << "  :  " << nf[i] << " femelles et " << datasim.nind[i] - nf[i] << " males\n";
     }
     datasim.nmisshap = 0;
@@ -1723,8 +1491,7 @@ int HeaderC::readHeadersimDebut(ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeadersimScenario(ifstream& file)
-{
+int HeaderC::readHeadersimScenario(ifstream& file) {
     string s1;
     vector<string> ss;
     int nlscen;
@@ -1739,8 +1506,7 @@ int HeaderC::readHeadersimScenario(ifstream& file)
     scenario[0].prior_proba = 1.0;
     scenario[0].nparam = 0;
     scenario[0].nparamvar = 0;
-    for (int j = 0; j < nlscen; j++)
-    {
+    for (int j = 0; j < nlscen; j++) {
         getline(file, sl[j]);/*cout<<sl[j]<<"\n";*/
     }
     scenario[0].read_events(nlscen, &(sl[0]));
@@ -1751,8 +1517,7 @@ int HeaderC::readHeadersimScenario(ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeadersimHistParam(std::ifstream& file)
-{
+int HeaderC::readHeadersimHistParam(std::ifstream& file) {
     string s1;
     vector<string> ss;
 
@@ -1765,8 +1530,7 @@ int HeaderC::readHeadersimHistParam(std::ifstream& file)
     this->histparam = vector<HistParameterC>(this->nparamtot);
     scenario[0].histparam = vector<HistParameterC>(this->nparamtot);
     scenario[0].nparam = this->nparamtot;
-    for (int i = 0; i < this->nparamtot; i++)
-    {
+    for (int i = 0; i < this->nparamtot; i++) {
         getline(file, s1); //cout<<s1<<"\n";
         splitwords(s1, " ", ss);
         this->histparam[i].name = ss[0];
@@ -1782,8 +1546,7 @@ int HeaderC::readHeadersimHistParam(std::ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeadersimLoci(std::ifstream& file)
-{
+int HeaderC::readHeadersimLoci(std::ifstream& file) {
     string s1;
     vector<string> ss;
     int grm, gr, kloc, loctyp;
@@ -1796,8 +1559,7 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
     datasim.locus = vector<LocusC>(datasim.nloc);
     grm = 1;
     datasim.filetype = 0;
-    for (int loc = 0; loc < datasim.nloc; loc++)
-    {
+    for (int loc = 0; loc < datasim.nloc; loc++) {
         getline(file, s1);
         splitwords(s1, " ", ss);
         datasim.locus[loc].name = strdup(ss[0].c_str());
@@ -1807,8 +1569,7 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
         else if (ss[1] == "<Y>") datasim.locus[loc].type = 3;
         else if (ss[1] == "<M>") datasim.locus[loc].type = 4;
         datasim.cal_coeffcoal(loc);
-        if (ss[2] == "[M]")
-        {
+        if (ss[2] == "[M]") {
             s1 = ss[3].substr(1);
             gr = atoi(s1.c_str());
             datasim.locus[loc].groupe = gr;
@@ -1817,9 +1578,7 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
             datasim.locus[loc].motif_range = atoi(ss[5].c_str());
             datasim.locus[loc].mini = 100;
             datasim.locus[loc].maxi = 300;
-        }
-        else if (ss[2] == "[S]")
-        {
+        } else if (ss[2] == "[S]") {
             datasim.locus[loc].type += 5;
             s1 = ss[3].substr(1);
             gr = atoi(s1.c_str());
@@ -1842,9 +1601,7 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
             datasim.locus[loc].pi_T /= som;
             //cout<<datasim.locus[loc].dnalength<<"\n";
             //datasim.locus[loc].dnalength=atoi(ss[k+2].c_str());  //inutile variable déjà renseignée
-        }
-        else if (ss[2] == "[P]")
-        {
+        } else if (ss[2] == "[P]") {
             datasim.filetype = 1;
             kloc = getwordint(s1, 1);
             loctyp = datasim.locus[loc].type + 10;
@@ -1852,8 +1609,7 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
             gr = atoi(s1.c_str());
             if (gr > grm) grm = gr;
             this->ngroupes = grm;
-            for (int k = 0; k < kloc; k++)
-            {
+            for (int k = 0; k < kloc; k++) {
                 datasim.locus[loc + k].type = loctyp;
                 datasim.locus[loc + k].groupe = gr;
                 //cout<<"locus "<<loc+k<<"  type="<<datasim.locus[loc+k].type<<"  groupe="<<datasim.locus[loc+k].groupe<<"\n";
@@ -1868,26 +1624,19 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
     datasim.catexist = vector<bool>(5);
     datasim.ssize.resize(5);
     for (int i = 0; i < 5; i++) datasim.catexist[i] = false;
-    for (int locustype = 0; locustype < 5; locustype++)
-    {
-        if (not datasim.catexist[locustype])
-        {
-            for (int loc = 0; loc < datasim.nloc; loc++)
-            {
-                if ((datasim.locus[loc].type % 5) == locustype)
-                {
+    for (int locustype = 0; locustype < 5; locustype++) {
+        if (not datasim.catexist[locustype]) {
+            for (int loc = 0; loc < datasim.nloc; loc++) {
+                if ((datasim.locus[loc].type % 5) == locustype) {
                     datasim.ssize[locustype].resize(datasim.nsample);
                     datasim.locus[loc].samplesize = vector<int>(datasim.nsample);
-                    datasim.locus[loc].ploidie = vector<vector<short int> >(datasim.nsample);
-                    for (int sa = 0; sa < datasim.nsample; sa++)
-                    {
+                    datasim.locus[loc].ploidie = vector<vector<short int>>(datasim.nsample);
+                    for (int sa = 0; sa < datasim.nsample; sa++) {
                         datasim.locus[loc].ploidie[sa] = vector<short int>(datasim.nind[sa]);
                         datasim.ssize[locustype][sa] = 0;
-                        for (int ind = 0; ind < datasim.nind[sa]; ind++)
-                        {
+                        for (int ind = 0; ind < datasim.nind[sa]; ind++) {
                             //if ((datasim.locus[loc].type==10)or((datasim.locus[loc].type==12)and(datasim.indivsexe[sa][ind]==2))) datasim.ssize[locustype][sa] +=2;
-                            switch (locustype)
-                            {
+                            switch (locustype) {
                             case 0: datasim.ssize[locustype][sa] += 2;
                                 datasim.locus[loc].samplesize[sa] += 2;
                                 datasim.locus[loc].ploidie[sa][ind] = 2;
@@ -1900,13 +1649,11 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
                                 datasim.locus[loc].samplesize[sa] += datasim.indivsexe[sa][ind];
                                 datasim.locus[loc].ploidie[sa][ind] = datasim.indivsexe[sa][ind];
                                 break;
-                            case 3: if (datasim.indivsexe[sa][ind] == 1)
-                                {
+                            case 3: if (datasim.indivsexe[sa][ind] == 1) {
                                     datasim.ssize[locustype][sa] += 1;
                                     datasim.locus[loc].samplesize[sa] += 1;
                                     datasim.locus[loc].ploidie[sa][ind] = 1;
-                                }
-                                else datasim.locus[loc].ploidie[sa][ind] = 0;
+                                } else datasim.locus[loc].ploidie[sa][ind] = 0;
                                 break;
                             case 4: datasim.ssize[locustype][sa] += 1;
                                 datasim.locus[loc].samplesize[sa] += 1;
@@ -1929,8 +1676,7 @@ int HeaderC::readHeadersimLoci(std::ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeadersimGroupPrior(std::ifstream& file)
-{
+int HeaderC::readHeadersimGroupPrior(std::ifstream& file) {
     string s1;
     vector<string> ss, ss1;
     //int nss,nss1;
@@ -1941,13 +1687,11 @@ int HeaderC::readHeadersimGroupPrior(std::ifstream& file)
     groupe = vector<LocusGroupC>(this->ngroupes + 1);
     this->assignloc(0);
     //cout<<"on attaque les groupes : analyse des priors nombre de groupes="<<this->ngroupes <<"\n";
-    for (int gr = 1; gr <= this->ngroupes; gr++)
-    {
+    for (int gr = 1; gr <= this->ngroupes; gr++) {
         getline(file, s1);
         splitwords(s1, " ", ss);
         this->assignloc(gr);
-        if (ss[2] == "[M]")
-        {
+        if (ss[2] == "[M]") {
             groupe[gr].type = 0;
             getline(file, s1);
             splitwords(s1, " ", ss1);
@@ -1976,9 +1720,7 @@ int HeaderC::readHeadersimGroupPrior(std::ifstream& file)
             splitwords(s1, " ", ss1);
             groupe[gr].priorsniloc.readprior(ss1[1]);
             //cout<<"sniloc  ";groupe[gr].priorsniloc.ecris();
-        }
-        else if (ss[2] == "[S]")
-        {
+        } else if (ss[2] == "[S]") {
             groupe[gr].type = 1;
             getline(file, s1);
             splitwords(s1, " ", ss1);
@@ -1991,8 +1733,7 @@ int HeaderC::readHeadersimGroupPrior(std::ifstream& file)
 
             getline(file, s1);
             splitwords(s1, " ", ss1);
-            if (ss1[0] != "MODEL")
-            {
+            if (ss1[0] != "MODEL") {
                 groupe[gr].k1moy = atof(ss1[1].c_str());
                 groupe[gr].priork1moy.fixed = true;
                 groupe[gr].priork1moy.constant = true;
@@ -2002,8 +1743,7 @@ int HeaderC::readHeadersimGroupPrior(std::ifstream& file)
                 getline(file, s1);
                 splitwords(s1, " ", ss1);
             }
-            if (ss1[0] != "MODEL")
-            {
+            if (ss1[0] != "MODEL") {
                 groupe[gr].k2moy = atof(ss1[1].c_str());
                 groupe[gr].priork2moy.fixed = true;
                 groupe[gr].priork2moy.constant = true;
@@ -2027,53 +1767,42 @@ int HeaderC::readHeadersimGroupPrior(std::ifstream& file)
     return 0;
 }
 
-int HeaderC::readHeadersimGroupSNP()
-{
+int HeaderC::readHeadersimGroupSNP() {
     groupe = vector<LocusGroupC>(this->ngroupes + 1);
     this->assignloc(0);
-    for (int gr = 1; gr <= this->ngroupes; gr++)
-    {
+    for (int gr = 1; gr <= this->ngroupes; gr++) {
         this->assignloc(gr);
         groupe[gr].type = 2;
     }
     return 0;
 }
 
-int HeaderC::readHeadersimFin()
-{
+int HeaderC::readHeadersimFin() {
     //Mise à jour des locus séquences
     MwcGen mwc;
     mwc.randinit(999, time(NULL));
     int nsv, gr, j;
     bool nouveau;
-    if (datasim.filetype == 0)
-    {
-        for (int loc = 0; loc < datasim.nloc; loc++)
-        {
+    if (datasim.filetype == 0) {
+        for (int loc = 0; loc < datasim.nloc; loc++) {
             gr = datasim.locus[loc].groupe;
-            if ((gr > 0)and (datasim.locus[loc].type > 4))
-            {
+            if ((gr > 0)and (datasim.locus[loc].type > 4)) {
                 nsv = floor(datasim.locus[loc].dnalength * (1.0 - 0.01 * groupe[gr].p_fixe) + 0.5);
                 for (int i = 0; i < datasim.locus[loc].dnalength; i++) datasim.locus[loc].mutsit[i] = mwc.ggamma3(1.0, groupe[gr].gams);
                 int* sitefix;
                 sitefix = new int[datasim.locus[loc].dnalength - nsv];
-                for (int i = 0; i < datasim.locus[loc].dnalength - nsv; i++)
-                {
+                for (int i = 0; i < datasim.locus[loc].dnalength - nsv; i++) {
                     if (i == 0) sitefix[i] = mwc.rand0(datasim.locus[loc].dnalength);
-                    else
-                    {
-                        do
-                        {
+                    else {
+                        do {
                             sitefix[i] = mwc.rand0(datasim.locus[loc].dnalength);
                             nouveau = true;
                             j = 0;
-                            while ((nouveau)and (j < i))
-                            {
+                            while ((nouveau)and (j < i)) {
                                 nouveau = (sitefix[i] != sitefix[j]);
                                 j++;
                             }
-                        }
-                        while (not nouveau);
+                        } while (not nouveau);
                     }
                     datasim.locus[loc].mutsit[i] = 0.0;
                 }
@@ -2083,9 +1812,7 @@ int HeaderC::readHeadersimFin()
                 for (int i = 0; i < datasim.locus[loc].dnalength; i++) datasim.locus[loc].mutsit[i] /= s;
             }
         }
-    }
-    else
-    {
+    } else {
         this->nparamut = 0;
     }
     if (debuglevel == 2) cout << "header.txt : fin de la mise à jour des locus séquences\n";
@@ -2095,19 +1822,16 @@ int HeaderC::readHeadersimFin()
     return 0;
 }
 
-int HeaderC::readHeadersim(string headersimfilename)
-{
+int HeaderC::readHeadersim(string headersimfilename) {
     int error;
     //      if (debuglevel==2) cout<<"debut de readheadersim\n";
     //cout<<"readHeader headerfilename = "<<headerfilename<<"\n";
     ifstream file(headersimfilename.c_str(), ios::in);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         this->message = "HeaderSim  File " + string(headersimfilename) + " not found";
         cout << this->message << "\n";
         return 1;
-    }
-    else this->message = "";
+    } else this->message = "";
 
 
     error = readHeadersimDebut(file);
@@ -2126,13 +1850,11 @@ int HeaderC::readHeadersim(string headersimfilename)
     if (error != 0) return error;
 
     //Partie group priors
-    if (datasim.filetype == 0)
-    {
+    if (datasim.filetype == 0) {
         error = readHeadersimGroupPrior(file);
         if (error != 0) return error;
     }
-    if (datasim.filetype == 1)
-    {
+    if (datasim.filetype == 1) {
         error = readHeadersimGroupSNP();
         if (error != 0) return error;
     }
@@ -2141,11 +1863,10 @@ int HeaderC::readHeadersim(string headersimfilename)
     return error;
 }
 
-string HeaderC::calstatobs(string statobsfilename)
-{
+string HeaderC::calstatobs(string statobsfilename) {
     stringstream erreur;
     int jstat;
-    vector<vector<int> > ast;
+    vector<vector<int>> ast;
     cout << "calstatobs (" << statobsfilename << ")\n";
     particuleobs.dnatrue = true;
     particuleobs.nsample = dataobs.nsample0; //cout<<"particuleobs.nsample = "<<particuleobs.nsample<<"\n";
@@ -2161,11 +1882,9 @@ string HeaderC::calstatobs(string statobsfilename)
       particuleobs.grouplist[0].loc  = vector<int>(groupe[0].nloc);
       for (int i=0;i<groupe[0].nloc;i++) particuleobs.grouplist[0].loc[i] = groupe[0].loc[i];
       }*/
-    for (int gr = 1; gr < ngr; gr++)
-    {
+    for (int gr = 1; gr < ngr; gr++) {
         //particuleobs.grouplist[gr] = groupe[gr];
-        for (int i = 0; i < groupe[gr].nstatsnp; i++)
-        {
+        for (int i = 0; i < groupe[gr].nstatsnp; i++) {
             particuleobs.grouplist[gr].sumstatsnp[i].x = vector<long double>(groupe[gr].nloc);
             particuleobs.grouplist[gr].sumstatsnp[i].w = vector<long double>(groupe[gr].nloc);
         }
@@ -2211,8 +1930,7 @@ string HeaderC::calstatobs(string statobsfilename)
     if (debuglevel == 2) cout << "avant la partie locus  nloc=" << dataobs.nloc << "\n";
     particuleobs.locuslist = vector<LocusC>(dataobs.nloc);
     if (debuglevel == 2) cout << "après l'allocation mémoire des locus\n";
-    for (int kloc = 0; kloc < dataobs.nloc; kloc++)
-    {
+    for (int kloc = 0; kloc < dataobs.nloc; kloc++) {
         //if (debuglevel==2) cout<<"Locus "<<kloc<<"\n";
         particuleobs.locuslist[kloc].nsample = dataobs.nsample;
         particuleobs.locuslist[kloc] = dataobs.locus[kloc];
@@ -2222,21 +1940,17 @@ string HeaderC::calstatobs(string statobsfilename)
         //particuleobs.locuslist[kloc].name =  new char[strlen(this->dataobs.locus[kloc].name)+1];
         //strcpy(particuleobs.locuslist[kloc].name,this->dataobs.locus[kloc].name);
         //if (debuglevel==2) cout<<"locus "<<kloc<<"   groupe "<<particuleobs.locuslist[kloc].groupe<<"   type="<<this->dataobs.locus[kloc].type<<"\n";
-        if (dataobs.locus[kloc].type < 5)
-        {
+        if (dataobs.locus[kloc].type < 5) {
             kmoy = (dataobs.locus[kloc].maxi + dataobs.locus[kloc].mini) / 2;
             particuleobs.locuslist[kloc].kmin = kmoy - ((dataobs.locus[kloc].motif_range / 2) - 1) * dataobs.locus[kloc].motif_size;
             particuleobs.locuslist[kloc].kmax = particuleobs.locuslist[kloc].kmin + (dataobs.locus[kloc].motif_range - 1) * dataobs.locus[kloc].motif_size;
             particuleobs.locuslist[kloc].motif_size = dataobs.locus[kloc].motif_size;
             particuleobs.locuslist[kloc].motif_range = dataobs.locus[kloc].motif_range;
-            if ((particuleobs.locuslist[kloc].kmin > dataobs.locus[kloc].mini)or (particuleobs.locuslist[kloc].kmax < dataobs.locus[kloc].maxi))
-            {
+            if ((particuleobs.locuslist[kloc].kmin > dataobs.locus[kloc].mini)or (particuleobs.locuslist[kloc].kmax < dataobs.locus[kloc].maxi)) {
                 erreur << "Job aborted : motif range at locus " << kloc + 1 << " is not large enough to include all observed alleles.\n";
                 throw std::range_error(erreur.str()); //exit(1);
             }
-        }
-        else if (dataobs.locus[kloc].type < 10)
-        {
+        } else if (dataobs.locus[kloc].type < 10) {
             /*cout<<"type du locus = "<<this->dataobs.locus[kloc].type<<"\n";
               particuleobs.locuslist[kloc].dnalength =  this->dataobs.locus[kloc].dnalength;
               particuleobs.locuslist[kloc].pi_A = this->dataobs.locus[kloc].pi_A ;
@@ -2252,27 +1966,22 @@ string HeaderC::calstatobs(string statobsfilename)
               for (int i=0;i<particuleobs.data.ssize[cat][sa];i++){
               cout<<"i="<<i<<"   "<<this->dataobs.locus[kloc].haplodna[sa][i]<<"\n";
               particuleobs.locuslist[kloc].haplodna[sa][i] =this->dataobs.locus[kloc].haplodna[sa][i];
-                                        
+                                                                
               }
               }
               cout<<"apres type<10\n";*/
-        }
-        else
-        {
+        } else {
             //if (debuglevel==2) cout<<"coucou\n";
             particuleobs.locuslist[kloc].samplesize = vector<int>(particuleobs.nsample);
-            for (int ech = 0; ech < particuleobs.nsample; ech++)
-                particuleobs.locuslist[kloc].samplesize[ech] = dataobs.locus[kloc].samplesize[ech];
+            for (int ech = 0; ech < particuleobs.nsample; ech++) particuleobs.locuslist[kloc].samplesize[ech] = dataobs.locus[kloc].samplesize[ech];
             //if (debuglevel==2) cout<<"coucou-2\n";
 
-            particuleobs.locuslist[kloc].ploidie = vector<vector<short int> >(particuleobs.nsample);
+            particuleobs.locuslist[kloc].ploidie = vector<vector<short int>>(particuleobs.nsample);
             //if (debuglevel==2) cout<<"coucou-3\n";
-            for (int ech = 0; ech < particuleobs.nsample; ech++)
-            {
+            for (int ech = 0; ech < particuleobs.nsample; ech++) {
                 particuleobs.locuslist[kloc].ploidie[ech] = vector<short int>(dataobs.nind[ech]);
                 //if (debuglevel==2) cout<<"coucou-4\n";
-                for (int i = 0; i < dataobs.nind[ech]; i++)
-                {
+                for (int i = 0; i < dataobs.nind[ech]; i++) {
                     particuleobs.locuslist[kloc].ploidie[ech][i] = dataobs.locus[kloc].ploidie[ech][i];
                 }
             }
@@ -2280,15 +1989,12 @@ string HeaderC::calstatobs(string statobsfilename)
 
 
             particuleobs.locuslist[kloc].weight = 1.0;
-            particuleobs.locuslist[kloc].haplosnp = vector<vector<short int> >(particuleobs.nsample);
-            for (int sa = 0; sa < particuleobs.nsample; sa++)
-            {
+            particuleobs.locuslist[kloc].haplosnp = vector<vector<short int>>(particuleobs.nsample);
+            for (int sa = 0; sa < particuleobs.nsample; sa++) {
                 particuleobs.locuslist[kloc].haplosnp[sa] = vector<short int>(particuleobs.locuslist[kloc].samplesize[sa]);
                 int ii = 0, imax = (int)dataobs.locus[kloc].haplosnp[sa].size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (dataobs.locus[kloc].haplosnp[sa][i] != 9)
-                    {
+                for (int i = 0; i < imax; i++) {
+                    if (dataobs.locus[kloc].haplosnp[sa][i] != 9) {
                         particuleobs.locuslist[kloc].haplosnp[sa][ii] = dataobs.locus[kloc].haplosnp[sa][i];
                         //if (kloc==0) cout<<"particuleobs.locuslist["<<kloc<<"].haplosnp["<<sa<<"]["<<ii<<"]="<<particuleobs.locuslist[kloc].haplosnp[sa][ii]<<"\n";
                         ii++;
@@ -2315,22 +2021,17 @@ string HeaderC::calstatobs(string statobsfilename)
     fobs << ent << "\n";
     fobs << setiosflags(ios::fixed) << setprecision(8);
     ast.resize(particuleobs.ngr + 1);
-    for (int gr = 1; gr < particuleobs.ngr; gr++)
-    {
-        if (debuglevel == 2)cout << "avant calcul des statobs du groupe " << gr << "\n";
+    for (int gr = 1; gr < particuleobs.ngr; gr++) {
+        if (debuglevel == 2) cout << "avant calcul des statobs du groupe " << gr << "\n";
         particuleobs.docalstat(gr);
         jstat += particuleobs.grouplist[gr].nstat;
-        if (debuglevel == 2)cout << "apres calcul des statobs du groupe " << gr << "\n";
+        if (debuglevel == 2) cout << "apres calcul des statobs du groupe " << gr << "\n";
         ast[gr].resize(0);
-        for (int j = 0; j < particuleobs.grouplist[gr].nstat; j++)
-        {
+        for (int j = 0; j < particuleobs.grouplist[gr].nstat; j++) {
             //cout<<"particuleobs.grouplist["<<gr<<"].sumstat["<<j<<"].val="<<particuleobs.grouplist[gr].sumstat[j].val<<"\n";
-            if (particuleobs.grouplist[gr].sumstat[j].val != -9999.0)
-            {
+            if (particuleobs.grouplist[gr].sumstat[j].val != -9999.0) {
                 fobs << setw(12) << particuleobs.grouplist[gr].sumstat[j].val << "  ";
-            }
-            else
-            {
+            } else {
                 ast[gr].push_back(j);
             };
         }
@@ -2340,18 +2041,14 @@ string HeaderC::calstatobs(string statobsfilename)
     int nast = 0;
     for (int gr = 1; gr < particuleobs.ngr; gr++) nast += ast[gr].size();
     //cout<<"nast="<<nast<<"\n";
-    if (nast > 0)
-    {
+    if (nast > 0) {
         string message;
         message = "The following introgression rate summary statistics : ";
-        for (int gr = 1; gr < particuleobs.ngr; gr++)
-        {
-            if (ast[gr].size() > 0)
-            {
+        for (int gr = 1; gr < particuleobs.ngr; gr++) {
+            if (ast[gr].size() > 0) {
                 message = message + "\nGroup " + IntToString(gr) + " : ";
                 int jmax = (int)ast[gr].size();
-                for (int j = 0; j < jmax; j++)
-                {
+                for (int j = 0; j < jmax; j++) {
                     message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp) + "&";
                     message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp1) + "&";
                     message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp2) + "  ";
@@ -2365,22 +2062,17 @@ string HeaderC::calstatobs(string statobsfilename)
 
     this->stat_obs = vector<float>(this->nstat);
     jstat = 0;
-    for (int gr = 1; gr < particuleobs.ngr; gr++)
-    {
-        for (int j = 0; j < particuleobs.grouplist[gr].nstat; j++)
-        {
+    for (int gr = 1; gr < particuleobs.ngr; gr++) {
+        for (int j = 0; j < particuleobs.grouplist[gr].nstat; j++) {
             this->stat_obs[jstat] = (float)particuleobs.grouplist[gr].sumstat[j].val;
             //cout<<"stat_obs["<<j<<"]="<<this->stat_obs[j]<<"\n";
             if (this->stat_obs[jstat] != -9999.0) jstat++;
         }
     }
     //cout<<"header.nstat = "<<this->nstat<<"     jstat="<<jstat<<"\n";
-    if (this->nstat < 11)
-    {
+    if (this->nstat < 11) {
         for (int j = 0; j < this->nstat; j++) cout << "stat_obs[" << j << "]=" << this->stat_obs[j] << "\n";
-    }
-    else
-    {
+    } else {
         for (int j = 0; j < 5; j++) cout << "stat_obs[" << j << "]=" << this->stat_obs[j] << "\n";
         cout << "   .../...\n";
         for (int j = this->nstat - 6; j < this->nstat; j++) cout << "stat_obs[" << j << "]=" << this->stat_obs[j] << "\n";

@@ -14,8 +14,7 @@
 
 #include <iso646.h>
 
-extern"C"
-{
+extern"C" {
 #include "../dcmt0.6.1/include/dc.h"
 }
 

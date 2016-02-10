@@ -9,8 +9,7 @@
 
 #include <string>
 
-struct resACPC
-{
+struct resACPC {
     int index, nlambda; //index=0 pour matrice de corrélation et !=0 pour matrice de covariance
     long double proportion, *lambda, slambda, **vectprop, **princomp, *moy, *sd;
 };

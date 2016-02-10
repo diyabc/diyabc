@@ -21,8 +21,7 @@
 /**
  * Struct ParticleC : éléments de définition d'une particule
  */
-class ParticleC
-{
+class ParticleC {
 public:
     std::vector<LocusC> locuslist;
     std::vector<LocusGroupC> grouplist;
@@ -32,9 +31,9 @@ public:
     //std::vector <ConditionC> condition;
     std::vector<int> samplesizeY;
     std::vector<int> samplesizeM;
-    std::vector<std::vector<bool> > afsdone;
-    std::vector<std::vector<std::vector<int> > > t_afs;
-    std::vector<std::vector<int> > n_afs;
+    std::vector<std::vector<bool>> afsdone;
+    std::vector<std::vector<std::vector<int>>> t_afs;
+    std::vector<std::vector<int>> n_afs;
     MwcGen mw;
     ScenarioC scen;
     bool firstime, dnatrue, drawuntil;
@@ -44,46 +43,38 @@ public:
     long int naccept, ntentes;
 
     /* Déclaration des méthodes */
-    ~ParticleC()
-        {
-            //std::cout<<"dans le destructeur de ParticleC  0\n";
-            if (not locuslist.empty()) locuslist.clear();
-            if (not grouplist.empty()) grouplist.clear();
-            if (not scenario.empty()) scenario.clear();
-            if (not seqlist.empty()) seqlist.clear();
-            if (not gt.empty()) gt.clear();
-            //if (not condition.empty()) condition.clear();
-            if (not samplesizeY.empty()) samplesizeY.clear();
-            if (not samplesizeM.empty()) samplesizeM.clear();
-            if (not afsdone.empty())
-            {
-                int imax = (int)afsdone.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not afsdone[i].empty()) afsdone[i].clear();
-                }
+    ~ParticleC() {
+        //std::cout<<"dans le destructeur de ParticleC  0\n";
+        if (not locuslist.empty()) locuslist.clear();
+        if (not grouplist.empty()) grouplist.clear();
+        if (not scenario.empty()) scenario.clear();
+        if (not seqlist.empty()) seqlist.clear();
+        if (not gt.empty()) gt.clear();
+        //if (not condition.empty()) condition.clear();
+        if (not samplesizeY.empty()) samplesizeY.clear();
+        if (not samplesizeM.empty()) samplesizeM.clear();
+        if (not afsdone.empty()) {
+            int imax = (int)afsdone.size();
+            for (int i = 0; i < imax; i++) {
+                if (not afsdone[i].empty()) afsdone[i].clear();
             }
-            if (not n_afs.empty())
-            {
-                int imax = (int)n_afs.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not n_afs[i].empty()) n_afs[i].clear();
-                }
+        }
+        if (not n_afs.empty()) {
+            int imax = (int)n_afs.size();
+            for (int i = 0; i < imax; i++) {
+                if (not n_afs[i].empty()) n_afs[i].clear();
             }
-            if (not t_afs.empty())
-            {
-                int imax = (int)t_afs.size();
-                for (int i = 0; i < imax; i++)
-                {
-                    if (not t_afs[i].empty())
-                    {
-                        int jmax = (int)t_afs[i].size();
-                        for (int j = 0; j < jmax; j++) t_afs[i][j].clear();
-                    }
+        }
+        if (not t_afs.empty()) {
+            int imax = (int)t_afs.size();
+            for (int i = 0; i < imax; i++) {
+                if (not t_afs[i].empty()) {
+                    int jmax = (int)t_afs[i].size();
+                    for (int j = 0; j < jmax; j++) t_afs[i][j].clear();
                 }
             }
         }
+    }
 
     ParticleC& operator=(ParticleC const& source);
 

@@ -44,14 +44,13 @@ extern ofstream fprog;
 
 long double **ssphistar, **ssref;
 
-bool resetstats(string s)
-{
+bool resetstats(string s) {
     cout << "debut de resetstats\n";
     cout << s << "\n";
     int j, ns, nq, gr, lonentstat, *groupmodif, ngroupmodif, *nustat;
     vector<string> ss, qq, ss1;
-    vector<vector<StatsnpC> > statsnp;
-    vector<vector<string> > statname;
+    vector<vector<StatsnpC>> statsnp;
+    vector<vector<string>> statname;
     StatsnpC stsnp;
     bool trouve;
     int catsnp, gg, gs, gt;
@@ -62,10 +61,8 @@ bool resetstats(string s)
     for (gr = 1; gr <= header.ngroupes; gr++) statname[gr].resize(groupe[gr].nstat);
     cout << "apres statname.resize\n";
     gs = 0;
-    for (gr = 1; gr <= header.ngroupes; gr++)
-    {
-        for (int i = 0; i < groupe[gr].nstat; i++)
-        {
+    for (gr = 1; gr <= header.ngroupes; gr++) {
+        for (int i = 0; i < groupe[gr].nstat; i++) {
             //cout<<"header.statname["<<gs<<"] = \n";
             //cout<<"                         "<< header.statname[gs]<<"\n";
             statname[gr][i] = header.statname[gs];
@@ -80,31 +77,25 @@ bool resetstats(string s)
     ngroupmodif = 0;
     splitwords(s, " ", ss);
     ns = ss.size();
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         splitwords(ss[i], "_", qq);
         nq = qq.size();
         if (nq != 3) return false;
         gr = atoi(qq[1].c_str());
-        if (ngroupmodif == 0)
-        {
+        if (ngroupmodif == 0) {
             groupmodif[ngroupmodif] = gr;
             ngroupmodif++;
-        }
-        else
-        {
+        } else {
             gg = 0;
             while ((gg < ngroupmodif)and (gr != groupmodif[gg])) gg++;
-            if (gg == ngroupmodif)
-            {
+            if (gg == ngroupmodif) {
                 groupmodif[gg] = gr;
                 ngroupmodif++;
             }
         }
     }
     //comptage des stat
-    if ((ngroupmodif > 0)and (debuglevel == 2))
-    {
+    if ((ngroupmodif > 0)and (debuglevel == 2)) {
         cout << "ngroupmodif = " << ngroupmodif << "\n";
         for (gg = 0; gg < ngroupmodif; gg++) cout << "groupmodif[" << gg << "] = " << groupmodif[gg] << "\n";
     }
@@ -114,8 +105,7 @@ bool resetstats(string s)
     //delete [] ss;
     //ss =splitwords(s," ",&ns);
     if (debuglevel == 2) cout << "ns=" << ns << "\n";
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         splitwords(ss[i], "_", qq);
         nq = qq.size();
         if (nq != 3) return false;
@@ -126,17 +116,14 @@ bool resetstats(string s)
     }
     header.nstat = 0;
     for (gr = 1; gr <= header.ngroupes; gr++) header.nstat += groupe[gr].nstat;
-    if (debuglevel == 2)
-    {
+    if (debuglevel == 2) {
         cout << "dans resetstat nstat = " << header.nstat << "\n";
         for (gr = 1; gr <= header.ngroupes; gr++) cout << "      groupe " << gr << "   nstat=" << groupe[gr].nstat << "\n";
     }
 
-    for (gg = 0; gg < ngroupmodif; gg++)
-        groupe[groupmodif[gg]].sumstat = vector<StatC>(groupe[groupmodif[gg]].nstat);
+    for (gg = 0; gg < ngroupmodif; gg++) groupe[groupmodif[gg]].sumstat = vector<StatC>(groupe[groupmodif[gg]].nstat);
 
-    if (debuglevel == 2)
-    {
+    if (debuglevel == 2) {
         cout << "dans resetstat nstat = " << header.nstat << "\n";
         for (gr = 1; gr <= header.ngroupes; gr++) cout << "      groupe " << gr << "   nstat=" << groupe[gr].nstat << "\n";
     }
@@ -149,23 +136,17 @@ bool resetstats(string s)
     header.statname = vector<string>(header.nstat);
     gs = 0;
     gt = 0;
-    for (gr = 1; gr <= header.ngroupes; gr++)
-    {
+    for (gr = 1; gr <= header.ngroupes; gr++) {
         gg = 0;
         while ((gg < ngroupmodif)and (gr != groupmodif[gg])) gg++;
-        if (gg == ngroupmodif)
-        {
-            for (int i = 0; i < groupe[gr].nstat; i++)
-            {
+        if (gg == ngroupmodif) {
+            for (int i = 0; i < groupe[gr].nstat; i++) {
                 header.statname[gs] = statname[gr][i];
                 header.entetestat += centre(header.statname[gs], 14);
                 gs++;
             }
-        }
-        else
-        {
-            for (int i = 0; i < groupe[gr].nstat; i++)
-            {
+        } else {
+            for (int i = 0; i < groupe[gr].nstat; i++) {
                 header.statname[gs] = ss[gt];
                 gt++;
                 header.entetestat += centre(header.statname[gs], 14);
@@ -176,33 +157,26 @@ bool resetstats(string s)
     header.entete.erase(header.entete.length() - lonentstat, lonentstat);
     header.entete += header.entetestat;
     cout << "\n" << header.entete << "\n";
-    for (int i = 0; i < ns; i++)
-    {
-        if (debuglevel == 2)cout << "\nss[" << i << "] = " << ss[i] << "\n";
+    for (int i = 0; i < ns; i++) {
+        if (debuglevel == 2) cout << "\nss[" << i << "] = " << ss[i] << "\n";
         splitwords(ss[i], "_", qq);
         nq = qq.size();
         gr = atoi(qq[1].c_str());
         j = 0;
         while (qq[0] != stat_type[j]) j++;
         if (debuglevel == 2) cout << "ss[" << i << "] = " << ss[i] << "   j=" << j << "\n";
-        if (groupe[gr].type == 0)
-        { //MICROSAT
-            if (stat_num[j] < 5)
-            {
+        if (groupe[gr].type == 0) { //MICROSAT
+            if (stat_num[j] < 5) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
                 nustat[gr]++;
-            }
-            else if (stat_num[j] < 12)
-            {
+            } else if (stat_num[j] < 12) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 splitwords(qq[2], "&", ss1);
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
                 groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
                 nustat[gr]++;
-            }
-            else if (stat_num[j] == 12)
-            {
+            } else if (stat_num[j] == 12) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 splitwords(qq[2], "&", ss1);
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
@@ -210,27 +184,20 @@ bool resetstats(string s)
                 groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
                 nustat[gr]++;
             }
-        }
-        else if (groupe[gr].type == 1)
-        { //DNA SEQUENCE
+        } else if (groupe[gr].type == 1) { //DNA SEQUENCE
             if (debuglevel == 2) cout << "DNA SEQUENCE stat_num[" << j << "] = " << stat_num[j] << "   qq[2]=" << qq[2] << "\n";
             if (debuglevel == 2) cout << "gr=" << gr << "   nustat[gr]=" << nustat[gr] << "\n";
-            if (stat_num[j] > -9)
-            {
+            if (stat_num[j] > -9) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
                 nustat[gr]++;
-            }
-            else if (stat_num[j] > -14)
-            {
+            } else if (stat_num[j] > -14) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 splitwords(qq[2], "&", ss1);
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
                 groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
                 nustat[gr]++;
-            }
-            else if (stat_num[j] == -14)
-            {
+            } else if (stat_num[j] == -14) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 splitwords(qq[2], "&", ss1);
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
@@ -239,32 +206,25 @@ bool resetstats(string s)
                 nustat[gr]++;
             }
             //cout<<"fin\n";
-        }
-        else if (groupe[gr].type == 2)
-        { //SNP
+        } else if (groupe[gr].type == 2) { //SNP
             catsnp = (stat_num[j] - 21) / 4;
             if (debuglevel == 2) cout << "snp catsnp=" << catsnp << "   stat_num[" << j << "]=" << stat_num[j] << "\n";
-            if (stat_num[j] < 25)
-            {
+            if (stat_num[j] < 25) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
                 trouve = false;
                 if (debuglevel == 2) cout << "statsnp[" << gr << "].size=" << statsnp[gr].size() << "\n";
-                if (statsnp[gr].size() > 0)
-                {
-                    for (size_t jj = 0; jj < statsnp[gr].size(); jj++)
-                    {
+                if (statsnp[gr].size() > 0) {
+                    for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
                         trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp));
-                        if (trouve)
-                        {
+                        if (trouve) {
                             groupe[gr].sumstat[nustat[gr]].numsnp = jj;
                             break;
                         }
                     }
                 }
                 if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-                if (not trouve)
-                {
+                if (not trouve) {
                     stsnp.cat = catsnp;
                     stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
                     stsnp.defined = false;
@@ -273,22 +233,17 @@ bool resetstats(string s)
                     statsnp[gr].push_back(stsnp);
                 }
                 nustat[gr]++;
-            }
-            else if ((stat_num[j] > 24)and (stat_num[j] < 33))
-            {
+            } else if ((stat_num[j] > 24)and (stat_num[j] < 33)) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 splitwords(qq[2], "&", ss1);
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
                 groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
                 trouve = false;
                 if (debuglevel == 2) cout << "statsnp[" << gr << "].size=" << statsnp[gr].size() << "\n";
-                if (statsnp[gr].size() > 0)
-                {
-                    for (size_t jj = 0; jj < statsnp[gr].size(); jj++)
-                    {
+                if (statsnp[gr].size() > 0) {
+                    for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
                         trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp)and (statsnp[gr][jj].samp1 == groupe[gr].sumstat[nustat[gr]].samp1));
-                        if (trouve)
-                        {
+                        if (trouve) {
                             groupe[gr].sumstat[nustat[gr]].numsnp = jj;
                             break;
                         }
@@ -296,8 +251,7 @@ bool resetstats(string s)
                 }
                 //cout<<"statsnp.size = "<<statsnp.size()<<"   trouve = "<<trouve<<"\n";
                 if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-                if (not trouve)
-                {
+                if (not trouve) {
                     stsnp.cat = catsnp;
                     stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
                     stsnp.samp1 = groupe[gr].sumstat[nustat[gr]].samp1;
@@ -308,9 +262,7 @@ bool resetstats(string s)
                 }
                 //cout<<"numsnp = "<<statsnp.size()<<"\n";
                 nustat[gr]++;
-            }
-            else if (stat_num[j] > 32)
-            {
+            } else if (stat_num[j] > 32) {
                 groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
                 splitwords(qq[2], "&", ss1);
                 groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
@@ -318,21 +270,17 @@ bool resetstats(string s)
                 groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
                 trouve = false;
                 if (debuglevel == 2) cout << "statsnp.size=" << statsnp.size() << "\n";
-                if (statsnp[gr].size() > 0)
-                {
-                    for (size_t jj = 0; jj < statsnp[gr].size(); jj++)
-                    {
+                if (statsnp[gr].size() > 0) {
+                    for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
                         trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp)and (statsnp[gr][jj].samp1 == groupe[gr].sumstat[nustat[gr]].samp1)and (statsnp[gr][jj].samp2 == groupe[gr].sumstat[nustat[gr]].samp2));
-                        if (trouve)
-                        {
+                        if (trouve) {
                             groupe[gr].sumstat[nustat[gr]].numsnp = jj;
                             break;
                         }
                     }
                 }
                 if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-                if (not trouve)
-                {
+                if (not trouve) {
                     stsnp.cat = catsnp;
                     stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
                     stsnp.samp1 = groupe[gr].sumstat[nustat[gr]].samp1;
@@ -346,17 +294,13 @@ bool resetstats(string s)
             }
         }
     }
-    for (gr = 1; gr <= header.ngroupes; gr++)
-    {
-        if (groupe[gr].type == 2)
-        {
+    for (gr = 1; gr <= header.ngroupes; gr++) {
+        if (groupe[gr].type == 2) {
             groupe[gr].nstatsnp = statsnp[gr].size();
             cout << "groupe[gr].nstatsnp=" << groupe[gr].nstatsnp << "\n";
-            if (groupe[gr].nstatsnp > 0)
-            {
+            if (groupe[gr].nstatsnp > 0) {
                 groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
-                for (int i = 0; i < groupe[gr].nstatsnp; i++)
-                {
+                for (int i = 0; i < groupe[gr].nstatsnp; i++) {
                     groupe[gr].sumstatsnp[i].cat = statsnp[gr][i].cat;
                     groupe[gr].sumstatsnp[i].samp = statsnp[gr][i].samp;
                     groupe[gr].sumstatsnp[i].samp1 = statsnp[gr][i].samp1;
@@ -372,78 +316,58 @@ bool resetstats(string s)
     return true;
 }
 
-string pseudoprior2(long double x)
-{
+string pseudoprior2(long double x) {
     string spr;
     long double mini = 0.99999 * x, maxi = 1.00001 * x;
     spr = "UN[" + LongDoubleToString(mini) + "," + LongDoubleToString(maxi) + ",0.0,0.0";
     return spr;
 }
 
-int detphistarOK(int nsel, long double** phistar)
-{
+int detphistarOK(int nsel, long double** phistar) {
     bool OK;
     int npv, ip1, ip2, nphistarOK = 0, scen = rt.scenteste - 1, k1;
     npv = rt.nparam[scen];
-    for (int i = 0; i < nsel; i++)
-    {
+    for (int i = 0; i < nsel; i++) {
         OK = true;
-        if (numtransf < 3)
-        {
-            for (int k = 0; k < rt.nhistparam[scen]; k++)
-            {
+        if (numtransf < 3) {
+            for (int k = 0; k < rt.nhistparam[scen]; k++) {
                 OK = ((scenario[scen].histparam[k].prior.mini < phistar[i][k])and (scenario[scen].histparam[k].prior.maxi > phistar[i][k]));
                 if (not OK) break;
             }
-            if (OK)
-            {
+            if (OK) {
                 k1 = rt.nhistparam[scen];
-                for (int k = 0; k < rt.nparamut; k++)
-                {
+                for (int k = 0; k < rt.nparamut; k++) {
                     OK = ((rt.mutparam[k].prior.mini < phistar[i][k1 + k])and (rt.mutparam[k].prior.maxi > phistar[i][k1 + k]));
-                    if (not OK)break;
+                    if (not OK) break;
                 }
             }
         }
-        if ((scenario[scen].nconditions > 0)and (OK))
-        {
-            for (int j = 0; j < scenario[scen].nconditions; j++)
-            {
+        if ((scenario[scen].nconditions > 0)and (OK)) {
+            for (int j = 0; j < scenario[scen].nconditions; j++) {
                 ip1 = 0;
-                for (int k = 0; k < rt.nparam[scen]; ++k)
-                {
-                    if (scenario[scen].condition[j].param1 == scenario[scen].histparam[k].name)
-                    {
+                for (int k = 0; k < rt.nparam[scen]; ++k) {
+                    if (scenario[scen].condition[j].param1 == scenario[scen].histparam[k].name) {
                         k1 = k;
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         if (not scenario[scen].histparam[k].prior.constant) ip1++;
                     }
                 }
 
                 ip2 = 0;
-                for (int k = 0; k < rt.nparam[scen]; ++k)
-                {
-                    if (scenario[scen].condition[j].param2 == scenario[scen].histparam[k].name)
-                    {
+                for (int k = 0; k < rt.nparam[scen]; ++k) {
+                    if (scenario[scen].condition[j].param2 == scenario[scen].histparam[k].name) {
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         if (not scenario[scen].histparam[k].prior.constant) ip2++;
                     }
                 }
-                if (scenario[scen].histparam[k1].category < 2)
-                {
+                if (scenario[scen].histparam[k1].category < 2) {
                     if (scenario[scen].condition[j].operateur == ">") OK = (floor(0.5 + phistar[i][ip1]) > floor(0.5 + phistar[i][ip2]));
                     else if (scenario[scen].condition[j].operateur == "<") OK = (floor(0.5 + phistar[i][ip1]) < floor(0.5 + phistar[i][ip2]));
                     else if (scenario[scen].condition[j].operateur == ">=") OK = (floor(0.5 + phistar[i][ip1]) >= floor(0.5 + phistar[i][ip2]));
                     else if (scenario[scen].condition[j].operateur == "<=") OK = (floor(0.5 + phistar[i][ip1]) <= floor(0.5 + phistar[i][ip2]));
-                }
-                else
-                {
+                } else {
                     if (scenario[scen].condition[j].operateur == ">") OK = (phistar[i][ip1] > phistar[i][ip2]);
                     else if (scenario[scen].condition[j].operateur == "<") OK = (phistar[i][ip1] < phistar[i][ip2]);
                     else if (scenario[scen].condition[j].operateur == ">=") OK = (phistar[i][ip1] >= phistar[i][ip2]);
@@ -452,10 +376,8 @@ int detphistarOK(int nsel, long double** phistar)
                 if (not OK) break;
             }
         }
-        if (OK)
-        { //cout<<nphistarOK<<"    ";
-            for (int j = 0; j < npv; j++)
-            {
+        if (OK) { //cout<<nphistarOK<<"    ";
+            for (int j = 0; j < npv; j++) {
                 phistarOK[nphistarOK][j] = phistar[i][j];
                 //cout <<phistarOK[nphistarOK][j]<<"  ";
             }
@@ -467,8 +389,7 @@ int detphistarOK(int nsel, long double** phistar)
     return nphistarOK;
 }
 
-void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs)
-{
+void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs) {
     int *avant, *apres, *egal;
     long double* qobs;
     float diff;
@@ -482,17 +403,14 @@ void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs)
     for (int i = 0; i < header.nstat; i++) apres[i] = 0;
     egal = new int[header.nstat];
     for (int i = 0; i < header.nstat; i++) egal[i] = 0;
-    for (int p = 0; p < npart; p++)
-    {
-        for (int j = 0; j < header.nstat; j++)
-        {
+    for (int p = 0; p < npart; p++) {
+        for (int j = 0; j < header.nstat; j++) {
             diff = stat_obs[j] - (float)ss[p][j];
             if (diff > 0.001) avant[j]++;
             else if (diff < -0.001) apres[j]++; else egal[j]++;
         }
     }
-    for (int j = 0; j < header.nstat; j++)
-    {
+    for (int j = 0; j < header.nstat; j++) {
         qobs[j] = (long double)(avant[j] + apres[j] + egal[j]);
         if (qobs[j] > 0.0) qobs[j] = (0.5 * (long double)egal[j] + (long double)avant[j]) / qobs[j]; else qobs[j] = -1;
         star[j] = "      ";
@@ -521,8 +439,7 @@ void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs)
     f12 << "Number of simulated data sets used to compute posterior    : " << nrec << "\n";
     f12 << "Number of simulated data sets used in the local regression : " << nsel << "\n";
     f12 << "Number of data sets simulated from the posterior           : " << npart << "\n";
-    switch (numtransf)
-    {
+    switch (numtransf) {
     case 1: f12 << "No transformation of parameters\n\n";
         break;
     case 2: f12 << "Transformation of parameters : Log\n\n";
@@ -535,8 +452,7 @@ void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs)
 
     f12 << " summary           observed       proportion   \n";
     f12 << "statistics           value    (simulated<observed)\n";
-    for (int j = 0; j < header.nstat; j++)
-    {
+    for (int j = 0; j < header.nstat; j++) {
         f12 << setiosflags(ios::left) << setw(15) << header.statname[j] << "     " << setiosflags(ios::fixed) << setw(8) << setprecision(4) << stat_obs[j] << "       ";
         f12 << setiosflags(ios::fixed) << setw(6) << setprecision(4) << qobs[j] << star[j] << "   ";
         f12 << "\n";
@@ -544,8 +460,7 @@ void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs)
     f12.close();
 }
 
-void call_acp(int nr, int ns, int nstat, int* numscen, long double** ssref, long double** ssphistar, float* stat_obs)
-{
+void call_acp(int nr, int ns, int nstat, int* numscen, long double** ssref, long double** ssphistar, float* stat_obs) {
     resACPC rACP;
     long double *pca_statobs, **pca_ss;
     pca_statobs = new long double[nstat];
@@ -553,17 +468,14 @@ void call_acp(int nr, int ns, int nstat, int* numscen, long double** ssref, long
     for (int i = 0; i < ns; i++) pca_ss[i] = new long double[nstat];
     rACP = ACP(nr, nstat, ssref, 1.0, 0);
     //for (int k=0;k<nstat;k++) cout<<stat_obs[k]<<"   "<<rACP.moy[k]<<"   "<<rACP.sd[k]<<"\n";
-    for (int j = 0; j < rACP.nlambda; j++)
-    {
+    for (int j = 0; j < rACP.nlambda; j++) {
         pca_statobs[j] = 0.0;
         for (int k = 0; k < nstat; k++) if (rACP.sd[k] > 0) pca_statobs[j] += (stat_obs[k] - rACP.moy[k]) / rACP.sd[k] * rACP.vectprop[k][j];
         cout << "  " << pca_statobs[j];
     }
     cout << "\n";
-    for (int i = 0; i < ns; i++)
-    {
-        for (int j = 0; j < rACP.nlambda; j++)
-        {
+    for (int i = 0; i < ns; i++) {
+        for (int j = 0; j < rACP.nlambda; j++) {
             pca_ss[i][j] = 0.0;
             for (int k = 0; k < nstat; k++) if (rACP.sd[k] > 0) pca_ss[i][j] += (ssphistar[i][k] - rACP.moy[k]) / rACP.sd[k] * rACP.vectprop[k][j];
         }
@@ -583,15 +495,13 @@ void call_acp(int nr, int ns, int nstat, int* numscen, long double** ssref, long
     f1 << "0";
     for (int i = 0; i < rACP.nlambda; i++) f1 << " " << pca_statobs[i];
     f1 << "\n";
-    for (int i = 0; i < nr; i++)
-    {
+    for (int i = 0; i < nr; i++) {
         f1 << setiosflags(ios::fixed) << setprecision(0) << numscen[i];
         f1 << setprecision(3);
         for (int j = 0; j < rACP.nlambda; j++) f1 << " " << rACP.princomp[i][j];
         f1 << "\n";
     }
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         f1 << setiosflags(ios::fixed) << setprecision(0) << rt.scenteste;
         f1 << setprecision(3);
         for (int j = 0; j < rACP.nlambda; j++) f1 << " " << pca_ss[i][j];
@@ -600,8 +510,7 @@ void call_acp(int nr, int ns, int nstat, int* numscen, long double** ssref, long
     f1.close();
 }
 
-void domodchec(string opt, int seed)
-{
+void domodchec(string opt, int seed) {
     int nstatOK, nphistarOK, iprog, nprog;
     int nrec = 0, nsel = 0, ns, nrecpos = 0, newsspart = 0, npv, npvmax, nss, nsr, newrefpart, *numscen, nparamax, bidon;
     string s, s0, s1, snewstat;
@@ -619,13 +528,11 @@ void domodchec(string opt, int seed)
     splitwords(opt, ";", ss);
     ns = ss.size();
     numtransf = 3;
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         cout << ss[i] << "\n";
         s0 = ss[i].substr(0, 2);
         s1 = ss[i].substr(2);
-        if (s0 == "s:")
-        {
+        if (s0 == "s:") {
             splitwords(s1, ",", ss1);
             rt.nscenchoisi = ss1.size();
             if (rt.nscenchoisi > 1) rt.nscenchoisi = 1;
@@ -634,23 +541,16 @@ void domodchec(string opt, int seed)
             nrecpos = rt.nrecscen[rt.scenchoisi[0] - 1];
             cout << "scenario choisi : " << rt.scenchoisi[0] << "\n";
             rt.scenteste = rt.scenchoisi[0];
-        }
-        else if (s0 == "n:")
-        {
+        } else if (s0 == "n:") {
             nrec = atoi(s1.c_str());
             if (nrec > nrecpos) nrec = nrecpos;
             cout << "nombre total de jeux de données considérés (pour le scénario choisi )= " << nrec << "\n";
-        }
-        else if (s0 == "m:")
-        {
+        } else if (s0 == "m:") {
             nsel = atoi(s1.c_str());
             cout << "nombre de jeux de données considérés pour la régression locale = " << nsel << "\n";
-        }
-        else if (s0 == "t:")
-        {
+        } else if (s0 == "t:") {
             numtransf = atoi(s1.c_str());
-            switch (numtransf)
-            {
+            switch (numtransf) {
             case 1: cout << " pas de transformation des paramètres\n";
                 break;
             case 2: cout << " transformation log des paramètres\n";
@@ -660,20 +560,14 @@ void domodchec(string opt, int seed)
             case 4: cout << " transformation log(tg) des paramètres\n";
                 break;
             }
-        }
-        else if (s0 == "v:")
-        {
+        } else if (s0 == "v:") {
             cout << "" << "\n";
             snewstat = s1;
             newstat = (s1.length() > 0);
-        }
-        else if (s0 == "q:")
-        {
+        } else if (s0 == "q:") {
             newsspart = atoi(s1.c_str());
             cout << "nombre de particules à simuler à partir du posterior = " << newsspart << "\n";
-        }
-        else if (s0 == "a:")
-        {
+        } else if (s0 == "a:") {
             dopca = (s1.find("p") != string::npos);
             doloc = (s1.find("l") != string::npos);
             if (dopca) cout << "Perform ACP  ";
@@ -707,8 +601,7 @@ void domodchec(string opt, int seed)
     if (not deltanul) matC = cal_matC(nsel);
     recalparamO(nsel);
     cout << "apres recalparam\n";
-    if (not deltanul)
-    {
+    if (not deltanul) {
         rempli_parsim(nsel, nparamcom);
         cout << "apres rempli_parsim(O)\n";
         local_regression(nsel, nparamcom, matC);
@@ -725,8 +618,7 @@ void domodchec(string opt, int seed)
     det_nomparam();
     phistarcompo = new long double*[nsel];
     phistarscaled = new long double*[nsel];
-    for (int i = 0; i < nsel; i++)
-    {
+    for (int i = 0; i < nsel; i++) {
         phistarcompo[i] = new long double[0];
         phistarscaled[i] = new long double[0];
     }
@@ -746,8 +638,7 @@ void domodchec(string opt, int seed)
     cout//<<"naparamcom="<<nparamcom<<"   nparcompo="<<nparcompo<<"   nenr="<<nenr
         << "   nphistarOK=" << nphistarOK << "   nstat=" << header.nstat << "\n";
     //cout <<"DEBUG: j'arrête là." << endl; exit(1);
-    if (nphistarOK < 100)
-    {
+    if (nphistarOK < 100) {
         cout << "Not enough suitable particles (" << nphistarOK << ")to perform model checking. Stopping computations." << endl;
         exit(1);
     }
@@ -766,8 +657,7 @@ void domodchec(string opt, int seed)
     cout << "header.nstat = " << header.nstat << "\n";
     enreg = new enregC[nenr];
     cout << "apres new enregC[nenr]\n";
-    for (int p = 0; p < nenr; p++)
-    {
+    for (int p = 0; p < nenr; p++) {
         enreg[p].stat = vector<float>(header.nstat);
         enreg[p].param = vector<float>(npvmax);
         enreg[p].numscen = rt.scenteste;
@@ -777,13 +667,11 @@ void domodchec(string opt, int seed)
     for (int i = 0; i < newsspart; i++) ssphistar[i] = new long double[header.nstat];
     cout << "newstat =" << newstat << "   newsspart=" << newsspart << "     nenr=" << nenr << "\n";
     if (nenr > newsspart) nenr = newsspart;
-    while (nss < newsspart)
-    {
+    while (nss < newsspart) {
         if (debuglevel == 2) cout << "avant dosimulphistar\n";
         ps.dosimulphistar(nenr, false, multithread, firsttime, rt.scenteste, seed, nphistarOK);
         if (debuglevel == 2) cout << "apres dosimulphistar\n";
-        for (int i = 0; i < nenr; i++)
-        {
+        for (int i = 0; i < nenr; i++) {
             for (int j = 0; j < header.nstat; j++) ssphistar[i + nss][j] = enreg[i].stat[j];
             for (int j = 0; j < header.nstat; j++) cout << ssphistar[i + nss][j] << "   ";
             cout << "\n";
@@ -796,17 +684,14 @@ void domodchec(string opt, int seed)
         fprog.close();
         //cout<<nss<<"\n";
     }
-    if (newstat)
-    {
+    if (newstat) {
         //cout<<"\n\n\nAVANT CALSTATOBS\n";
         header.calstatobs(statobsfilename);/*stat_obs = header.stat_obs;*/
         //cout<<"\nAPRES CALSTATOBS\n\n\n";
     }
     if (doloc) call_loc(newsspart, nrec, nsel, ssphistar, &header.stat_obs[0]);
-    if (dopca)
-    {
-        if (newstat)
-        {
+    if (dopca) {
+        if (newstat) {
             header.readHeader(headerfilename);
             cout << "apres readHeader scenario.size()= " << scenario.size() << "\n";
             usestats = resetstats(snewstat);
@@ -818,15 +703,12 @@ void domodchec(string opt, int seed)
             nsr = 0;
             firsttime = true;
             cout << "avant le while (nsr<newrefpart)\n";
-            while (nsr < newrefpart)
-            {
+            while (nsr < newrefpart) {
                 ps.dosimultabref(nenr, false, multithread, firsttime, 0, seed, 3);
-                for (int i = 0; i < nenr; i++)
-                {
+                for (int i = 0; i < nenr; i++) {
                     numscen[i + nsr] = enreg[i].numscen;
                     for (int j = 0; j < header.nstat; j++) ssref[i + nsr][j] = enreg[i].stat[j];
-                    if (debuglevel == 2)
-                    {
+                    if (debuglevel == 2) {
                         for (int j = 0; j < header.nstat; j++) cout << ssref[i + nsr][j] << "   ";
                         cout << "\n";
                     }
@@ -839,9 +721,7 @@ void domodchec(string opt, int seed)
                 fprog.close();
                 cout << nsr << "\n";
             }
-        }
-        else
-        {
+        } else {
             rt.openfile2();
             enregC enr;
             nparamax = 0;
@@ -854,8 +734,7 @@ void domodchec(string opt, int seed)
             ssref = new long double*[newrefpart];
             for (int i = 0; i < newrefpart; i++) ssref[i] = new long double[header.nstat];
             nsr = 0;
-            while (nsr < newrefpart)
-            {
+            while (nsr < newrefpart) {
                 bidon = rt.readrecord(&enr);
                 if (bidon != 0) cout << "probleme à la lecture du reftable\n";
                 numscen[nsr] = enr.numscen;

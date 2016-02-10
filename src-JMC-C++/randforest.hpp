@@ -13,20 +13,17 @@
 
 #include "randomgenerator.hpp"
 
-struct VMC
-{
+struct VMC {
     int ind;
     double x;
 };
 
-struct VMD
-{
+struct VMD {
     std::string name;
     double x;
 };
 
-class NodeRC
-{
+class NodeRC {
 public:
     int pere, filsG, filsD, nvar, nsets, npassages, nsetG, nsetD, model, imax;
     double cutval, disval, disval2, delta, modmoy;
@@ -45,19 +42,17 @@ public:
     double getdisval2(MwcGen& mw);
 
     //      double caldisval(int nscen, int nsets, const vector<VMC>&vm, double val, vector <int>& nn);     
-    ~NodeRC()
-        {
-            if (not indvar.empty()) indvar.clear();
-            if (not numset.empty()) numset.clear();
-            if (not numsetG.empty()) numsetG.clear();
-            if (not numsetD.empty()) numsetD.clear();
-        }
+    ~NodeRC() {
+        if (not indvar.empty()) indvar.clear();
+        if (not numset.empty()) numset.clear();
+        if (not numsetG.empty()) numsetG.clear();
+        if (not numsetD.empty()) numsetD.clear();
+    }
 
     NodeRC& operator=(NodeRC const& source);
 };
 
-class TreeC
-{
+class TreeC {
 public:
     int nnodes, nsets, nvar;
     MwcGen mw;
@@ -85,31 +80,29 @@ public:
     void estim();
     double inferobs(vector<double>& stat);
 
-    ~TreeC()
-        {
-            if (not numset.empty()) numset.clear();
-            //if (not indsel.empty()) indsel.clear();
-            if (not score.empty()) score.clear();
-            if (not index.empty()) index.clear();
-            if (not node.empty()) node.clear();
-            if (not varused.empty()) varused.clear();
-            if (not sim_participe.empty()) sim_participe.clear();
-        }
+    ~TreeC() {
+        if (not numset.empty()) numset.clear();
+        //if (not indsel.empty()) indsel.clear();
+        if (not score.empty()) score.clear();
+        if (not index.empty()) index.clear();
+        if (not node.empty()) node.clear();
+        if (not varused.empty()) varused.clear();
+        if (not sim_participe.empty()) sim_participe.clear();
+    }
 
     TreeC& operator=(TreeC const& source);
 };
 
-class RFC
-{
+class RFC {
 public:
     int ntrees, ntot, nsets, nstat, nmodel, nvar, nsel, nstatclass, nbootsamp;
 
     vector<int> model;
     //vector <int>indsel;
-    vector<vector<double> > vote;
+    vector<vector<double>> vote;
     vector<double> varimp;
-    vector<vector<double> > stat;
-    vector<vector<double> > importance;
+    vector<vector<double>> stat;
+    vector<vector<double>> importance;
     vector<TreeC> tree;
     vector<double> statobs;
     vector<int> bootsamp;
@@ -127,18 +120,17 @@ public:
     void readstat(bool LD);
     void ecrifich(string nomfi);
 
-    ~RFC()
-        {
-            if (not model.empty()) model.clear();
-            //if (not indsel.empty()) indsel.clear();
-            if (not vote.empty()) vote.clear();
-            if (not varimp.empty()) varimp.clear();
-            if (not stat.empty()) stat.clear();
-            if (not tree.empty()) tree.clear();
-            if (not statobs.empty()) statobs.clear();
-            if (not bootsamp.empty()) bootsamp.clear();
-            if (not statname.empty()) statname.clear();
-        }
+    ~RFC() {
+        if (not model.empty()) model.clear();
+        //if (not indsel.empty()) indsel.clear();
+        if (not vote.empty()) vote.clear();
+        if (not varimp.empty()) varimp.clear();
+        if (not stat.empty()) stat.clear();
+        if (not tree.empty()) tree.clear();
+        if (not statobs.empty()) statobs.clear();
+        if (not bootsamp.empty()) bootsamp.clear();
+        if (not statname.empty()) statname.clear();
+    }
 
     RFC& operator=(RFC const& source);
 };

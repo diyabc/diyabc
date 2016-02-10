@@ -9,16 +9,14 @@
 
 #include <string>
 
-struct matligneC
-{
+struct matligneC {
     long double* x;
 };
 
 /**
  *  Structure contenant les résultats de l'estimation de la probabilité a posteriori d'un scénario
  */
-struct posteriorscenC
-{
+struct posteriorscenC {
     long double x, inf, sup;
     int err;
 };
@@ -27,12 +25,10 @@ struct posteriorscenC
  * définit l'opérateur de comparaison de deux lignes de la matrice cmatA
  * pour l'utilisation de la fonction sort du module algorithm
  */
-struct complignes
-{
-    bool operator()(const matligneC& lhs, const matligneC& rhs) const
-        {
-            return lhs.x[0] < rhs.x[0];
-        }
+struct complignes {
+    bool operator()(const matligneC& lhs, const matligneC& rhs) const {
+        return lhs.x[0] < rhs.x[0];
+    }
 };
 
 void allouecmat(int nmodel, int nli, int nco);

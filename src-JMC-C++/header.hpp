@@ -14,8 +14,7 @@
 #include "history.hpp"
 #include "header.hpp"
 
-class MutParameterC
-{
+class MutParameterC {
 public:
     std::string name;
     int groupe;
@@ -29,8 +28,7 @@ public:
 };
 
 
-class HeaderC
-{
+class HeaderC {
 public:
     std::string message, datafilename, entete, entetehist, entetemut, entetemut0, entetestat;
     std::string pathbase;

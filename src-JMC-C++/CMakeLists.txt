@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 project (general)
 
@@ -56,10 +56,17 @@ set (PROJECT_initRNGproject_SRCS
 add_executable(general ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 add_executable(initRNGproject ${PROJECT_initRNGproject_SRCS})
 
+target_compile_features(general PRIVATE cxx_right_angle_brackets)
+target_compile_features(initRNGproject PRIVATE cxx_right_angle_brackets)
+
 set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")
 
 find_package(OpenMP)
 if (OPENMP_FOUND)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+	set(OpenMP_C_FLAGS "-openmp=libomp")
+	set(OpenMP_CXX_FLAGS "-openmp=libomp")
+    endif()
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
@@ -68,8 +75,8 @@ target_link_libraries(general dcmt)
 target_link_libraries(initRNGproject dcmt)    
 
 if (MSVC)
-  target_link_libraries(general wingetopt)
-  target_link_libraries(initRNGproject wingetopt)
+    target_link_libraries(general wingetopt)
+    target_link_libraries(initRNGproject wingetopt)
 endif()
 
 

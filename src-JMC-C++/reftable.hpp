@@ -16,8 +16,7 @@
 
 using namespace std;
 
-class enregC
-{
+class enregC {
 public:
     int numscen;
     vector<float> param;
@@ -29,8 +28,7 @@ public:
 };
 
 
-class ReftableC
-{
+class ReftableC {
 public:
     int nrec, nscen, nreclus, nrec0;
     vector<int> nrecscen;
@@ -42,7 +40,7 @@ public:
 
     float *param, *sumstat;
     int histparamlength;
-    std::vector<std::vector<HistParameterC> > histparam;
+    std::vector<std::vector<HistParameterC>> histparam;
     MutParameterC* mutparam;
     std::fstream fifo;
     int nstatOK, nsel, nenr;
@@ -52,61 +50,50 @@ public:
 
     ReftableC(): scenchoisi(NULL),
                  nhistparam(NULL), param(NULL), sumstat(NULL), histparam(0),
-                 mutparam(NULL), enrsel(NULL), stat_obs(NULL), var_stat(NULL)
-        {
-            histparamlength = 0;
-        };
+                 mutparam(NULL), enrsel(NULL), stat_obs(NULL), var_stat(NULL) {
+        histparamlength = 0;
+    };
 
-    ~ReftableC()
-        {
-            if (not nrecscen.empty()) nrecscen.clear();
-            if (not nparam.empty()) nparam.clear();
-            if (scenchoisi != NULL)
-            {
-                delete [] scenchoisi;
-                scenchoisi = NULL;
-            }
-            if (scenchoisi != NULL)
-            {
-                delete [] scenchoisi;
-                scenchoisi = NULL;
-            }
-            if (nhistparam != NULL)
-            {
-                delete [] nhistparam;
-                nhistparam = NULL;
-            }
-            if (param != NULL)
-            {
-                delete [] param;
-                param = NULL;
-            }
-            if (sumstat != NULL)
-            {
-                delete [] sumstat;
-                sumstat = NULL;
-            }
-            if (mutparam != NULL)
-            {
-                delete [] mutparam;
-                mutparam = NULL;
-            }
-            if (enrsel != NULL)
-            {
-                delete [] enrsel;
-                enrsel = NULL;
-            }
-            if (stat_obs != NULL)
-            {
-                delete [] stat_obs;
-                stat_obs = NULL;
-            }
-            if (var_stat != NULL)
-            {
-                delete [] var_stat;
-                var_stat = NULL;
-            }
-        };
+    ~ReftableC() {
+        if (not nrecscen.empty()) nrecscen.clear();
+        if (not nparam.empty()) nparam.clear();
+        if (scenchoisi != NULL) {
+            delete [] scenchoisi;
+            scenchoisi = NULL;
+        }
+        if (scenchoisi != NULL) {
+            delete [] scenchoisi;
+            scenchoisi = NULL;
+        }
+        if (nhistparam != NULL) {
+            delete [] nhistparam;
+            nhistparam = NULL;
+        }
+        if (param != NULL) {
+            delete [] param;
+            param = NULL;
+        }
+        if (sumstat != NULL) {
+            delete [] sumstat;
+            sumstat = NULL;
+        }
+        if (mutparam != NULL) {
+            delete [] mutparam;
+            mutparam = NULL;
+        }
+        if (enrsel != NULL) {
+            delete [] enrsel;
+            enrsel = NULL;
+        }
+        if (stat_obs != NULL) {
+            delete [] stat_obs;
+            stat_obs = NULL;
+        }
+        if (var_stat != NULL) {
+            delete [] var_stat;
+            var_stat = NULL;
+        }
+    };
 
     void sethistparamname(HeaderC const& header);
     int readheader(std::string fname, std::string flogname, std::string reftabscen);

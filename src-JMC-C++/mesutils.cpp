@@ -21,8 +21,7 @@ using namespace std;
 /**
  * calcule le temps écoulé depuis t0 (récupéré sur internet)
  */
-double walltime(clock_t& t0)
-{
+double walltime(clock_t& t0) {
     clock_t t;
     t = clock() - t0;
     return (static_cast<float>(t)) / CLOCKS_PER_SEC;
@@ -32,13 +31,11 @@ double walltime(clock_t& t0)
  * renvoit la valeur entière contenue dans la num-ième sous-chaîne de s
  * fonctionne également si la valeur entière est encadrée par des parenthèses ou des crochets
  */
-int getwordint(string s, int num)
-{
+int getwordint(string s, int num) {
     s.append(" ");
     while (s.find(" ") == 0) s = s.substr(1);
     int i = 1, j;
-    while ((i < num)and (s.length() > 1))
-    {
+    while ((i < num)and (s.length() > 1)) {
         j = s.find(" ");
         s = s.substr(j);
         while (s.find(" ") == 0) s = s.substr(1);
@@ -53,13 +50,11 @@ int getwordint(string s, int num)
  * renvoit la valeur flottante contenue dans la num-ième sous-chaîne de s
  * fonctionne également si la valeur flottante est encadrée par des parenthèses ou des crochets
  */
-double getwordfloat(string s, int num)
-{
+double getwordfloat(string s, int num) {
     s.append(" ");
     while (s.find(" ") == 0) s = s.substr(1);
     int i = 1, j;
-    while ((i < num)and (s.length() > 1))
-    {
+    while ((i < num)and (s.length() > 1)) {
         j = s.find(" ");
         s = s.substr(j);
         while (s.find(" ") == 0) s = s.substr(1);
@@ -74,8 +69,7 @@ double getwordfloat(string s, int num)
  * découpe la chaîne s en sous-chaînes séparées par le séparateur sep
  * le nombre de sous chaînes est donné par *k
  */
-string* splitwords(string s, string sep, int* k)
-{
+string* splitwords(string s, string sep, int* k) {
     int j = 0, j0;
     while (s.find(sep) == 0) s = s.substr(1);
     *k = 0;
@@ -84,28 +78,22 @@ string* splitwords(string s, string sep, int* k)
     string *sb, s0, s1;
     sb = NULL;
     s1 = string();
-    for (int i = 0; i < (int)s.length(); i++)
-    {
+    for (int i = 0; i < (int)s.length(); i++) {
         s0 = s.substr(i, 1);
-        if (s0 == sep)
-        {
+        if (s0 == sep) {
             j++;
-            if (j == 1)
-            {
+            if (j == 1) {
                 s1.append(s0);
                 if (j == 1) (*k)++;
                 //cout <<" j=1  k="<<*k<<"\n";
             }
-        }
-        else
-        {
+        } else {
             s1.append(s0);
             j = 0;
         }
     }
     sb = new string[*k];
-    for (int i = 0; i < *k; i++)
-    {
+    for (int i = 0; i < *k; i++) {
         j0 = s1.find(sep);
         sb[i] = s1.substr(0, j0);
         s1 = s1.substr(j0 + 1, s.length());
@@ -114,8 +102,7 @@ string* splitwords(string s, string sep, int* k)
     return sb;
 }
 
-void splitwords(string s, string sep, vector<string>& resultat)
-{
+void splitwords(string s, string sep, vector<string>& resultat) {
     int j = 0, j0;
     while (s.find(sep) == 0) s = s.substr(1);
     int k = 0;
@@ -124,28 +111,22 @@ void splitwords(string s, string sep, vector<string>& resultat)
     vector<string> sb(0);
     string s0, s1;
     s1 = string();
-    for (int i = 0; i < (int)s.length(); i++)
-    {
+    for (int i = 0; i < (int)s.length(); i++) {
         s0 = s.substr(i, 1);
-        if (s0 == sep)
-        {
+        if (s0 == sep) {
             j++;
-            if (j == 1)
-            {
+            if (j == 1) {
                 s1.append(s0);
                 if (j == 1) (k)++;
                 //cout <<" j=1  k="<<*k<<"\n";
             }
-        }
-        else
-        {
+        } else {
             s1.append(s0);
             j = 0;
         }
     }
     sb.resize(k);
-    for (int i = 0; i < k; i++)
-    {
+    for (int i = 0; i < k; i++) {
         j0 = s1.find(sep);
         sb[i] = s1.substr(0, j0);
         s1 = s1.substr(j0 + 1, s.length());
@@ -158,11 +139,9 @@ void splitwords(string s, string sep, vector<string>& resultat)
  * change les tabulations en espaces
  */
 
-string purgetab(string s)
-{
+string purgetab(string s) {
     string ss = "", s0;
-    for (int i = 0; i < (int)s.length(); i++)
-    {
+    for (int i = 0; i < (int)s.length(); i++) {
         s0 = s.substr(i, 1);
         if (s0 == "\t") s0 = " ";
         ss += s0;
@@ -175,43 +154,35 @@ string purgetab(string s)
  * découpe la chaîne s en sous-chaînes séparées par le séparateur sep
  * le découpage s'arrête quand le nombre de sous-chaînes atteint m
  */
-string* splitwordsR(string s, string sep, int m, int* k)
-{
+string* splitwordsR(string s, string sep, int m, int* k) {
     int j = 0, j0;
     while (s.find(sep) == 0) s = s.substr(1);
     *k = 0;
     string *sb, s0, s1;
-    if (s.length() == 0)
-    {
+    if (s.length() == 0) {
         sb = new string[1];
         sb[0] = "";
         return sb;
     }
     s.append(sep);
     s1 = string();
-    for (int i = 0; i < (int)s.length(); i++)
-    {
+    for (int i = 0; i < (int)s.length(); i++) {
         s0 = s.substr(i, 1);
-        if (s0 == sep)
-        {
+        if (s0 == sep) {
             j++;
-            if (j == 1)
-            {
+            if (j == 1) {
                 s1.append(s0);
                 if (j == 1) (*k)++;
                 //cout <<" j=1  k="<<*k<<"\n";
             }
-        }
-        else
-        {
+        } else {
             s1.append(s0);
             j = 0;
         }
         if ((*k) == m) break;
     }
     sb = new string[*k];
-    for (int i = 0; i < *k; i++)
-    {
+    for (int i = 0; i < *k; i++) {
         j0 = s1.find(sep);
         sb[i] = s1.substr(0, j0);
         s1 = s1.substr(j0 + 1, s.length());
@@ -220,42 +191,34 @@ string* splitwordsR(string s, string sep, int m, int* k)
     return sb;
 }
 
-void splitwordsR(string s, string sep, int m, vector<string>& resultat)
-{
+void splitwordsR(string s, string sep, int m, vector<string>& resultat) {
     int j = 0, j0;
     while (s.find(sep) == 0) s = s.substr(1);
     int k = 0;
     string s0, s1;
-    if (s.length() == 0)
-    {
+    if (s.length() == 0) {
         resultat.resize(0);
         return;
     }
     s.append(sep);
     s1 = string();
-    for (int i = 0; i < (int)s.length(); i++)
-    {
+    for (int i = 0; i < (int)s.length(); i++) {
         s0 = s.substr(i, 1);
-        if (s0 == sep)
-        {
+        if (s0 == sep) {
             j++;
-            if (j == 1)
-            {
+            if (j == 1) {
                 s1.append(s0);
                 if (j == 1) k++;
                 //cout <<" j=1  k="<<*k<<"\n";
             }
-        }
-        else
-        {
+        } else {
             s1.append(s0);
             j = 0;
         }
         if (k == m) break;
     }
     vector<string> sb(k);
-    for (int i = 0; i < k; i++)
-    {
+    for (int i = 0; i < k; i++) {
         j0 = s1.find(sep);
         sb[i] = s1.substr(0, j0);
         s1 = s1.substr(j0 + 1, s.length());
@@ -267,8 +230,7 @@ void splitwordsR(string s, string sep, int m, vector<string>& resultat)
 /**
  * Centre la chaîne s dans une chaîne de longeur totale k
  */
-string centre(string const& s, int k)
-{
+string centre(string const& s, int k) {
     int l = s.length();
     string sb = s;
     int av, ap;
@@ -286,18 +248,15 @@ string centre(string const& s, int k)
 /**
  * Renvoie la position de la chaîne st2 dans la chaîne st1
  */
-int strpos(char* st1, char* st2)
-{
+int strpos(char* st1, char* st2) {
     int i, p = 0, n1, n2;
     char* s;
     n1 = strlen(st1);
     n2 = strlen(st2);
-    if (n2 < n1)
-    {
+    if (n2 < n1) {
         s = new char[n2 + 1];
         s[strlen(st2)] = '\0';
-        for (p = 0; p < n1 - n2; p++)
-        {
+        for (p = 0; p < n1 - n2; p++) {
             for (i = 0; i < n2; i++) s[i] = st1[p + i];
             if (strcmp(s, st2) == 0) break;
         }
@@ -309,16 +268,14 @@ int strpos(char* st1, char* st2)
 /**
  * Calcule le nombre de décimales pour l'affichage d'un nombre compris entre mini et maxi
  */
-int ndecimales(double mini, double maxi)
-{
+int ndecimales(double mini, double maxi) {
     double p;
     int k;
     if (mini >= 1) return 0;
     if (maxi < mini) cout << "dans ndecimales maxi<mini \n";
     p = mini / 100;
     k = 0;
-    while (abs((long int)(p - round(p))) > 1E-12)
-    {
+    while (abs((long int)(p - round(p))) > 1E-12) {
         k++;
         p = 10 * p;
     }
@@ -328,8 +285,7 @@ int ndecimales(double mini, double maxi)
 /**
  * transforme un nombre entier en string
  */
-string IntToString(int number)
-{
+string IntToString(int number) {
     std::ostringstream oss;
     oss << number;
     return oss.str();
@@ -338,8 +294,7 @@ string IntToString(int number)
 /**
  * transforme un short int en string
  */
-string ShortIntToString(short int number)
-{
+string ShortIntToString(short int number) {
     std::ostringstream oss;
     oss << number;
     return oss.str();
@@ -348,18 +303,15 @@ string ShortIntToString(short int number)
 /**
  *  converti l'entier number en une string de 3 caractères.
  */
-string IntToString3(int number)
-{
+string IntToString3(int number) {
     stringstream ss;//create a stringstream
     ss << number;//add number to the stream
-    if ((number < 0) or (number > 999))
-    {
+    if ((number < 0) or (number > 999)) {
         throw std::range_error("You are trying to convert " + ss.str() +
                                " into a string of length 3. Not possible.");
     }
     string ans = ss.str();
-    while (ans.size() < 3)
-    {
+    while (ans.size() < 3) {
         ans = "0" + ans;
     }
     return ans;//return a string with the contents of the stream
@@ -368,8 +320,7 @@ string IntToString3(int number)
 /**
  * transforme un nombre flottant en string
  */
-string FloatToString(float number)
-{
+string FloatToString(float number) {
     std::ostringstream oss;
     oss << number;
     return oss.str();
@@ -379,8 +330,7 @@ string FloatToString(float number)
 /**
  * transforme un nombre <double> en string
  */
-string DoubleToString(double number)
-{
+string DoubleToString(double number) {
     std::ostringstream oss;
     oss << number;
     return oss.str();
@@ -389,8 +339,7 @@ string DoubleToString(double number)
 /**
  * transforme un nombre <long double> en string
  */
-string LongDoubleToString(long double number)
-{
+string LongDoubleToString(long double number) {
     std::ostringstream oss;
     oss << number;
     return oss.str();
@@ -399,13 +348,11 @@ string LongDoubleToString(long double number)
 /**
  * transforme un string en mettant en majuscules les lettres minuscules
  */
-string majuscules(string s)
-{
+string majuscules(string s) {
     string s2;
     char* c;
     c = new char[s.length() + 1];
-    for (int i = 0; i < (int)s.length(); i++)
-    {
+    for (int i = 0; i < (int)s.length(); i++) {
         c[i] = s[i];
         c[i] = toupper(c[i]);
     }
@@ -427,8 +374,7 @@ string majuscules(string s)
 /**
  * élimine les espaces et les tabulations bordant aux extrémités d'un string
  */
-string trim(string s)
-{
+string trim(string s) {
     while ((s.length() > 0)and (s.substr(0, 1) == " ")) s = s.substr(1, s.length() - 1);
     while ((s.length() > 0)and (s.substr(s.length() - 1, 1) == " ")) s = s.substr(0, s.length() - 1);
     while ((s.length() > 0)and (s.substr(0, 1) == " ")) s = s.substr(1, s.length() - 1);
@@ -439,16 +385,14 @@ string trim(string s)
 /**
  * arrondit un double à l'entier le plus proche
  */
-int arrondi(double a)
-{
+int arrondi(double a) {
     return (int)(a + 0.5);
 }
 
 /**
  * Formate en string une durée exprimée en double
  */
-string TimeToStr(double ti)
-{
+string TimeToStr(double ti) {
     string stime = "";
     //int m_s;
     int sec, min, hou, day;
@@ -461,8 +405,7 @@ string TimeToStr(double ti)
     sec = int(ti) ;
     ti = ti - (double)sec;
     //m_s = int(1000*ti);
-    if (day > 0)
-    {
+    if (day > 0) {
         stime = IntToString(day) + " day";
         if (day > 1) stime += "s "; else stime += " ";
     }
@@ -478,8 +421,7 @@ string TimeToStr(double ti)
 /**
  * Calcule la moyenne d'un vecteur de doubles
  */
-double cal_moy(int n, double* x)
-{
+double cal_moy(int n, double* x) {
     double sx = 0;
     for (int i = 0; i < n; i++) sx += x[i];
     if (n > 0) return sx / (double)n;
@@ -489,8 +431,7 @@ double cal_moy(int n, double* x)
 /**
  * Calcule la moyenne d'un vecteur de long doubles
  */
-long double cal_moyL(int n, long double* x)
-{
+long double cal_moyL(int n, long double* x) {
     long double sx = 0;
     for (int i = 0; i < n; i++) sx += x[i];
     if (n > 0) return sx / (long double)n;
@@ -500,19 +441,15 @@ long double cal_moyL(int n, long double* x)
 /**
  * Calcule le mode d'un vecteur de doubles
  */
-double cal_mode(int n, double* x)
-{
+double cal_mode(int n, double* x) {
     int l0 = 1, l2 = n, dl, lmin;
     double min;
     dl = (l2 - l0) / 2;
-    while ((x[l0 - 1] != x[l2 - 1])and (l0 != l2))
-    {
+    while ((x[l0 - 1] != x[l2 - 1])and (l0 != l2)) {
         min = x[l0 + dl - 1] - x[l0 - 1];
         lmin = l0;
-        for (int l = l0; l < l2 - dl; l++)
-        {
-            if (x[l + dl - 1] - x[l - 1] < min)
-            {
+        for (int l = l0; l < l2 - dl; l++) {
+            if (x[l + dl - 1] - x[l - 1] < min) {
                 min = x[l + dl - 1] - x[l - 1];
                 lmin = l;
             }
@@ -527,19 +464,15 @@ double cal_mode(int n, double* x)
 /**
  * Calcule le mode d'un vecteur de long doubles
  */
-long double cal_modeL(int n, long double* x)
-{
+long double cal_modeL(int n, long double* x) {
     int l0 = 1, l2 = n, dl, lmin;
     long double min;
     dl = (l2 - l0) / 2;
-    while ((x[l0 - 1] != x[l2 - 1])and (l0 != l2))
-    {
+    while ((x[l0 - 1] != x[l2 - 1])and (l0 != l2)) {
         min = x[l0 + dl - 1] - x[l0 - 1];
         lmin = l0;
-        for (int l = l0; l < l2 - dl; l++)
-        {
-            if (x[l + dl - 1] - x[l - 1] < min)
-            {
+        for (int l = l0; l < l2 - dl; l++) {
+            if (x[l + dl - 1] - x[l - 1] < min) {
                 min = x[l + dl - 1] - x[l - 1];
                 lmin = l;
             }
@@ -555,8 +488,7 @@ long double cal_modeL(int n, long double* x)
 /**
  * Calcule la médiane d'un vecteur de doubles
  */
-double cal_med(int n, double* x)
-{
+double cal_med(int n, double* x) {
     sort(&x[0], &x[n]);
     if ((n % 2) == 0) return 0.5 * (x[n / 2 - 1] + x[n / 2]);
     else return x[n / 2];
@@ -565,8 +497,7 @@ double cal_med(int n, double* x)
 /**
  * Calcule la médiane d'un vecteur de long doubles
  */
-long double cal_medL(int n, long double* x)
-{
+long double cal_medL(int n, long double* x) {
     sort(&x[0], &x[n]);
     if ((n % 2) == 0) return 0.5 * (x[n / 2 - 1] + x[n / 2]);
     else return x[n / 2];
@@ -575,21 +506,18 @@ long double cal_medL(int n, long double* x)
 /**
  * Calcule l'écart-type d'un vecteur de doubles
  */
-double cal_sd(int n, double* x)
-{
+double cal_sd(int n, double* x) {
     double sx, sx2, a = x[0];
     bool ident = true;
     int i = 1;
-    while ((ident) and (i < n))
-    {
+    while ((ident) and (i < n)) {
         ident = (x[i] == a);
         i++;
     }
     if (ident) return 0.0;
     sx = 0.0;
     sx2 = 0.0;
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         sx += x[i];
         sx2 += x[i] * x[i];
     }
@@ -600,21 +528,18 @@ double cal_sd(int n, double* x)
 /**
  * Calcule l'écart-type d'un vecteur de long doubles
  */
-long double cal_sdL(int n, long double* x)
-{
+long double cal_sdL(int n, long double* x) {
     long double sx, sx2, a = x[0];
     bool ident = true;
     int i = 1;
-    while ((ident) and (i < n))
-    {
+    while ((ident) and (i < n)) {
         ident = (x[i] == a);
         i++;
     }
     if (ident) return 0.0;
     sx = 0.0;
     sx2 = 0.0;
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         sx += x[i];
         sx2 += x[i] * x[i];
     }
@@ -625,21 +550,18 @@ long double cal_sdL(int n, long double* x)
 /**
  * Calcule la variance d'un vecteur de long doubles
  */
-long double cal_varL(int n, long double* x)
-{
+long double cal_varL(int n, long double* x) {
     long double sx, sx2, a = x[0];
     bool ident = true;
     int i = 1;
-    while ((ident) and (i < n))
-    {
+    while ((ident) and (i < n)) {
         ident = (x[i] == a);
         i++;
     }
     if (ident) return 0.0;
     sx = 0.0;
     sx2 = 0.0;
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         sx += x[i];
         sx2 += x[i] * x[i];
     }
@@ -650,16 +572,14 @@ long double cal_varL(int n, long double* x)
 /**
  * retourne le logarithme de la densité d'une loi normale de moyenne m et d'écart-type s
  */
-double lnormal_dens(double x, double m, double s)
-{
+double lnormal_dens(double x, double m, double s) {
     return -0.5 * ((x - m) / s) * ((x - m) / s) - log(s) - 0.5 * log(2 * PI);
 }
 
 /**
  * fonction utilisée par la fonction pnorm5
  */
-double do_del(double temp, double x)
-{ //calcule cum avec ccum=1.0-cum
+double do_del(double temp, double x) { //calcule cum avec ccum=1.0-cum
     double xsq, del;
     xsq = floor(x * 16.0) / 16.0;
     del = (x - xsq) * (x + xsq);
@@ -669,8 +589,7 @@ double do_del(double temp, double x)
 /**
  *
  */
-double pnorm5(double x, double mu, double sigma)
-{
+double pnorm5(double x, double mu, double sigma) {
     double a[5] = {2.2352520354606839287,161.02823106855587881,1067.6894854603709582,18154.981253343561249,0.065682337918207449113};
     double b[4] = {47.20258190468824187,976.09855173777669322,10260.932208618978205,45507.789335026729956};
     double c[9] = {0.39894151208813466764,8.8831497943883759412,93.506656132177855979,597.27027639480026226,2494.5375852903726711,6848.1904505362823326,11602.651437647350124,9842.7148383839780218,1.0765576773720192317e-8};
@@ -681,56 +600,43 @@ double pnorm5(double x, double mu, double sigma)
     double sqrt2PI = 2.506628274631000502415765284811;
     double pp, xden, xnum, temp, eps, xsq, y, cum;
 
-    if (sigma <= 0.0)
-    {
+    if (sigma <= 0.0) {
         if (x < mu) return 0.0; else return 1.0;
     }
     pp = (x - mu) / sigma;
     if (pp < 0) y = -pp; else y = pp;
     eps = 0.5 * std::numeric_limits<double>::epsilon();
-    if (y <= 0.67448975)
-    {
-        if (y > eps)
-        {
+    if (y <= 0.67448975) {
+        if (y > eps) {
             xsq = pp * pp;
             xnum = a[4] * xsq;
             xden = xsq;
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 xnum = (xnum + a[i]) * xsq;
                 xden = (xden + b[i]) * xsq;
             }
-        }
-        else
-        {
+        } else {
             xnum = 0.0;
             xden = 0.0;
         }
         temp = pp * (xnum + a[3]) / (xden + b[3]);
         cum = 0.5 + temp;
-    }
-    else
-    {
-        if (y <= sqrt(32.0))
-        {
+    } else {
+        if (y <= sqrt(32.0)) {
             xnum = c[8] * y;
             xden = y;
-            for (int i = 0; i < 7; i++)
-            {
+            for (int i = 0; i < 7; i++) {
                 xnum = (xnum + c[i]) * y;
                 xden = (xden + d[i]) * y;
             }
             temp = (xnum + c[7]) / (xden + d[7]);
             cum = do_del(temp, y);
             if (pp > 0.0) cum = 1.0 - cum;
-        }
-        else
-        {
+        } else {
             xsq = 1.0 / (pp * pp);
             xnum = p[5] * xsq;
             xden = xsq;
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < 4; i++) {
                 xnum = (xnum + p[i]) * xsq;
                 xden = (xden + q[i]) * xsq;
             }
@@ -744,8 +650,7 @@ double pnorm5(double x, double mu, double sigma)
 }
 
 
-rescov covarianceponderee(int nl, int nc, long double** A, long double* w)
-{
+rescov covarianceponderee(int nl, int nc, long double** A, long double* w) {
     rescov mcv;
     mcv.n = nc;
     mcv.mu = new long double[nc];
@@ -759,20 +664,17 @@ rescov covarianceponderee(int nl, int nc, long double** A, long double* w)
     for (int k = 0; k < nl; k++) wn[k] = w[k] / sw;
     sw2 = 0.0;
     for (int k = 0; k < nl; k++) sw2 += wn[k] * wn[k];
-    for (int i = 0; i < nc; i++)
-    {
+    for (int i = 0; i < nc; i++) {
         mcv.mu[i] = 0.0;
         for (int k = 0; k < nl; k++) mcv.mu[i] += wn[k] * A[k][i];
         //mu[i]=sx[i];
-        for (int j = 0; j <= i; j++)
-        {
+        for (int j = 0; j <= i; j++) {
             mcv.cov[i][j] = 0.0;
             for (int k = 0; k < nl; k++) mcv.cov[i][j] += wn[k] * A[k][i] * A[k][j];
             mcv.cov[j][i] = mcv.cov[i][j];
         }
     }
-    for (int i = 0; i < nc; i++)
-    {
+    for (int i = 0; i < nc; i++) {
         for (int j = 0; j < nc; j++) mcv.cov[i][j] = (mcv.cov[i][j] - mcv.mu[i] * mcv.mu[j]) / (1.0 - sw2);
     }
     delete []wn;
@@ -780,8 +682,7 @@ rescov covarianceponderee(int nl, int nc, long double** A, long double* w)
 }
 
 
-resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long double prop)
-{
+resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long double prop) {
     resAFD res;
     rescov mcv;
     res.proportion = prop;
@@ -794,20 +695,15 @@ resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long d
     numpop.push_back(pop[0]);
     if (not nk.empty()) nk.clear();
     nk.push_back(1);
-    for (int i = 1; i < nl; i++)
-    {
+    for (int i = 1; i < nl; i++) {
         trouve = false;
-        for (j = 0; j < (int)numpop.size(); j++)
-        {
+        for (j = 0; j < (int)numpop.size(); j++) {
             trouve = (numpop[j] == pop[i]);
             if (trouve) break;
         }
-        if (trouve)
-        {
+        if (trouve) {
             nk[j]++;
-        }
-        else
-        {
+        } else {
             numpop.push_back(pop[i]);
             nk.push_back(1);
         }
@@ -815,8 +711,7 @@ resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long d
     snk = 0;
     for (size_t i = 0; i < nk.size(); i++) snk += nk[i];
     //cout<<"apres calcul snk\n";
-    if (nl != snk)
-    {
+    if (nl != snk) {
         cout << "dans AFD nl(" << nl << ") !=snk(" << snk << ")\n";
         exit(1);
     }
@@ -843,31 +738,25 @@ resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long d
     for (size_t i = 0; i < numpop.size(); i++) mk[i] = new long double[nc];
     wk = new long double[numpop.size()];
     //cout<<"numpop.size="<<numpop.size()<<"\n";
-    for (size_t k = 0; k < numpop.size(); k++)
-    {
+    for (size_t k = 0; k < numpop.size(); k++) {
         wk[k] = 0.0;
-        for (int i = 0; i < nl; i++)
-        {
-            if (pop[i] == numpop[k])
-            {
+        for (int i = 0; i < nl; i++) {
+            if (pop[i] == numpop[k]) {
                 wk[k] += w[i];
             }
         }
         //cout<<"wk["<<k<<"]="<<wk[k]<<"\n";
-        for (j = 0; j < nc; j++)
-        {
+        for (j = 0; j < nc; j++) {
             mk[k][j] = 0.0;
             for (int i = 0; i < nl; i++) if (pop[i] == numpop[k]) mk[k][j] += w[i] * X[i][j] / wk[k];
         }
     }
     //cout<<"apres la premiere boucle\n";
-    for (size_t k = 0; k < numpop.size(); k++)
-    {
+    for (size_t k = 0; k < numpop.size(); k++) {
         //cout<<"k="<<k<<"\n";
         //cout<<"   w[k]="<<wk[k]<<"\n";
         co = sqrt(wk[k]);
-        for (j = 0; j < nc; j++)
-        {
+        for (j = 0; j < nc; j++) {
             matC[j][k] = co * (mk[k][j] - res.moy[j]);
             matCT[k][j] = matC[j][k];
             //cout<<"k="<<k<<"   j="<<j<<"   co="<<co<<"   mk[k][j]="<<mk[k][j]<<"   res.moy[j]="<<res.moy[j]<<"\n";
@@ -884,16 +773,13 @@ resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long d
     //cout<<"apres jaconi\n";
     res.vectprop = prodML(nc, numpop.size(), numpop.size(), prodML(nc, nc, numpop.size(), matTI, matC), res.vectprop);
     //tri des valeurs et vecteurs propres par ordre décroissant des valeurs propres
-    for (int i = 0; i < (int)numpop.size() - 1; i++)
-    {
+    for (int i = 0; i < (int)numpop.size() - 1; i++) {
         for (j = i + 1; j < (int)numpop.size(); j++)
-            if (valprop[i] < valprop[j])
-            {
+            if (valprop[i] < valprop[j]) {
                 piv = valprop[i];
                 valprop[i] = valprop[j];
                 valprop[j] = piv;
-                for (int k = 0; k < nc; k++)
-                {
+                for (int k = 0; k < nc; k++) {
                     piv = res.vectprop[k][i];
                     res.vectprop[k][i] = res.vectprop[k][j];
                     res.vectprop[k][j] = piv;
@@ -904,8 +790,7 @@ resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long d
     for (size_t i = 0; i < numpop.size(); i++) res.slambda += valprop[i];
     res.nlambda = 1;
     sl = valprop[0];
-    while ((res.nlambda < (int)numpop.size())and (sl / res.slambda < prop))
-    {
+    while ((res.nlambda < (int)numpop.size())and (sl / res.slambda < prop)) {
         res.slambda += valprop[res.nlambda];
         res.nlambda++;
     }
@@ -913,10 +798,8 @@ resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long d
     for (int i = 0; i < res.nlambda; i++) res.lambda[i] = valprop[i];
     res.princomp = new long double*[nl];
     for (int i = 0; i < nl; i++) res.princomp[i] = new long double[res.nlambda];
-    for (int i = 0; i < nl; i++)
-    {
-        for (j = 0; j < res.nlambda; j++)
-        {
+    for (int i = 0; i < nl; i++) {
+        for (j = 0; j < res.nlambda; j++) {
             res.princomp[i][j] = 0.0;
             for (int k = 0; k < nc; k++) res.princomp[i][j] += (X[i][k] - res.moy[k]) * res.vectprop[k][j];
         }
@@ -940,10 +823,8 @@ resAFD AFD(int nl, int nc, int* pop, long double* omega, long double** X, long d
     return res;
 }
 
-int PGCD(int a, int b)
-{
-    while (1)
-    {
+int PGCD(int a, int b) {
+    while (1) {
         a = a % b;
         if (a == 0) return b;
         b = b % a;
@@ -951,28 +832,23 @@ int PGCD(int a, int b)
     }
 }
 
-int PPCM(int a, int b)
-{
+int PPCM(int a, int b) {
     return a * b / PGCD(a, b);
 }
 
-bool compC::operator()(const matC& lhs, const matC& rhs) const
-{
+bool compC::operator()(const matC& lhs, const matC& rhs) const {
     return lhs.v < rhs.v;
 }
 
-long double DCVM(int n, int m, long double* x, long double* y)
-{
+long double DCVM(int n, int m, long double* x, long double* y) {
     matC* A;
     A = new matC[n + m];
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         A[i].v = x[i];
         A[i].num = 0;
         A[i].ind = i;
     }
-    for (int i = 0; i < m; i++)
-    {
+    for (int i = 0; i < m; i++) {
         A[n + i].v = y[i];
         A[n + i].num = 1;
         A[n + i].ind = i;
@@ -982,8 +858,7 @@ long double DCVM(int n, int m, long double* x, long double* y)
     L = (long double)PPCM(n, m);
     a = L / (long double)n;
     b = L / (long double)m;
-    for (int i = 0; i < m + n; i++)
-    {
+    for (int i = 0; i < m + n; i++) {
         if (A[i].num == 0) h += 1;
         else h -= 1;
         sh += sqr(h);
@@ -994,20 +869,17 @@ long double DCVM(int n, int m, long double* x, long double* y)
     return d;
 }
 
-void combrank2(int n, int m, long double* x, long double* y, long double* rangx, long double* rangy)
-{
+void combrank2(int n, int m, long double* x, long double* y, long double* rangx, long double* rangy) {
     matC* A;
     int k, i0, i1;
     //      long double rmin,rmax;
     A = new matC[n + m];
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         A[i].v = x[i];
         A[i].num = 0;
         A[i].ind = i;
     }
-    for (int i = 0; i < m; i++)
-    {
+    for (int i = 0; i < m; i++) {
         A[n + i].v = y[i];
         A[n + i].num = 1;
         A[n + i].ind = i;
@@ -1017,11 +889,9 @@ void combrank2(int n, int m, long double* x, long double* y, long double* rangx,
     i1 = 0;
     for (int i = 0; i < n; i++) rangx[i] = 0.0;
     for (int i = 0; i < m; i++) rangy[i] = 0.0;
-    while (i1 < n + m)
-    {
+    while (i1 < n + m) {
         while ((i1 < n + m - 1)and (A[i1 + 1].v == A[i0].v)) i1++;
-        for (int i = i0; i <= i1; i++)
-        {
+        for (int i = i0; i <= i1; i++) {
             k = A[i].ind;
             if (A[i].num == 0) rangx[k] = 1.0 + 0.5 * (long double)(i0 + i1);
             else rangy[k] = 1.0 + 0.5 * (long double)(i0 + i1);
@@ -1033,13 +903,10 @@ void combrank2(int n, int m, long double* x, long double* y, long double* rangx,
 }
 
 
-void ecritTable(int** table, int m, int n)
-{
+void ecritTable(int** table, int m, int n) {
     cout << endl << endl;
-    for (int i = 0; i < m; ++i)
-    {
-        for (int j = 0; j < n; ++j)
-        {
+    for (int i = 0; i < m; ++i) {
+        for (int j = 0; j < n; ++j) {
             cout << table[i][j] << " ";
         }
         cout << endl;

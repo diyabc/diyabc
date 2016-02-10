@@ -30,64 +30,53 @@ extern string progressfilename, path;
 extern vector<ScenarioC> scenario;
 
 
-bool operator<(const enregC& lhs, const enregC& rhs)
-{
+bool operator<(const enregC& lhs, const enregC& rhs) {
     return lhs.dist < rhs.dist;
 }
 
 
-void ReftableC::sethistparamname(HeaderC const& header)
-{
+void ReftableC::sethistparamname(HeaderC const& header) {
     cout << "debut de sethistparamname\n";
     int nparamvar = 0, pp;
     this->nparamut = header.nparamut;
     cout << "nparamut=" << header.nparamut << "    nscenarios=" << scenario.size() << "\n";
-    if (this->nhistparam != NULL)
-    {
+    if (this->nhistparam != NULL) {
         delete [] nhistparam;
         nhistparam = NULL;
     }
     this->nhistparam = new int[scenario.size()];
     this->histparam.resize(scenario.size(), vector<HistParameterC>(0));
     this->histparamlength = scenario.size();
-    if (this->mutparam != NULL)
-    {
+    if (this->mutparam != NULL) {
         delete [] mutparam;
         mutparam = NULL;
     }
     if (header.nparamut > 0) this->mutparam = new MutParameterC[header.nparamut];
     cout << "avant la boucle des scenarios  nscenarios =" << scenario.size() << "\n";
     int imax = (int)scenario.size();
-    for (int i = 0; i < imax; i++)
-    {
+    for (int i = 0; i < imax; i++) {
         nparamvar = 0;
-        for (int p = 0; p < scenario[i].nparam; p++)
-            if (not scenario[i].histparam[p].prior.constant)
-                nparamvar++;
+        for (int p = 0; p < scenario[i].nparam; p++) if (not scenario[i].histparam[p].prior.constant) nparamvar++;
         cout << "scenario " << i << "   scenario[i].nparam=" << scenario[i].nparam << "  nparamvar=" << nparamvar << "\n";
         this->histparam[i].reserve(nparamvar + 2);
         this->nhistparam[i] = nparamvar;
         pp = -1;//cout<<header.scenario[i].nparam<<"\n";
         for (int p = 0; p < scenario[i].nparam; p++)
-            if (not scenario[i].histparam[p].prior.constant)
-            {
+            if (not scenario[i].histparam[p].prior.constant) {
                 pp++;
                 this->histparam[i].push_back(scenario[i].histparam[p]);
             }
-        if (not this->nparam.empty())
-        {
+        if (not this->nparam.empty()) {
             //cout<<"coucou this->nparam[i] = "<<this->nparam[i]<<"   nparamvar="<<nparamvar<<"   header.nparamut="<<header.nparamut<<"\n";
             {
-                if (this->nparam[i] != nparamvar + header.nparamut)
-                {
+                if (this->nparam[i] != nparamvar + header.nparamut) {
                     cout << "PROBLEME scenario " << i << "  nparam=" << this->nparam[i] << "  nparamvar=" << nparamvar << "   nmutparam=" << nparamut << "\n";
                     exit(1);
                 }
             }
         }
         //cout<<"coucou2\n";
-        if (header.nparamut > 0)
-        {
+        if (header.nparamut > 0) {
             //cout<<header.mutparam[0].name<<"\n";
             for (int p = 0; p < this->nparamut; p++) this->mutparam[p] = header.mutparam[p];
         }
@@ -95,20 +84,17 @@ void ReftableC::sethistparamname(HeaderC const& header)
     cout << "fin de sethistparamname\n";
 }
 
-int ReftableC::readheader(string fname, string flogname, string freftabscen)
-{
+int ReftableC::readheader(string fname, string flogname, string freftabscen) {
     //cout <<"debut de readheader\n";
     fstream f0(fname.c_str(), ios::in | ios::out | ios::binary);
     this->filename = fname;
     this->filelog = flogname;
     this->filerefscen = freftabscen;
     cout << "dans rt.readheader this->filerefscen = " << this->filerefscen << "\n";
-    if (!f0)
-    {
+    if (!f0) {
         return 1;
     } //fichier non ouvrable e.g. inexistant
-    else
-    {
+    else {
         //cout<<"fichier OK\n";
         f0.seekg(0);
         f0.read((char*)&(this->nrec), sizeof(int));
@@ -116,14 +102,12 @@ int ReftableC::readheader(string fname, string flogname, string freftabscen)
         //cout <<"readheader.readheader    nscen = "<<this->nscen<<"   nrec="<<this->nrec<<"\n";
         if (not nrecscen.empty()) nrecscen.clear();
         this->nrecscen = vector<int>(this->nscen);
-        for (int i = 0; i < this->nscen; i++)
-        {
+        for (int i = 0; i < this->nscen; i++) {
             f0.read((char*)&(this->nrecscen[i]), sizeof(int));/*cout<<"nrecscen["<<i<<"] = "<<this->nrecscen[i]<<"\n";*/
         }
         if (not this->nparam.empty()) this->nparam.clear();
         this->nparam = vector<int>(nscen);
-        for (int i = 0; i < this->nscen; i++)
-        {
+        for (int i = 0; i < this->nscen; i++) {
             f0.read((char*)&(this->nparam[i]), sizeof(int));
             cout << "nparam[" << i << "] = " << this->nparam[i] << "\n";
         }
@@ -134,12 +118,10 @@ int ReftableC::readheader(string fname, string flogname, string freftabscen)
     }
 }
 
-int ReftableC::writeheader()
-{
+int ReftableC::writeheader() {
     int nb;
     ofstream f1(this->filename.c_str(), ios::out | ios::binary);
-    if (!f1.is_open())
-    {
+    if (!f1.is_open()) {
         throw std::runtime_error("Unable to open " + this->filename + "\n"); //return 1;
     } //fichier impossible à ouvrir
     nb = this->nrec;
@@ -147,13 +129,11 @@ int ReftableC::writeheader()
     //cout <<"reftable.writeheader     nscen = "<<this->nscen<<"\n";
     nb = this->nscen;
     f1.write((char*)&nb, sizeof(int));
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         nb = this->nrecscen[i];
         f1.write((char*)&nb, sizeof(int));
     }
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         nb = this->nparam[i];
         f1.write((char*)&nb, sizeof(int));
         cout << "nparam=" << this->nparam[i] << "\n";
@@ -164,19 +144,16 @@ int ReftableC::writeheader()
     return 0; //retour normal
 }
 
-int ReftableC::readrecord(enregC* enr)
-{
+int ReftableC::readrecord(enregC* enr) {
     int bidon = 0;
     //cout<<"debut de readrecord\n";
     //try {
-    if (this->fifo.eof())
-    {
+    if (this->fifo.eof()) {
         return 1;
     }
     this->fifo.read((char*)&(enr->numscen), sizeof(int));
 
-    if (enr->numscen > this->nscen)
-    {
+    if (enr->numscen > this->nscen) {
         cout << "\nThe reftable.bin file is corrupted. numscen=" << enr->numscen << "\n";
         FILE* flog;
         flog = fopen(progressfilename.c_str(), "w");
@@ -189,14 +166,12 @@ int ReftableC::readrecord(enregC* enr)
     }
     //throw(1);
     //cout<<"numscen = "<<enr->numscen<<"\n";
-    for (int i = 0; i < this->nparam[enr->numscen - 1]; i++)
-    {
+    for (int i = 0; i < this->nparam[enr->numscen - 1]; i++) {
         this->fifo.read((char*)&(enr->param[i]), sizeof(float));/*cout<<enr->param[i]<<"  ";*/
     }
     //throw(2);
     //cout <<"\n";
-    for (int i = 0; i < this->nstat; i++)
-    {
+    for (int i = 0; i < this->nstat; i++) {
         this->fifo.read((char*)&(enr->stat[i]), sizeof(float));/*cout<<enr->stat[i]<<"  ";if ((i%10)==9) cout<<"\n";*/
     }
     //throw(3);
@@ -215,8 +190,7 @@ int ReftableC::readrecord(enregC* enr)
     return bidon;
 }
 
-int ReftableC::readparam(vector<float>& param)
-{
+int ReftableC::readparam(vector<float>& param) {
     int numscen;
     float pa;
     this->fifo.read((char*)&(numscen), sizeof(int));
@@ -228,13 +202,10 @@ int ReftableC::readparam(vector<float>& param)
     return numscen;
 }
 
-int ReftableC::writerecords(int nenr, enregC* enr)
-{
+int ReftableC::writerecords(int nenr, enregC* enr) {
     int bidon;
-    for (int i = 0; i < nenr; i++)
-    {
-        if (enr[i].message != "OK")
-        {
+    for (int i = 0; i < nenr; i++) {
+        if (enr[i].message != "OK") {
             ofstream f1(this->filelog.c_str(), ios::out);
             f1 << enr[i].message << "\n";
             f1.close();
@@ -250,8 +221,7 @@ int ReftableC::writerecords(int nenr, enregC* enr)
     //cout<<"avant le seekp\n";fflush(stdin);
     this->fifo.seekp(0, ios::end);
     //cout<<"apres le seekp\n";fflush(stdin);
-    for (int i = 0; i < nenr; i++)
-    {
+    for (int i = 0; i < nenr; i++) {
         this->fifo.write((char*)&(enr[i].numscen), sizeof(int));
         nrs[enr[i].numscen - 1]++;
         for (int j = 0; j < this->nparam[enr[i].numscen - 1]; j++) this->fifo.write((char*)&(enr[i].param[j]), sizeof(float));
@@ -273,8 +243,7 @@ int ReftableC::writerecords(int nenr, enregC* enr)
     this->fifo.write((char*)&nb, sizeof(int));
     //cout<< "position avant écriture des this->nrecscen: "<<this->fifo.tellg()<<"\n";
 
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         nb = this->nrecscen[i] + nrs[i];
         this->fifo.write((char*)&nb, sizeof(int));
     }
@@ -284,8 +253,7 @@ int ReftableC::writerecords(int nenr, enregC* enr)
     f1 << TimeToStr(remtime) << "\n";
     f1.close();
     ofstream f2(this->filerefscen.c_str(), ios::out);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         nb = this->nrecscen[i] + nrs[i];
         f2 << "scenario " << i + 1 << "   " << nb << " records\n";
     }
@@ -294,15 +262,13 @@ int ReftableC::writerecords(int nenr, enregC* enr)
     return 0;
 }
 
-int ReftableC::openfile()
-{
+int ReftableC::openfile() {
     cout << "\nOuverture du fichier\n" << this->filename << "\n\n";
     this->fifo.open(this->filename.c_str(), ios::in | ios::out | ios::binary);
     return 0;
 }
 
-int ReftableC::openfile2()
-{
+int ReftableC::openfile2() {
     this->fifo.open(this->filename.c_str(), ios::in | ios::binary);
     this->fifo.seekg(0);
     this->fifo.read((char*)&(this->nrec), sizeof(int));
@@ -310,14 +276,12 @@ int ReftableC::openfile2()
     //cout <<"dans openfile2 nrec = "<<nrec<<"\n";
     if (not nrecscen.empty()) nrecscen.clear();
     this->nrecscen = vector<int>(this->nscen);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         this->fifo.read((char*)&(this->nrecscen[i]), sizeof(int));/*cout<<"nrecscen["<<i<<"] = "<<this->nrecscen[i]<<"\n";*/
     }
     if (not this->nparam.empty()) this->nparam.clear();
     this->nparam = vector<int>(nscen);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         this->fifo.read((char*)&(this->nparam[i]), sizeof(int));/*cout<<"nparam["<<i<<"] = "<<this->nparam[i]<<"\n";*/
     }
     this->fifo.read((char*)&(this->nstat), sizeof(int));//cout<<"nstat = "<<this->nstat<<"\n";
@@ -326,16 +290,14 @@ int ReftableC::openfile2()
     return 0;
 }
 
-int ReftableC::testfile(string reftablefilename, int npart)
-{
+int ReftableC::testfile(string reftablefilename, int npart) {
     bool corrompu = false;
     cout << "\nverification de l'integrite de la table de reference \nfichier" << reftablefilename << "\n";
     this->fifo.open(reftablefilename.c_str(), ios::in | ios::out | ios::binary);
     this->fifo.seekg(0);
     this->fifo.read((char*)&(this->nrec), sizeof(int));
     cout << "nrec = " << this->nrec << "\n";
-    if (this->nrec < 1)
-    {
+    if (this->nrec < 1) {
         this->fifo.close();
         cout << "fichier reftable.bin vide\n\n";
         return 1;
@@ -343,14 +305,12 @@ int ReftableC::testfile(string reftablefilename, int npart)
     this->fifo.read((char*)&(this->nscen), sizeof(int));
     if (not this->nrecscen.empty()) nrecscen.clear();
     this->nrecscen = vector<int>(this->nscen);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         this->fifo.read((char*)&(this->nrecscen[i]), sizeof(int));/*cout<<"nrecscen["<<i<<"] = "<<this->nrecscen[i]<<"\n";*/
     }
     if (not this->nparam.empty()) this->nparam.clear();
     this->nparam = vector<int>(nscen);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         this->fifo.read((char*)&(this->nparam[i]), sizeof(int));/*cout<<"nparam["<<i<<"] = "<<this->nparam[i]<<"\n";*/
     }
     this->fifo.read((char*)&(this->nstat), sizeof(int));//cout<<"nstat = "<<this->nstat<<"\n";
@@ -359,18 +319,14 @@ int ReftableC::testfile(string reftablefilename, int npart)
     int numscen, k, npmax;
     float x;
     cout << this->nscen << " scenario(s)\n";
-    for (k = 0; k < this->nrec; k++)
-    {
+    for (k = 0; k < this->nrec; k++) {
         if ((k % npart) == 0) cout << k + npart << "\r";
         this->fifo.read((char*)&(numscen), sizeof(int));
-        if (numscen <= this->nscen)
-        {
+        if (numscen <= this->nscen) {
             this->nrecscen[numscen - 1]++;
             for (int i = 0; i < this->nparam[numscen - 1]; i++) this->fifo.read((char*)&x, sizeof(float));
             for (int i = 0; i < this->nstat; i++) this->fifo.read((char*)&x, sizeof(float));
-        }
-        else
-        {
+        } else {
             corrompu = true;
             break;
         }
@@ -378,8 +334,7 @@ int ReftableC::testfile(string reftablefilename, int npart)
     cout << "\n";
     if (not nrecscen.empty()) this->nrecscen.clear();
     if (not this->nparam.empty()) this->nparam.clear();
-    if (not corrompu)
-    {
+    if (not corrompu) {
         this->fifo.close();
         cout << "fichier reftable OK\n\n";
         return 0;
@@ -396,14 +351,12 @@ int ReftableC::testfile(string reftablefilename, int npart)
     this->fifo.seekg(0);
     this->fifo.read((char*)&(k), sizeof(int));
     this->fifo.read((char*)&(this->nscen), sizeof(int));
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         this->fifo.read((char*)&(this->nrecscen[i]), sizeof(int));/*cout<<"nrecscen["<<i<<"] = "<<this->nrecscen[i]<<"\n";*/
     }
     if (not this->nparam.empty()) this->nparam.clear();
     this->nparam = vector<int>(nscen);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         this->fifo.read((char*)&(this->nparam[i]), sizeof(int));/*cout<<"nparam["<<i<<"] = "<<this->nparam[i]<<"\n";*/
     }
     this->fifo.read((char*)&(this->nstat), sizeof(int));//cout<<"nstat = "<<this->nstat<<"\n";
@@ -414,8 +367,7 @@ int ReftableC::testfile(string reftablefilename, int npart)
     cout << this->filename0 << "\n";
 
     ofstream f1(this->filename0.c_str(), ios::out | ios::binary);
-    if (!f1.is_open())
-    {
+    if (!f1.is_open()) {
         cout << "impossible d'ouvrir le fichier\n";
         exit(1);
     } //fichier impossible à ouvrir
@@ -424,28 +376,23 @@ int ReftableC::testfile(string reftablefilename, int npart)
     //cout <<"reftable.writeheader     nscen = "<<this->nscen<<"\n";
     nb = this->nscen;
     f1.write((char*)&nb, sizeof(int));
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         nb = this->nrecscen[i];
         f1.write((char*)&nb, sizeof(int));
     }
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         nb = this->nparam[i];
         f1.write((char*)&nb, sizeof(int));
     }
     nb = this->nstat;
     f1.write((char*)&nb, sizeof(int));
     cout << "fin d'ecriture de l'entete   nrec=" << this->nrec << "\n";
-    for (int h = 0; h < this->nrec; h++)
-    {
+    for (int h = 0; h < this->nrec; h++) {
         this->fifo.read((char*)&(numscen), sizeof(int));
-        for (int i = 0; i < this->nparam[numscen - 1]; i++)
-        {
+        for (int i = 0; i < this->nparam[numscen - 1]; i++) {
             this->fifo.read((char*)&(e.param[i]), sizeof(float));
         }
-        for (int i = 0; i < this->nstat; i++)
-        {
+        for (int i = 0; i < this->nstat; i++) {
             this->fifo.read((char*)&(e.stat[i]), sizeof(float));
         }
         f1.write((char*)&(numscen), sizeof(int));
@@ -466,8 +413,7 @@ int ReftableC::testfile(string reftablefilename, int npart)
 }
 
 
-int ReftableC::closefile()
-{
+int ReftableC::closefile() {
     int size;
     this->fifo.seekp(0, ios::end);
     size = this->fifo.tellp();
@@ -476,14 +422,12 @@ int ReftableC::closefile()
     return 0;
 }
 
-void ReftableC::bintotxt()
-{
+void ReftableC::bintotxt() {
     cout << "Starting bintotxt\n";
     enregC enr;
     int bidon, npm;
     fstream f0(this->filename.c_str(), ios::in | ios::binary);
-    if (not f0)
-    {
+    if (not f0) {
         cout << "no file to translate\n";
         exit(1);
     }
@@ -497,13 +441,11 @@ void ReftableC::bintotxt()
     printf("%d simulated data sets\n", this->nrec);
     fprintf(f1, "%d scenario(s)\n", this->nscen);
     printf("%d scenario(s)\n", this->nscen);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         fprintf(f1, "scenario %d : %d simulated data sets\n", i + 1, this->nrecscen[i]);
         printf("scenario %d : %d simulated data sets\n", i + 1, this->nrecscen[i]);
     }
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         fprintf(f1, "scenario %d : %d parameters\n", i + 1, this->nparam[i]);
         printf("scenario %d : %d parameters\n", i + 1, this->nparam[i]);
     }
@@ -513,13 +455,11 @@ void ReftableC::bintotxt()
     for (int i = 0; i < this->nscen; i++) if (npm < this->nparam[i]) npm = this->nparam[i];
     enr.param = vector<float>(npm);
     enr.stat = vector<float>(this->nstat);
-    while (not fifo.eof())
-    {
+    while (not fifo.eof()) {
         bidon = this->readrecord(&enr);
         if (bidon != 0) cout << "probleme à la lecture du reftable\n";
         fprintf(f1, "%3d    ", enr.numscen);//printf("%3d    ",enr.numscen);
-        for (int i = 0; i < this->nparam[enr.numscen - 1]; i++)
-        {
+        for (int i = 0; i < this->nparam[enr.numscen - 1]; i++) {
             //printf(" %12.4f",enr.param[i]);
             //if (enr.param[i]<1) fprintf(f1,"  %6.4e  ",enr.param[i]);
             //else fprintf(f1," %8.0f ",enr.param[i]);
@@ -535,14 +475,12 @@ void ReftableC::bintotxt()
     enr.stat.clear();
 }
 
-void ReftableC::bintotxt2()
-{
+void ReftableC::bintotxt2() {
     cout << "Starting bintotxt2\n";
     enregC enr;
     int bidon, npm;
     fstream f0(this->filename.c_str(), ios::in | ios::binary);
-    if (not f0)
-    {
+    if (not f0) {
         cout << "no file to translate\n";
         exit(1);
     }
@@ -556,13 +494,11 @@ void ReftableC::bintotxt2()
     printf("%d simulated data sets\n", this->nrec);
     fprintf(f1, "%d scenario(s)\n", this->nscen);
     printf("%d scenario(s)\n", this->nscen);
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         fprintf(f1, "scenario %d : %d simulated data sets\n", i + 1, this->nrecscen[i]);
         printf("scenario %d : %d simulated data sets\n", i + 1, this->nrecscen[i]);
     }
-    for (int i = 0; i < this->nscen; i++)
-    {
+    for (int i = 0; i < this->nscen; i++) {
         fprintf(f1, "scenario %d : %d parameters\n", i + 1, this->nparam[i]);
         printf("scenario %d : %d parameters\n", i + 1, this->nparam[i]);
     }
@@ -572,16 +508,14 @@ void ReftableC::bintotxt2()
     for (int i = 0; i < this->nscen; i++) if (npm < this->nparam[i]) npm = this->nparam[i];
     enr.param = vector<float>(npm);
     enr.stat = vector<float>(this->nstat);
-    while (not fifo.eof())
-    {
+    while (not fifo.eof()) {
         bidon = this->readrecord(&enr);
         if (bidon != 0) cout << "Problem when reading reftable\n";
         fprintf(f1, "%3d    ", enr.numscen);
         printf("%3d    ", enr.numscen);
         for (int i = 0; i < this->nstat; i++) fprintf(f1, " %10.4f", enr.stat[i]);
         fprintf(f1, "    ");
-        for (int i = 0; i < this->nparam[enr.numscen - 1]; i++)
-        {
+        for (int i = 0; i < this->nparam[enr.numscen - 1]; i++) {
             printf(" %12.4f", enr.param[i]);
             if (enr.param[i] < 1) fprintf(f1, "  %6.4f  ", enr.param[i]);
             else fprintf(f1, " %8.0f ", enr.param[i]);
@@ -593,8 +527,7 @@ void ReftableC::bintotxt2()
     enr.stat.clear();
 }
 
-void ReftableC::bintocsv(HeaderC const& header)
-{
+void ReftableC::bintocsv(HeaderC const& header) {
     enregC enr;
     int bidon, npm;
     ofstream f1, f2;
@@ -604,8 +537,7 @@ void ReftableC::bintocsv(HeaderC const& header)
     f2.open(nomfi.c_str());
     this->openfile2();
     cout << "header.nstat=" << header.nstat << "\n";
-    for (int i = 0; i < header.nstat; i++)
-    {
+    for (int i = 0; i < header.nstat; i++) {
         f1 << header.statname[i];
         if (i < header.nstat - 1) f1 << ",";
         else f1 << "\n";
@@ -614,13 +546,11 @@ void ReftableC::bintocsv(HeaderC const& header)
     for (int i = 0; i < this->nscen; i++) if (npm < this->nparam[i]) npm = this->nparam[i];
     enr.param = vector<float>(npm);
     enr.stat = vector<float>(this->nstat);
-    for (int j = 0; j < this->nrec; j++)
-    {
+    for (int j = 0; j < this->nrec; j++) {
         bidon = this->readrecord(&enr);
         if (bidon != 0) cout << "Problem when reading reftable\n";
         f2 << enr.numscen << "\n";
-        for (int i = 0; i < header.nstat; i++)
-        {
+        for (int i = 0; i < header.nstat; i++) {
             f1 << enr.stat[i];
             if (i < header.nstat - 1) f1 << ",";
             else f1 << "\n";
@@ -633,8 +563,7 @@ void ReftableC::bintocsv(HeaderC const& header)
     enr.stat.clear();
 }
 
-void ReftableC::concat()
-{
+void ReftableC::concat() {
     DIR* dir = opendir(path.c_str());
     struct dirent* entry;
     cout << "Starting the program concat2\n";
@@ -643,11 +572,9 @@ void ReftableC::concat()
     string dname;
     int nf, ns, size, nrecc;
     vector<int> nrecscenc;
-    while ((entry = readdir(dir)) != NULL)
-    {
+    while ((entry = readdir(dir)) != NULL) {
         dname = entry->d_name;
-        if ((dname.find("reftable_") != string::npos)and (dname.find(".bin") != string::npos))
-        {
+        if ((dname.find("reftable_") != string::npos)and (dname.find(".bin") != string::npos)) {
             pathreftabname.push_back(path + entry->d_name);
             reftabname.push_back(entry->d_name);
         };
@@ -655,18 +582,15 @@ void ReftableC::concat()
     nf = (int)reftabname.size();
     cout << "Looking for files with name structure reftable_$$.bin.\n";
     cout << nf << " files found\n";
-    if (nf == 0)
-    {
+    if (nf == 0) {
         cout << "No files found with name structure reftable_$$.bin. Program terminated.\n";
         exit(1);
     }
-    if (nf == 1)
-    {
+    if (nf == 1) {
         cout << "Only one file found with name structure reftable_$$.bin. Concatenation not possible. Program terminated.\n";
         exit(1);
     }
-    if (nf > 1)
-    {
+    if (nf > 1) {
         fstream f1;
         f1.open(this->filename.c_str(), ios::out | ios::binary);
         cout << "Reading the file " << reftabname[0] << "\n";
@@ -683,8 +607,7 @@ void ReftableC::concat()
         f1.write((char*)&(this->nscen), sizeof(int));
         this->nrecscen = vector<int>(this->nscen);
         nrecscenc = vector<int>(this->nscen);
-        for (int i = 0; i < this->nscen; i++)
-        {
+        for (int i = 0; i < this->nscen; i++) {
             f0.read((char*)&(this->nrecscen[i]), sizeof(int));
             size -= 4;
         }
@@ -693,8 +616,7 @@ void ReftableC::concat()
         f1.write(buffer, size);
         f0.close();//remove(reftabname[0].c_str());
         delete [] buffer;
-        for (int ifich = 1; ifich < nf; ifich++)
-        {
+        for (int ifich = 1; ifich < nf; ifich++) {
             cout << "Reading the file " << reftabname[ifich] << "\n";
             fstream f0(pathreftabname[ifich].c_str(), ios::in | ios::binary);
             f0.seekp(0, ios::end);
@@ -706,14 +628,12 @@ void ReftableC::concat()
             size -= 4;
             f0.read((char*)&(ns), sizeof(int));
             size -= 4;
-            for (int i = 0; i < ns; i++)
-            {
+            for (int i = 0; i < ns; i++) {
                 f0.read((char*)&(nrecscenc[i]), sizeof(int));
                 size -= 4;
                 this->nrecscen[i] += nrecscenc[i];
             }
-            for (int i = 0; i < ns; i++)
-            {
+            for (int i = 0; i < ns; i++) {
                 f0.read((char*)&(nrecscenc[i]), sizeof(int));
                 size -= 4;/*cout<<"scenario "<<i<<"   nparam = "<<nrecscenc[i]<<"\n";*/
             }
@@ -740,8 +660,7 @@ void ReftableC::concat()
     if (not nrecscenc.empty()) nrecscenc.clear();
 }
 
-void ReftableC::concat2()
-{
+void ReftableC::concat2() {
     DIR* dir = opendir(path.c_str());
     struct dirent* entry;
     cout << "Starting the program concat2\n";
@@ -754,11 +673,9 @@ void ReftableC::concat2()
     int pos = refname.find("RF.bin");
     refname = refname.substr(0, pos + 2) + "_";
     cout << "refname=" << refname << "\n";
-    while ((entry = readdir(dir)) != NULL)
-    {
+    while ((entry = readdir(dir)) != NULL) {
         curname = path + entry->d_name;
-        if (curname.find(refname) != string::npos)
-        {
+        if (curname.find(refname) != string::npos) {
             pathreftabname.push_back(curname);
             reftabname.push_back(entry->d_name);
         };
@@ -766,18 +683,15 @@ void ReftableC::concat2()
     nf = (int)reftabname.size();
     cout << "Looking for files with name structure reftable_$$.bin.\n";
     cout << nf << " files found\n";
-    if (nf == 0)
-    {
+    if (nf == 0) {
         cout << "No file with name structure reftable_$$.bin have been found. Program terminated.\n";
         exit(1);
     }
-    if (nf == 1)
-    {
+    if (nf == 1) {
         cout << "Only one file with name structure reftable_$$.bin have been found. No concatenation possible. Program terminated.\n";
         exit(1);
     }
-    if (nf > 1)
-    {
+    if (nf > 1) {
         fstream f1;
         f1.open(this->filename.c_str(), ios::out | ios::binary);
         cout << "Reading file " << reftabname[0] << "\n";
@@ -794,8 +708,7 @@ void ReftableC::concat2()
         f1.write((char*)&(this->nscen), sizeof(int));
         this->nrecscen = vector<int>(this->nscen);
         nrecscenc = vector<int>(this->nscen);
-        for (int i = 0; i < this->nscen; i++)
-        {
+        for (int i = 0; i < this->nscen; i++) {
             f0.read((char*)&(this->nrecscen[i]), sizeof(int));
             size -= 4;
         }
@@ -804,8 +717,7 @@ void ReftableC::concat2()
         f1.write(buffer, size);
         f0.close();//remove(reftabname[0].c_str());
         delete [] buffer;
-        for (int ifich = 1; ifich < nf; ifich++)
-        {
+        for (int ifich = 1; ifich < nf; ifich++) {
             cout << "Reading file " << reftabname[ifich] << "\n";
             fstream f0(pathreftabname[ifich].c_str(), ios::in | ios::binary);
             f0.seekp(0, ios::end);
@@ -817,14 +729,12 @@ void ReftableC::concat2()
             size -= 4;
             f0.read((char*)&(ns), sizeof(int));
             size -= 4;
-            for (int i = 0; i < ns; i++)
-            {
+            for (int i = 0; i < ns; i++) {
                 f0.read((char*)&(nrecscenc[i]), sizeof(int));
                 size -= 4;
                 this->nrecscen[i] += nrecscenc[i];
             }
-            for (int i = 0; i < ns; i++)
-            {
+            for (int i = 0; i < ns; i++) {
                 f0.read((char*)&(nrecscenc[i]), sizeof(int));
                 size -= 4;/*cout<<"scenario "<<i<<"   nparam = "<<nrecscenc[i]<<"\n";*/
             }
@@ -855,8 +765,7 @@ void ReftableC::concat2()
  * calcule les variances des statistiques résumées
  * sur les 100000 premiers enregistrements de la table de référence
  */
-int ReftableC::cal_varstat()
-{
+int ReftableC::cal_varstat() {
     int nrecutil, iscen, nsOK, bidon, i;
     long double *sx, *sx2, x, an, nr, *min, *max;
     bool scenOK;
@@ -874,8 +783,7 @@ int ReftableC::cal_varstat()
     min = new long double[this->nstat];
     max = new long double[this->nstat];
     var_stat = new long double[this->nstat];
-    for (int j = 0; j < this->nstat; j++)
-    {
+    for (int j = 0; j < this->nstat; j++) {
         sx[j] = 0.0;
         sx2[j] = 0.0;
         min[j] = 10.0;
@@ -887,25 +795,21 @@ int ReftableC::cal_varstat()
     enr.param = vector<float>(this->nparamax);
     this->openfile2();
     i = 0;
-    while (i < nrecutil)
-    {
+    while (i < nrecutil) {
         //cout<<"avant readrecord\n";
         bidon = this->readrecord(&enr);
-        if (bidon != 0)cout << "problème dans la lecture du reftable\n";
+        if (bidon != 0) cout << "problème dans la lecture du reftable\n";
         //cout<<"coucou\n";
         scenOK = false;
         iscen = 0;
-        while ((not scenOK)and (iscen < this->nscenchoisi))
-        {
+        while ((not scenOK)and (iscen < this->nscenchoisi)) {
             scenOK = (enr.numscen == this->scenchoisi[iscen]);
             iscen++;
         }
         //if ((scenOK)and(i==0))for (int j=0;j<this->nstat;j++) cout<<enr.stat[j]<<"   ";cout<<"\n";
-        if (scenOK)
-        {
+        if (scenOK) {
             i++;
-            for (int j = 0; j < this->nstat; j++)
-            {
+            for (int j = 0; j < this->nstat; j++) {
                 x = (long double)enr.stat[j];
                 sx[j] += x;
                 sx2[j] += x * x;
@@ -920,8 +824,7 @@ int ReftableC::cal_varstat()
     this->closefile();
     nsOK = 0;
     an = (long double)nrecutil;
-    for (int j = 0; j < this->nstat; j++)
-    {
+    for (int j = 0; j < this->nstat; j++) {
         this->var_stat[j] = (sx2[j] - sx[j] * sx[j] / an) / (an - 1.0);
         if (this->var_stat[j] > 1E-20) nsOK++;
         //printf("sx2[%3d] = %12.8Le   sx[%3d] = %12.8Le\n",j,sx2[j],j,sx[j]);
@@ -939,14 +842,12 @@ int ReftableC::cal_varstat()
 /**
  * alloue la mémoire pour enrsel
  */
-void ReftableC::alloue_enrsel(int nsel)
-{
+void ReftableC::alloue_enrsel(int nsel) {
     int nparamax = 0;
     for (int i = 0; i < this->nscen; i++) if (this->nparam[i] > nparamax) nparamax = this->nparam[i];
     //cout<<"alloue_enrsel nsel="<<nsel<<"   nparamax="<<nparamax<<"\n";fflush(stdout);
     this->enrsel = new enregC[2 * nsel];
-    for (int i = 0; i < 2 * nsel; i++)
-    {
+    for (int i = 0; i < 2 * nsel; i++) {
         this->enrsel[i].param = vector<float>(nparamax);
         this->enrsel[i].stat = vector<float>(this->nstat);
     }
@@ -955,10 +856,8 @@ void ReftableC::alloue_enrsel(int nsel)
 /**
  * desalloue la mémoire de enrsel
  */
-void ReftableC::desalloue_enrsel(int nsel)
-{
-    for (int i = 0; i < 2 * nsel; i++)
-    {
+void ReftableC::desalloue_enrsel(int nsel) {
+    for (int i = 0; i < 2 * nsel; i++) {
         this->enrsel[i].param.clear();
         this->enrsel[i].stat.clear();
     }
@@ -970,8 +869,7 @@ void ReftableC::desalloue_enrsel(int nsel)
  * calcule la distance de chaque jeu de données simulé au jeu observé
  * et sélectionne les nsel enregistrements les plus proches (copiés dans enregC *enrsel)
  */
-void ReftableC::cal_dist(int nrec, int nsel, float* stat_obs, bool scenarioteste, bool allscenarios)
-{
+void ReftableC::cal_dist(int nrec, int nsel, float* stat_obs, bool scenarioteste, bool allscenarios) {
     int nn, nparamax, nrecOK = 0, iscen, bidon, step;
     bool firstloop = true, scenOK;
     long double diff, distmin = 1E100;
@@ -990,45 +888,33 @@ void ReftableC::cal_dist(int nrec, int nsel, float* stat_obs, bool scenarioteste
     //cout<<"avant openfile2() nrec="<<nrec<<"   nsel="<<nsel<<"\n";
     this->openfile2();
     cout << "apres openfile2()  firsloop=" << firstloop << "   nn=" << nn << "\n";
-    while ((this->nreclus < nrec)and (not fifo.eof()))
-    {
-        if (firstloop)
-        {
+    while ((this->nreclus < nrec)and (not fifo.eof())) {
+        if (firstloop) {
             nrecOK = 0;
             firstloop = false;
-        }
-        else nrecOK = nn;
-        while ((nrecOK < 2 * nn)and (this->nreclus < nrec))
-        {
-            do
-            {
+        } else nrecOK = nn;
+        while ((nrecOK < 2 * nn)and (this->nreclus < nrec)) {
+            do {
                 bidon = this->readrecord(&(this->enrsel[nrecOK]));
                 if (bidon != 0) cout << "bidon=" << bidon << "\n";
-            }
-            while (bidon != 0);
-            if (not allscenarios)
-            {
+            } while (bidon != 0);
+            if (not allscenarios) {
                 scenOK = false;
                 if (scenarioteste) scenOK = (this->enrsel[nrecOK].numscen == this->scenteste);
-                else
-                {
+                else {
                     iscen = 0;
-                    while ((not scenOK)and (iscen < this->nscenchoisi))
-                    {
+                    while ((not scenOK)and (iscen < this->nscenchoisi)) {
                         scenOK = (this->enrsel[nrecOK].numscen == this->scenchoisi[iscen]);
                         //if (scenOK) cout<<" SCENOK pour this->enrsel["<<nrecOK<<"].numscen = "<<this->enrsel[nrecOK].numscen<<"\n";
                         iscen++;
                     }
                 }
-            }
-            else scenOK = true;
-            if (scenOK)
-            {
+            } else scenOK = true;
+            if (scenOK) {
                 if (not scenarioteste) this->nreclus++; //cout<<"nreclus = "<<nreclus<<"   nrecOK="<<nrecOK<<"\n";
                 this->enrsel[nrecOK].dist = 0.0;
                 for (int j = 0; j < this->nstat; j++)
-                    if (this->var_stat[j] > 1E-20)
-                    {
+                    if (this->var_stat[j] > 1E-20) {
                         diff = (long double)(this->enrsel[nrecOK].stat[j] - stat_obs[j]);
                         this->enrsel[nrecOK].dist += diff * diff / this->var_stat[j];
                         //cout<<"this->enrsel[nrecOK].dist = "<<this->enrsel[nrecOK].dist<<"\n";
@@ -1036,8 +922,7 @@ void ReftableC::cal_dist(int nrec, int nsel, float* stat_obs, bool scenarioteste
                     }
                 //if (nreclus<10) cout<<"\n";
                 this->enrsel[nrecOK].dist = sqrt(this->enrsel[nrecOK].dist);
-                if (distmin > this->enrsel[nrecOK].dist)
-                {
+                if (distmin > this->enrsel[nrecOK].dist) {
                     distmin = this->enrsel[nrecOK].dist;/*cout <<"distmin="<<distmin<<"\n";*/
                 }
                 nrecOK++;
@@ -1046,8 +931,7 @@ void ReftableC::cal_dist(int nrec, int nsel, float* stat_obs, bool scenarioteste
             //cout<<"nrecOK="<<nrecOK<<"\n";
             if (scenarioteste) this->nreclus++;
             //cout<<"nreclus = "<<nreclus<<"\n";
-            if ((this->nreclus % step) == 0)
-            {
+            if ((this->nreclus % step) == 0) {
                 cout << "\rcal_dist : " << this->nreclus / step << "%";
                 fflush(stdout);
             }

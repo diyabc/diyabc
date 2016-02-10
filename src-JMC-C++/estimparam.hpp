@@ -12,15 +12,13 @@
 /**
  * définition de la densité d'un paramètre
  */
-struct pardensC
-{
+struct pardensC {
     long double *x, *priord, *postd;
     long double xmin, xmax, xdelta;
     int ncl;
 };
 
-struct parstatC
-{
+struct parstatC {
     double moy, med, mod, q025, q050, q250, q750, q950, q975;
 };
 

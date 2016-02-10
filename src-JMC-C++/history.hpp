@@ -12,13 +12,13 @@
 #include <iso646.h> // necessary to have and/or keywoards in MSVC
 
 
+
 #include "randomgenerator.hpp"
 
 /**
  * struct StatC :éléments de définition d'une summary statistic
  */
-struct StatC
-{
+struct StatC {
     int cat, samp, samp1, samp2, group, numsnp;
     long double val;
     //  StatC(StatC const & source);
@@ -28,8 +28,7 @@ struct StatC
 /**
  * Classe StatsnpC :éléments de définition d'une summary statistic pour les snp
  */
-class StatsnpC
-{
+class StatsnpC {
 public:
     int cat, samp, samp1, samp2, group, n;
     std::vector<long double> x, w;
@@ -37,29 +36,26 @@ public:
     bool defined;
     StatsnpC& operator=(StatsnpC const& source);
 
-    ~StatsnpC()
-        {
-            if (not x.empty()) x.clear();
-            if (not w.empty()) w.clear();
-        };
+    ~StatsnpC() {
+        if (not x.empty()) x.clear();
+        if (not w.empty()) w.clear();
+    };
 };
 
 
 /**
  * Classe PriorC :éléments de définition d'un prior de paramètre historique
  */
-class PriorC
-{
+class PriorC {
 public:
     std::string loi;
     double mini, maxi, mean, sdshape;
     int ndec;
     bool constant, fixed;
 
-    PriorC()
-        {
-            loi = "";
-        }
+    PriorC() {
+        loi = "";
+    }
 
     //  PriorC(PriorC const & source);
     PriorC& operator=(PriorC const& source);
@@ -72,17 +68,15 @@ public:
  * Classe ConditionC :éléments de définition d'une condition sur un couple de paramètres historiques
  */
 
-class ConditionC
-{
+class ConditionC {
 public:
     std::string param1, param2, operateur;
 
-    ConditionC()
-        {
-            param1 = "";
-            param2 = "";
-            operateur = "";
-        };
+    ConditionC() {
+        param1 = "";
+        param2 = "";
+        operateur = "";
+    };
 
     ConditionC& operator=(ConditionC const& source);
     void ecris();
@@ -92,8 +86,7 @@ public:
 /**
  * Classe EventC :éléments de définition d'un événement populationnel
  */
-class EventC
-{
+class EventC {
 public:
     char action; //"V"=VarNe "M"=Merge  "S"=Split  "E" = sample/echantillon
     int pop, pop1, pop2, sample, Ne, time;
@@ -119,8 +112,7 @@ public:
 /**
  * struct Ne0C : éléments de définition d'un effectif efficace à la ligne 1 d'un scénario
  */
-class Ne0C
-{
+class Ne0C {
 public:
     int val;
     std::string name;
@@ -131,18 +123,16 @@ public:
 /**
  * Classe HistparameterC :éléments de définition d'un paramètre historique
  */
-class HistParameterC
-{
+class HistParameterC {
 public:
     std::string name;
     int category; //0 pour N, 1 pour T et 2 pour A
     double value;
     PriorC prior;
 
-    HistParameterC()
-        {
-            name = "";
-        }
+    HistParameterC() {
+        name = "";
+    }
 
     //  HistParameterC(HistParameterC const & source);
     HistParameterC& operator=(HistParameterC const& source);
@@ -153,8 +143,7 @@ public:
 /**
  * struct LocusGroupC : éléments de définition d'un groupe de locus
  */
-class LocusGroupC
-{
+class LocusGroupC {
 public:
     std::vector<int> loc; // loc=numeros des locus du groupe
     int nloc, nstat, nstatsnp;
@@ -171,19 +160,17 @@ public:
     //  LocusGroupC(LocusGroupC const & source);
     LocusGroupC& operator=(LocusGroupC const& source);
 
-    ~LocusGroupC()
-        {
-            if (not loc.empty()) loc.clear();
-            if (not sumstat.empty()) sumstat.clear();
-            if (not sumstatsnp.empty()) sumstatsnp.clear();
-        };
+    ~LocusGroupC() {
+        if (not loc.empty()) loc.clear();
+        if (not sumstat.empty()) sumstat.clear();
+        if (not sumstatsnp.empty()) sumstatsnp.clear();
+    };
 };
 
 /**
  * Classe ScenarioC :éléments de définition d'un scénario
  */
-class ScenarioC
-{
+class ScenarioC {
 public:
     std::vector<double> paramvar;
     double prior_proba;
@@ -199,16 +186,15 @@ public:
     // ScenarioC(ScenarioC const & source);
     ScenarioC& operator=(ScenarioC const& source);
 
-    ~ScenarioC()
-        {
-            if (not paramvar.empty()) paramvar.clear();
-            if (not time_sample.empty()) time_sample.clear();
-            if (not stime_sample.empty()) stime_sample.clear();
-            if (not event.empty()) event.clear();
-            if (not ne0.empty()) ne0.clear();
-            if (not histparam.empty()) histparam.clear();
-            if (not condition.empty()) condition.clear();
-        };
+    ~ScenarioC() {
+        if (not paramvar.empty()) paramvar.clear();
+        if (not time_sample.empty()) time_sample.clear();
+        if (not stime_sample.empty()) stime_sample.clear();
+        if (not event.empty()) event.clear();
+        if (not ne0.empty()) ne0.clear();
+        if (not histparam.empty()) histparam.clear();
+        if (not condition.empty()) condition.clear();
+    };
 
     /* détermination du ou des paramètres contenus dans la std::string s */
     void detparam(std::string s, int cat);
@@ -224,8 +210,7 @@ public:
 /**
  * Struct SequenceBitC : éléments de définition d'un segment (vertical) de l'arbre de coalescence'
  */
-struct SequenceBitC
-{
+struct SequenceBitC {
     /* action = "C" (coal), "M" (merge), "S" (split), "A" (adsamp)
      */
     char action;
@@ -234,12 +219,11 @@ struct SequenceBitC
     double admixrate;
     std::vector<bool> popfull;
 
-    ~SequenceBitC()
-        {
-            //std::cout<<"passage dans le destructeur de SequenceBitC\n";
-            if (not popfull.empty()) popfull.clear();
-            //std::cout<<"   sortie du destructeur de SequenceBitC\n";
-        }
+    ~SequenceBitC() {
+        //std::cout<<"passage dans le destructeur de SequenceBitC\n";
+        if (not popfull.empty()) popfull.clear();
+        //std::cout<<"   sortie du destructeur de SequenceBitC\n";
+    }
 
     void ecris();
 };
@@ -248,49 +232,41 @@ struct SequenceBitC
 /**
  * Struct NodeC : éléments de définition d'un noeud de l'arbre de coalescence
  */
-struct NodeC
-{
+struct NodeC {
     int pop, sample, state, brhaut, ndat, nref;
     double height;
     std::string dna;
     bool OK;
 
-    ~NodeC()
-        {
-        }
+    ~NodeC() { }
 };
 
 /**
  * Struct BranchC : éléments de définition d'une branche de l'arbre de coalescence
  */
-struct BranchC
-{
+struct BranchC {
     int bottom, top, nmut;
     double length;
     bool OK, OKOK;
 
-    ~BranchC()
-        {
-        }
+    ~BranchC() { }
 };
 
 /**
  * Class GeneTreeC : éléments de définition d'un arbre de coalescence
  */
-class GeneTreeC
-{
+class GeneTreeC {
 public:
     std::vector<NodeC> nodes;
     std::vector<BranchC> branches;
     int nmutot, nnodes, nbranches, ngenes, nbOK, nbOKOK;
 
     /* Déclaration des méthodes */
-    ~GeneTreeC()
-        {
-            //std::cout<<"passage dans le destructeur de GeneTreeC\n";
-            if (not nodes.empty()) nodes.clear();
-            if (not branches.empty()) branches.clear();
-        };
+    ~GeneTreeC() {
+        //std::cout<<"passage dans le destructeur de GeneTreeC\n";
+        if (not nodes.empty()) nodes.clear();
+        if (not branches.empty()) branches.clear();
+    };
 
     GeneTreeC& operator=(GeneTreeC const& source);
     void ecris();

@@ -47,29 +47,26 @@ double seuil = 0.01;
 string nomrfmin = "foretmin.bin";
 vector<string> nomstat;
 vector<int> obs_estscen;
-vector<vector<int> > sim_estscen;
+vector<vector<int>> sim_estscen;
 resAFD afd;
 bool LD = false, flagk = false, flago = false;
 TreeC ctree;
-vector<vector<int> > nimportance;
-vector<vector<double> > importance;
+vector<vector<int>> nimportance;
+vector<vector<double>> importance;
 vector<double> obs_estim;
 
-bool operator <(const VMC& lhs, const VMC& rhs)
-{
+bool operator <(const VMC& lhs, const VMC& rhs) {
     return lhs.x < rhs.x;
 }
 
-bool operator <(const VMD& lhs, const VMD& rhs)
-{
+bool operator <(const VMD& lhs, const VMD& rhs) {
     return lhs.x > rhs.x;
 }
 
 /**
  * Definition de l'operateur = pour une instance de la classe NodeC
  */
-NodeRC& NodeRC::operator=(NodeRC const& source)
-{
+NodeRC& NodeRC::operator=(NodeRC const& source) {
     if (this == &source) return *this;
     int imax;
     this->pere = source.pere;
@@ -87,29 +84,25 @@ NodeRC& NodeRC::operator=(NodeRC const& source)
     this->delta = source.delta;
     this->terminal = source.terminal;
     if (not this->indvar.empty()) this->indvar.clear();
-    if (not source.indvar.empty())
-    {
+    if (not source.indvar.empty()) {
         this->indvar = vector<int>(source.indvar.size());
         imax = (int)source.indvar.size();
         for (int i = 0; i < imax; i++) this->indvar[i] = source.indvar[i];
     }
     if (not this->numset.empty()) this->numset.clear();
-    if (not source.numset.empty())
-    {
+    if (not source.numset.empty()) {
         this->numset = vector<int>(source.numset.size());
         imax = (int)source.numset.size();
         for (int i = 0; i < imax; i++) this->numset[i] = source.numset[i];
     }
     if (not this->numsetG.empty()) this->numsetG.clear();
-    if (not source.numsetG.empty())
-    {
+    if (not source.numsetG.empty()) {
         this->numsetG = vector<int>(source.numsetG.size());
         imax = (int)source.numsetG.size();
         for (int i = 0; i < imax; i++) this->numsetG[i] = source.numsetG[i];
     }
     if (not this->numsetD.empty()) this->numsetD.clear();
-    if (not source.numsetD.empty())
-    {
+    if (not source.numsetD.empty()) {
         this->numsetD = vector<int>(source.numsetD.size());
         imax = (int)source.numsetD.size();
         for (int i = 0; i < imax; i++) this->numsetD[i] = source.numsetD[i];
@@ -121,8 +114,7 @@ NodeRC& NodeRC::operator=(NodeRC const& source)
 /**
  * Definition de l'operateur = pour une instance de la classe TreeC
  */
-TreeC& TreeC::operator=(TreeC const& source)
-{
+TreeC& TreeC::operator=(TreeC const& source) {
     if (this == &source) return *this;
     int imax;
     this->nnodes = source.nnodes;
@@ -131,8 +123,7 @@ TreeC& TreeC::operator=(TreeC const& source)
     this->fin = source.fin;
     /// ON NE COPIE PAS LE GENERATEUR DE NOMBRES ALEATOIRES 
     if (not this->numset.empty()) this->numset.clear();
-    if (not source.numset.empty())
-    {
+    if (not source.numset.empty()) {
         this->numset = vector<int>(source.numset.size());
         imax = (int)source.numset.size();
         for (int i = 0; i < imax; i++) this->numset[i] = source.numset[i];
@@ -144,29 +135,25 @@ TreeC& TreeC::operator=(TreeC const& source)
       for (int i=0;i<imax;i++) this->indsel[i] = source.indsel[i];
       }*/
     if (not this->score.empty()) this->score.clear();
-    if (not source.score.empty())
-    {
+    if (not source.score.empty()) {
         this->score = vector<int>(source.score.size());
         imax = (int)source.score.size();
         for (int i = 0; i < imax; i++) this->score[i] = source.score[i];
     }
     if (not this->index.empty()) this->index.clear();
-    if (not source.index.empty())
-    {
+    if (not source.index.empty()) {
         this->index = vector<int>(source.index.size());
         imax = (int)source.index.size();
         for (int i = 0; i < imax; i++) this->index[i] = source.index[i];
     }
     if (not this->node.empty()) this->node.clear();
-    if (not source.node.empty())
-    {
+    if (not source.node.empty()) {
         this->node = vector<NodeRC>(source.node.size());
         imax = (int)source.node.size();
         for (int i = 0; i < imax; i++) this->node[i] = source.node[i];
     }
     if (not this->varused.empty()) this->varused.clear();
-    if (not source.varused.empty())
-    {
+    if (not source.varused.empty()) {
         this->varused = vector<bool>(source.varused.size());
         imax = (int)source.varused.size();
         for (int i = 0; i < imax; i++) this->varused[i] = source.varused[i];
@@ -177,8 +164,7 @@ TreeC& TreeC::operator=(TreeC const& source)
 /**
  * Definition de l'operateur = pour une instance de la classe RFC
  */
-RFC& RFC::operator=(RFC const& source)
-{
+RFC& RFC::operator=(RFC const& source) {
     if (this == &source) return *this;
     int imax, jmax;
     this->ntrees = source.ntrees;
@@ -191,8 +177,7 @@ RFC& RFC::operator=(RFC const& source)
     this->nstatclass = source.nstatclass;
     this->nbootsamp = source.nbootsamp;
     if (not this->model.empty()) this->model.clear();
-    if (not source.model.empty())
-    {
+    if (not source.model.empty()) {
         this->model = vector<int>(source.model.size());
         imax = (int)source.model.size();
         for (int i = 0; i < imax; i++) this->model[i] = source.model[i];
@@ -221,46 +206,36 @@ RFC& RFC::operator=(RFC const& source)
       }
       }
       }*/
-    if (not this->vote.empty())
-    {
+    if (not this->vote.empty()) {
         imax = (int)this->vote.size();
-        for (int i = 0; i < imax; i++)
-        {
+        for (int i = 0; i < imax; i++) {
             if (not this->vote[i].empty()) this->vote[i].clear();
         }
         this->vote.clear();
     }
-    if (not source.vote.empty())
-    {
-        this->vote = vector<vector<double> >(source.vote.size());
+    if (not source.vote.empty()) {
+        this->vote = vector<vector<double>>(source.vote.size());
         imax = (int)source.vote.size();
-        for (int i = 0; i < imax; i++)
-        {
-            if (not source.vote[i].empty())
-            {
+        for (int i = 0; i < imax; i++) {
+            if (not source.vote[i].empty()) {
                 this->vote[i] = vector<double>(source.vote[i].size());
                 jmax = (int)source.vote[i].size();
                 for (int j = 0; j < jmax; j++) this->vote[i][j] = source.vote[i][j];
             }
         }
     }
-    if (not this->stat.empty())
-    {
+    if (not this->stat.empty()) {
         imax = (int)this->stat.size();
-        for (int i = 0; i < imax; i++)
-        {
+        for (int i = 0; i < imax; i++) {
             if (not this->stat[i].empty()) this->stat[i].clear();
         }
         this->stat.clear();
     }
-    if (not source.stat.empty())
-    {
-        this->stat = vector<vector<double> >(source.stat.size());
+    if (not source.stat.empty()) {
+        this->stat = vector<vector<double>>(source.stat.size());
         imax = (int)source.stat.size();
-        for (int i = 0; i < imax; i++)
-        {
-            if (not source.stat[i].empty())
-            {
+        for (int i = 0; i < imax; i++) {
+            if (not source.stat[i].empty()) {
                 this->stat[i] = vector<double>(source.stat[i].size());
                 jmax = (int)source.stat[i].size();
                 for (int j = 0; j < jmax; j++) this->stat[i][j] = source.stat[i][j];
@@ -288,36 +263,31 @@ RFC& RFC::operator=(RFC const& source)
       }
     */
     if (not this->bootsamp.empty()) this->bootsamp.clear();
-    if (not source.bootsamp.empty())
-    {
+    if (not source.bootsamp.empty()) {
         this->bootsamp = vector<int>(source.bootsamp.size());
         imax = (int)source.bootsamp.size();
         for (int i = 0; i < imax; i++) this->bootsamp[i] = source.bootsamp[i];
     }
     if (not this->varimp.empty()) this->varimp.clear();
-    if (not source.varimp.empty())
-    {
+    if (not source.varimp.empty()) {
         this->varimp = vector<double>(source.varimp.size());
         imax = (int)source.varimp.size();
         for (int i = 0; i < imax; i++) this->varimp[i] = source.varimp[i];
     }
     if (not this->tree.empty()) this->tree.clear();
-    if (not source.tree.empty())
-    {
+    if (not source.tree.empty()) {
         this->tree = vector<TreeC>(source.tree.size());
         imax = (int)source.tree.size();
         for (int i = 0; i < imax; i++) this->tree[i] = source.tree[i];
     }
     if (not this->statobs.empty()) this->statobs.clear();
-    if (not source.statobs.empty())
-    {
+    if (not source.statobs.empty()) {
         this->statobs = vector<double>(source.statobs.size());
         imax = (int)source.statobs.size();
         for (int i = 0; i < imax; i++) this->statobs[i] = source.statobs[i];
     }
     if (not this->statname.empty()) this->statname.clear();
-    if (not source.statname.empty())
-    {
+    if (not source.statname.empty()) {
         this->statname = vector<string>(source.statname.size());
         imax = (int)source.statname.size();
         for (int i = 0; i < imax; i++) this->statname[i] = source.statname[i];
@@ -364,27 +334,23 @@ RFC& RFC::operator=(RFC const& source)
   return res;
   }
 */
-int NodeRC::regle3(vector<VMC> vm, vector<int> b, MwcGen& mw)
-{
+int NodeRC::regle3(vector<VMC> vm, vector<int> b, MwcGen& mw) {
     bool ident;
     int modmax, nident, bmax;
     vector<double> xmin, xmax;
     xmin = vector<double>(this->nvar);
     xmax = vector<double>(this->nvar);
-    for (int i = 0; i < this->nvar; i++)
-    {
+    for (int i = 0; i < this->nvar; i++) {
         for (int j = 0; j < nsets; j++) vm[j].ind = rf.model[numset[j]];
         vm[0].x = rf.stat[numset[0]][indvar[i]];
         xmax[i] = xmin[i] = vm[0].x;
-        for (int j = 1; j < nsets; j++)
-        {
+        for (int j = 1; j < nsets; j++) {
             vm[j].x = rf.stat[numset[j]][indvar[i]];
             if (vm[j].x > xmax[i]) xmax[i] = vm[j].x;
             if (vm[j].x < xmin[i]) xmin[i] = vm[j].x;
         }
         ident = (xmax[i] - xmin[i]) < 1E-16 * (xmax[i] + xmin[i]);
-        if (not ident)
-        {
+        if (not ident) {
             xmin.clear();
             xmax.clear();
             return -1; //il existe au moins deux individus aux stat différentes
@@ -393,27 +359,21 @@ int NodeRC::regle3(vector<VMC> vm, vector<int> b, MwcGen& mw)
     modmax = 0;
     bmax = b[0];
     for (int j = 1; j < rf.nmodel; j++)
-        if (b[j] > bmax)
-        {
+        if (b[j] > bmax) {
             bmax = b[j];
             modmax = j;
         }
     nident = 0;
     for (int j = 0; j < rf.nmodel; j++) if (b[j] == bmax) nident++;
-    if (nident < 2)
-    { //
+    if (nident < 2) { //
         xmin.clear();
         xmax.clear();
         return modmax; //tous les individus ont les mêmes valeurs de stat et le modèle modmax est majoritaire
-    }
-    else
-    {
+    } else {
         int kk = mw.rand1(nident);
         int kkk = 0;
-        for (int j = 0; j < rf.nmodel; j++)
-        {
-            if (b[j] == bmax)
-            {
+        for (int j = 0; j < rf.nmodel; j++) {
+            if (b[j] == bmax) {
                 kkk++;
                 if (kkk == kk) modmax = j;
             }
@@ -424,8 +384,7 @@ int NodeRC::regle3(vector<VMC> vm, vector<int> b, MwcGen& mw)
     }
 }
 
-double NodeRC::calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq)
-{
+double NodeRC::calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq) {
     //cout<<"calGinimin 0\n";
     double epsilon, gini, res, cg, cd;
     int gg = 0, dd = this->nsets, j = 0, imax;
@@ -437,17 +396,14 @@ double NodeRC::calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq)
     v.resize(0);
     //cout<<"calGinimin 1\n";
     epsilon = vm[this->nsets / 2].x * 1E-10;
-    for (int i = 1; i < this->nsets; i++)
-    {
+    for (int i = 1; i < this->nsets; i++) {
         if (vm[i].x - vm[i - 1].x > epsilon) v.push_back(0.5 * (vm[i].x + vm[i - 1].x));
     }
     //cout<<"calGinimin v.size="<<v.size()<<"\n";
     gini = 1.0;
     imax = (int)v.size();
-    for (int i = 0; i < imax; i++)
-    {
-        while (vm[j].x < v[i])
-        {
+    for (int i = 0; i < imax; i++) {
+        while (vm[j].x < v[i]) {
             ga[vm[j].ind]++;
             gg++;
             dr[vm[j].ind]--;
@@ -456,16 +412,14 @@ double NodeRC::calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq)
         }
         //cout<<"calGinimin j="<<j<<"\n";
         res = 0.0;
-        for (int m = 0; m < rf.nmodel; m++)
-        {
+        for (int m = 0; m < rf.nmodel; m++) {
             if (gg > 0) cg = (double)ga[m] / (double)gg; else cg = 0.0;
             if (dd > 0) cd = (double)dr[m] / (double)dd; else cd = 0.0;
             res += cg * (1.0 - cg) * (double)gg + cd * (1.0 - cd) * (double)dd;
         }
         res = res / (double)(gg + dd);
         //cout<<"calGinimin res="<<res<<"\n";
-        if (res < gini)
-        {
+        if (res < gini) {
             gini = res;
             cutvalc = v[i];
         }
@@ -477,16 +431,14 @@ double NodeRC::calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq)
     return gini;
 }
 
-double NodeRC::calvarmin(vector<VMC>& vm, double& cutvalc)
-{
+double NodeRC::calvarmin(vector<VMC>& vm, double& cutvalc) {
     //cout<<"calGinimin 0\n";
     double epsilon, vv, va, vg, vd, sx2g, sx2d, sxg, sxd, d2, d;
     int ng, nd, j = 0, imax;
     vector<double> v;
     v.resize(0);
     epsilon = vm[this->nsets / 2].x * 1E-10;
-    for (int i = 1; i < this->nsets; i++)
-    {
+    for (int i = 1; i < this->nsets; i++) {
         if (vm[i].x - vm[i - 1].x > epsilon) v.push_back(0.5 * (vm[i].x + vm[i - 1].x));
     }
     vv = 10.0;
@@ -497,18 +449,15 @@ double NodeRC::calvarmin(vector<VMC>& vm, double& cutvalc)
     sx2d = 0.0;
     sxd = 0.0;
     nd = this->nsets;
-    for (int i = 1; i < this->nsets; i++)
-    {
+    for (int i = 1; i < this->nsets; i++) {
         sx2d += (double)(vm[i].ind * vm[i].ind);
         sxd += (double)vm[i].ind;
     }
-    for (int i = 0; i < imax; i++)
-    {
+    for (int i = 0; i < imax; i++) {
         //cout<<"v["<<i<<"]="<<v[i]<<"\n";
         //cout<<"ng="<<ng<<"  sx2g="<<sx2g<<"  sxg="<<sxg<<"    nd="<<nd<<"  sx2d="<<sx2d<<"  sxd="<<sxd<<"\n";
         //                      d2=0.0;d=0.0;
-        while (vm[j].x < v[i])
-        {
+        while (vm[j].x < v[i]) {
             d = (double)(vm[j].ind);
             d2 = (double)(vm[j].ind * vm[j].ind);
             sx2d -= d2;
@@ -523,8 +472,7 @@ double NodeRC::calvarmin(vector<VMC>& vm, double& cutvalc)
         vd = sx2d - sxd * sxd / (double)nd;
         va = (vg + vd) / (double)(this->nsets);
         //cout<<"va="<<va<<"     i="<<i<<"    j="<<j<<"\n";
-        if (va < vv)
-        {
+        if (va < vv) {
             vv = va;
             cutvalc = v[i];
         }
@@ -534,29 +482,23 @@ double NodeRC::calvarmin(vector<VMC>& vm, double& cutvalc)
     return vv;
 }
 
-double NodeRC::calGini(vector<VMC>& vm, double cutval)
-{
+double NodeRC::calGini(vector<VMC>& vm, double cutval) {
     double cg, cd, gini = 0.0;
     int gg = 0, dd = 0;
     vector<int> ga, dr;
     ga = vector<int>(rf.nmodel, 0);
     dr = vector<int>(rf.nmodel, 0);
     gini = 1.0;
-    for (int i = 0; i < this->nsets; i++)
-    {
-        if (vm[i].x < cutval)
-        {
+    for (int i = 0; i < this->nsets; i++) {
+        if (vm[i].x < cutval) {
             ga[vm[i].ind]++;
             gg++;
-        }
-        else
-        {
+        } else {
             dr[vm[i].ind]++;
             dd++;
         }
     }
-    for (int m = 0; m < rf.nmodel; m++)
-    {
+    for (int m = 0; m < rf.nmodel; m++) {
         if (gg > 0) cg = (double)ga[m] / (double)gg; else cg = 0.0;
         if (dd > 0) cd = (double)dr[m] / (double)dd; else cd = 0.0;
         gini += cg * (1.0 - cg) * (double)gg + cd * (1.0 - cd) * (double)dd;
@@ -567,20 +509,15 @@ double NodeRC::calGini(vector<VMC>& vm, double cutval)
     return gini;
 }
 
-double NodeRC::calvarmoy(vector<VMC>& vm, double cutval)
-{
+double NodeRC::calvarmoy(vector<VMC>& vm, double cutval) {
     double sx2g = 0, sxg = 0, sx2d = 0, sxd = 0, vg = 0.0, vd = 0.0, v;
     int ng = 0, nd = 0;
-    for (int i = 0; i < this->nsets; i++)
-    {
-        if (vm[i].x < cutval)
-        {
+    for (int i = 0; i < this->nsets; i++) {
+        if (vm[i].x < cutval) {
             ng++;
             sx2g += (double)(vm[i].ind * vm[i].ind);
             sxg += (double)(vm[i].ind);
-        }
-        else
-        {
+        } else {
             nd++;
             sx2d += (double)(vm[i].ind * vm[i].ind);
             sxd += (double)(vm[i].ind);
@@ -599,8 +536,7 @@ double NodeRC::calvarmoy(vector<VMC>& vm, double cutval)
  *  retourne -1 si le noeud n'est pas terminal
  *  retourne le numéro du modèle si le noeud est terminal
  */
-int NodeRC::getdisval(MwcGen& mw)
-{
+int NodeRC::getdisval(MwcGen& mw) {
     double gini, ginimin, cutvalmin, dfa, c, deltamax, cutvalc = 0.0;
     int modmax, freqmax, ii;
     vector<VMC> vm;
@@ -612,43 +548,36 @@ int NodeRC::getdisval(MwcGen& mw)
     for (int j = 0; j < this->nsets; j++) modfreq[vm[j].ind]++;
     modmax = 0;
     for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
-    if (modfreq[modmax] == this->nsets)
-    { //tous les individus sont du même modèle
+    if (modfreq[modmax] == this->nsets) { //tous les individus sont du même modèle
         vm.clear();
         modfreq.clear();
         return modmax;
     }
     modmax = regle3(vm, modfreq, mw);
-    if (modmax != -1)
-    { //tous les individus ont les mêmes valeurs de stat
+    if (modmax != -1) { //tous les individus ont les mêmes valeurs de stat
         vm.clear();
         modfreq.clear();
         return modmax;
     }
     //calcul du Gini du noeud avant split
     dfa = 0.0;
-    for (int m = 0; m < rf.nmodel; m++)
-    {
+    for (int m = 0; m < rf.nmodel; m++) {
         c = (double)modfreq[m] / (double)this->nsets;
         dfa += c * (1.0 - c);
     }
     //calcul du nombre d'individus du modèle le plus fréquent à ce noeud
     freqmax = modfreq[0];
     for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > freqmax) freqmax = modfreq[k];
-    if (freqmax == 1)
-    { //il y a au plus 1 seul individu par modèle
-        do
-        {
+    if (freqmax == 1) { //il y a au plus 1 seul individu par modèle
+        do {
             ii = mw.rand0(this->nvar);
-            for (int j = 0; j < this->nsets; j++)
-            {
+            for (int j = 0; j < this->nsets; j++) {
                 vm[j].x = rf.stat[this->numset[j]][indvar[ii]];
                 vm[j].ind = rf.model[this->numset[j]];
             }
             sort(&vm[0], &vm[nsets]);
             deltamax = fabs(vm[this->nsets - 1].x - vm[0].x);
-        }
-        while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
+        } while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
         cutvalmin = vm[this->nsets / 2].x;
         //ginimin=calGini(vm,cutvalmin);
         this->imax = indvar[ii];
@@ -670,42 +599,32 @@ int NodeRC::getdisval(MwcGen& mw)
                                 }
                                 }
                                 }*/
-        for (int j = 0; j < this->nsets; j++)
-        {
+        for (int j = 0; j < this->nsets; j++) {
             vm[j].x = rf.stat[this->numset[j]][this->imax];
             vm[j].ind = rf.model[this->numset[j]];
         }
         ginimin = calGini(vm, cutvalmin);
-    }
-    else
-    { //il y a plusieurs individus d'un modèle donné
-        for (int i = 0; i < this->nvar; i++)
-        {
-            for (int j = 0; j < this->nsets; j++)
-            {
+    } else { //il y a plusieurs individus d'un modèle donné
+        for (int i = 0; i < this->nvar; i++) {
+            for (int j = 0; j < this->nsets; j++) {
                 vm[j].x = rf.stat[this->numset[j]][indvar[i]];
                 vm[j].ind = rf.model[this->numset[j]];
             }
             sort(&vm[0], &vm[nsets]);
             gini = calGinimin(vm, cutvalc, modfreq);
-            if (i == 0)
-            {
+            if (i == 0) {
                 this->imax = indvar[i];
                 cutvalmin = cutvalc;
                 ginimin = gini;
-            }
-            else
-            {
-                if (gini < ginimin)
-                {
+            } else {
+                if (gini < ginimin) {
                     this->imax = indvar[i];
                     cutvalmin = cutvalc;
                     ginimin = gini;
                 }
             }
         }
-        for (int j = 0; j < this->nsets; j++)
-        {
+        for (int j = 0; j < this->nsets; j++) {
             vm[j].x = rf.stat[this->numset[j]][imax];
             vm[j].ind = rf.model[this->numset[j]];
         }
@@ -715,8 +634,7 @@ int NodeRC::getdisval(MwcGen& mw)
     this->cutval = cutvalmin;
     this->numsetG.resize(0);
     this->numsetD.resize(0);
-    for (int j = 0; j < this->nsets; j++)
-    {
+    for (int j = 0; j < this->nsets; j++) {
         if (vm[j].x < this->cutval) this->numsetG.push_back(this->numset[j]);
         else this->numsetD.push_back(this->numset[j]);
     }
@@ -732,15 +650,13 @@ int NodeRC::getdisval(MwcGen& mw)
  *  retourne -1 si le noeud n'est pas terminal
  *  retourne le numéro du modèle si le noeud est terminal
  */
-double NodeRC::getdisval2(MwcGen& mw)
-{
+double NodeRC::getdisval2(MwcGen& mw) {
     double va, vamin, cutvalmin, deltamax, cutvalc = 0.0;
     int modmax, freqmax, ii;
     double fmodmax, freqmoy = 0.0;
     vector<VMC> vm;
     vm = vector<VMC>(this->nsets);//cout<<"Dans getdisval2 this->nsets="<<this->nsets<<"\n";
-    for (int j = 0; j < this->nsets; j++)
-    {
+    for (int j = 0; j < this->nsets; j++) {
         vm[j].ind = rf.model[this->numset[j]];
         freqmoy += (double)rf.model[this->numset[j]];
     }
@@ -749,8 +665,7 @@ double NodeRC::getdisval2(MwcGen& mw)
     vector<int> modfreq;
     modfreq = vector<int>(rf.nmodel, 0);
     for (int j = 0; j < this->nsets; j++) modfreq[vm[j].ind]++;
-    if (this->nsets == nlim)
-    { //la limite de 5 datasets est atteinte
+    if (this->nsets == nlim) { //la limite de 5 datasets est atteinte
         vm.clear();
         fmodmax = 0.0;
         for (int k = 1; k < rf.nmodel; k++) fmodmax += (double)(k * modfreq[k]);
@@ -759,15 +674,13 @@ double NodeRC::getdisval2(MwcGen& mw)
     }
     modmax = 0;
     for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
-    if (modfreq[modmax] == this->nsets)
-    { //tous les datasets sont du même modèle
+    if (modfreq[modmax] == this->nsets) { //tous les datasets sont du même modèle
         vm.clear();
         modfreq.clear();
         return (double)modmax;
     }
     modmax = regle3(vm, modfreq, mw);
-    if (modmax != -1)
-    { //tous les datasets ont les mêmes valeurs de stat
+    if (modmax != -1) { //tous les datasets ont les mêmes valeurs de stat
         vm.clear();
         modfreq.clear();
         return (double)modmax;
@@ -777,59 +690,45 @@ double NodeRC::getdisval2(MwcGen& mw)
     //calcul du nombre d'individus du modèle le plus fréquent à ce noeud
     freqmax = modfreq[0];
     for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > freqmax) freqmax = modfreq[k];
-    if (freqmax == 1)
-    { //il y a au plus 1 seul individu par modèle
-        do
-        {
+    if (freqmax == 1) { //il y a au plus 1 seul individu par modèle
+        do {
             ii = mw.rand0(this->nvar);
-            for (int j = 0; j < this->nsets; j++)
-            {
+            for (int j = 0; j < this->nsets; j++) {
                 vm[j].x = rf.stat[this->numset[j]][indvar[ii]];
                 vm[j].ind = rf.model[this->numset[j]];
             }
             sort(&vm[0], &vm[nsets]);
             deltamax = fabs(vm[this->nsets - 1].x - vm[0].x);
-        }
-        while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
+        } while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
         cutvalmin = vm[this->nsets / 2].x;
         //ginimin=calGini(vm,cutvalmin);
         this->imax = indvar[ii];
-        for (int j = 0; j < this->nsets; j++)
-        {
+        for (int j = 0; j < this->nsets; j++) {
             vm[j].x = rf.stat[this->numset[j]][this->imax];
             vm[j].ind = rf.model[this->numset[j]];
         }
         vamin = calvarmoy(vm, cutvalmin);
-    }
-    else
-    { //il y a plusieurs individus d'un modèle donné
-        for (int i = 0; i < this->nvar; i++)
-        {
-            for (int j = 0; j < this->nsets; j++)
-            {
+    } else { //il y a plusieurs individus d'un modèle donné
+        for (int i = 0; i < this->nvar; i++) {
+            for (int j = 0; j < this->nsets; j++) {
                 vm[j].x = rf.stat[this->numset[j]][indvar[i]];
                 vm[j].ind = rf.model[this->numset[j]];
             }
             sort(&vm[0], &vm[nsets]);
             va = calvarmin(vm, cutvalc);
-            if (i == 0)
-            {
+            if (i == 0) {
                 this->imax = indvar[i];
                 cutvalmin = cutvalc;
                 vamin = va;
-            }
-            else
-            {
-                if (va < vamin)
-                {
+            } else {
+                if (va < vamin) {
                     this->imax = indvar[i];
                     cutvalmin = cutvalc;
                     vamin = va;
                 }
             }
         }
-        for (int j = 0; j < this->nsets; j++)
-        {
+        for (int j = 0; j < this->nsets; j++) {
             vm[j].x = rf.stat[this->numset[j]][imax];
             vm[j].ind = rf.model[this->numset[j]];
         }
@@ -839,8 +738,7 @@ double NodeRC::getdisval2(MwcGen& mw)
     this->cutval = cutvalmin;
     this->numsetG.resize(0);
     this->numsetD.resize(0);
-    for (int j = 0; j < this->nsets; j++)
-    {
+    for (int j = 0; j < this->nsets; j++) {
         if (vm[j].x < this->cutval) this->numsetG.push_back(this->numset[j]);
         else this->numsetD.push_back(this->numset[j]);
     }
@@ -852,66 +750,51 @@ double NodeRC::getdisval2(MwcGen& mw)
     return -1;
 }
 
-void TreeC::ecris(int num)
-{
+void TreeC::ecris(int num) {
     cout << "\nEcriture de l'arbre " << num << "         " << nnodes << " noeuds\n";
-    for (int i = 0; i < nnodes; i++)
-    {
+    for (int i = 0; i < nnodes; i++) {
         cout << "Noeud " << i << "   pere " << node[i].pere;
-        if (not node[i].terminal)
-        {
+        if (not node[i].terminal) {
             cout << "   (" << header.statname[node[i].imax] << "   filsG " << node[i].filsG << "   filsD " << node[i].filsD << "   nsets=" << node[i].nsets;
             cout << "   disval=" << node[i].disval << "\n";
-        }
-        else cout << "   TERMINAL   scenario " << node[i].model << "\n";
-        for (int j = 0; j < node[i].nsets; j++)cout << "(" << rf.model[node[i].numset[j]] << "):" << node[i].numset[j] << "  ";
+        } else cout << "   TERMINAL   scenario " << node[i].model << "\n";
+        for (int j = 0; j < node[i].nsets; j++) cout << "(" << rf.model[node[i].numset[j]] << "):" << node[i].numset[j] << "  ";
         cout << "\n";
     }
     cout << "Fin de l'arbre " << num << "\n";
 }
 
-int TreeC::infermodel(const vector<double>& stat)
-{
+int TreeC::infermodel(const vector<double>& stat) {
     int k = 0;
-    do
-    {
+    do {
         if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG; else k = node[k].filsD;
-    }
-    while (not node[k].terminal);
+    } while (not node[k].terminal);
     return node[k].model;
 }
 
-int TreeC::infermodel2(double* stat)
-{
+int TreeC::infermodel2(double* stat) {
     int k = 0;
-    do
-    {
+    do {
         if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG; else k = node[k].filsD;
-    }
-    while (not node[k].terminal);
+    } while (not node[k].terminal);
     return node[k].model;
 }
 
-int TreeC::calprofondeur(const vector<double>& stat)
-{
+int TreeC::calprofondeur(const vector<double>& stat) {
     int k = 0, n = 0;
-    do
-    {
+    do {
         if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG; else k = node[k].filsD;
         n++;
-    }
-    while (not node[k].terminal);
+    } while (not node[k].terminal);
     return n;
 }
 
 
-int TreeC::calprox(int n0, const vector<double>& stat, const vector<double>& statobs)
-{
+int TreeC::calprox(int n0, const vector<double>& stat, const vector<double>& statobs) {
     //cout<<"calprox  n0="<<n0<<"\n";
     int k = 0, n = 0;
     bool fin = false;
-    while ((not fin)and (n < n0))
-    {
+    while ((not fin)and (n < n0)) {
         if ((statobs[node[k].imax] < node[k].cutval) and (stat[node[k].imax] < node[k].cutval)) k = node[k].filsG;
         else if ((statobs[node[k].imax] >= node[k].cutval) and (stat[node[k].imax] >= node[k].cutval)) k = node[k].filsD;
         else fin = true;
@@ -920,8 +803,7 @@ int TreeC::calprox(int n0, const vector<double>& stat, const vector<double>& sta
     return (n0 - n);
 }
 
-void TreeC::initree(int i, bool init)
-{
+void TreeC::initree(int i, bool init) {
     this->nsets = rf.nsel;
     this->nvar = rf.nvar;
     this->nnodes = 2 * this->nsets - 1;
@@ -930,8 +812,7 @@ void TreeC::initree(int i, bool init)
     //this->indsel = vector <int>(this->nsets);
     if (init) this->score = vector<int>(rf.nstat);
     this->mw.samplewith(rf.nsets, this->nsets, this->numset/*this->indsel*/);
-    if (init)
-    {
+    if (init) {
         this->sim_participe = vector<bool>(rf.nsets);
         for (i = 0; i < rf.nsets; i++) this->sim_participe[i] = false;
         for (int i = 0; i < this->nsets; i++) this->sim_participe[this->numset[i]] = true;
@@ -940,17 +821,14 @@ void TreeC::initree(int i, bool init)
     }
 }
 
-void TreeC::deletree()
-{
+void TreeC::deletree() {
     if (not this->numset.empty()) this->numset.clear();
     if (not this->sim_participe.empty()) this->sim_participe.clear();
     if (not this->score.empty()) this->score.clear();
     if (not this->index.empty()) this->index.clear();
     if (not this->varused.empty()) this->varused.clear();
-    if (not this->node.empty())
-    {
-        for (int m = 0; m < this->nnodes; m++)
-        {
+    if (not this->node.empty()) {
+        for (int m = 0; m < this->nnodes; m++) {
             if (not this->node[m].indvar.empty()) this->node[m].indvar.clear();
             if (not this->node[m].numset.empty()) this->node[m].numset.clear();
             if (not this->node[m].numsetG.empty()) this->node[m].numsetG.clear();
@@ -961,35 +839,28 @@ void TreeC::deletree()
 }
 
 
-void TreeC::estim()
-{
+void TreeC::estim() {
     //cout<<"debut ESTIM\n";
     obs_estscen[this->infermodel(rf.statobs)]++;
     //cout<<"avant la boucle\n";
-    for (int j = 0; j < rf.nsets; j++)
-    {
+    for (int j = 0; j < rf.nsets; j++) {
         //cout<<"this->sim_participe[j]="<<this->sim_participe[j]<<"\n";
-        if (not this->sim_participe[j])
-        {
+        if (not this->sim_participe[j]) {
             sim_estscen[j][this->infermodel(rf.stat[j])]++;
         }
     }
     //cout<<"fin ESTIM\n";
 }
 
-double TreeC::inferobs(vector<double>& stat)
-{
+double TreeC::inferobs(vector<double>& stat) {
     int k = 0;
-    do
-    {
+    do {
         if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG; else k = node[k].filsD;
-    }
-    while (not node[k].terminal);
+    } while (not node[k].terminal);
     return node[k].modmoy;
 }
 
-void TreeC::buildtree1(int seed, int i, int rep)
-{
+void TreeC::buildtree1(int seed, int i, int rep) {
     //cout<<"debut BUILDTREE\n";
     int k, kk;
     this->mw.randinit(seed + i, 3 * (i + seed));
@@ -1006,21 +877,18 @@ void TreeC::buildtree1(int seed, int i, int rep)
     //for (int m=0;m<10;m++) cout<<this->node[0].numset[m]<<"  ";cout<<"\n";
     k = 0;
     this->fin = false;//cout<<"avant la boucle while\n";
-    while (not this->fin)
-    {
+    while (not this->fin) {
         //cout<<k<<"\r";fflush(stdout);
         //cout<<" \nAVANT LE NOEUD "<<k<<"\n";
         //cout<<"Noeud k="<<k<<"   ";if (this->node[k].terminal) cout<<"terminal\n";else cout<<"not terminal\n";
         this->node[k].model = this->node[k].getdisval(this->mw);
         this->node[k].terminal = (this->node[k].model != -1);
-        if (not this->node[k].terminal)
-        { //cout<<"noeud non terminal\n";
+        if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
             this->varused[this->node[k].imax] = true;//cout<<"Noeud k="<<k<<"   imax="<<this->node[k].imax<<"\n";
             importance[rep][this->node[k].imax] += this->node[k].delta;
             nimportance[rep][this->node[k].imax]++;
             this->node[k].filsG = k + 1;
-            if (k == 2 * rf.nsel)
-            {
+            if (k == 2 * rf.nsel) {
                 cout << "dépassement du nombre de noeuds 1 dans l'arbre " << i << "   kk=" << kk << "\n";
                 cout << "k=" << k << "\n";
                 for (kk = 0; kk <= 30; kk++) cout << "node=" << kk << "  pere=" << this->node[kk].pere << "  filsG=" << this->node[kk].filsG << "  filsD=" << this->node[kk].filsD << "  n=" << this->node[kk].npassages << "\n";
@@ -1038,33 +906,24 @@ void TreeC::buildtree1(int seed, int i, int rep)
 
             this->node[k].npassages++;
             //cout<<"noeud k="<<k<<"   npassages="<<this->node[k].npassages<<"\n";
-        }
-        else
-        {//cout<<"noeud terminal\n";
+        } else {//cout<<"noeud terminal\n";
             //this->node[k].model = rf.model[this->node[k].numset[0]];
             kk = k;
-            do
-            {
+            do {
                 kk = this->node[kk].pere;
                 //cout<<"on remonte d'un cran  kk="<<kk<<"   npassages="<<this->node[kk].npassages<<"\n";
-            }
-            while ((this->node[kk].npassages == 2)and (kk != 0));
+            } while ((this->node[kk].npassages == 2)and (kk != 0));
             this->fin = ((kk == 0)and (this->node[kk].npassages == 1));
-            if (not this->fin)
-            {
-                if (k == 2 * rf.nsel)
-                {
+            if (not this->fin) {
+                if (k == 2 * rf.nsel) {
                     cout << "dépassement du nombre de noeuds 2 dans l'arbre " << i << "   kk=" << kk << "\n";
                     cout << "k=" << k << "\n";
-                    for (kk = 0; kk <= k; kk++)
-                    {
+                    for (kk = 0; kk <= k; kk++) {
                         cout << "node=" << kk << "  pere=" << this->node[kk].pere;
-                        if (not this->node[kk].terminal)
-                        {
+                        if (not this->node[kk].terminal) {
                             cout << "  filsG=" << this->node[kk].filsG << " (" << this->node[kk].nsetG << ")";
                             cout << "  filsD=" << this->node[kk].filsD << " (" << this->node[kk].nsetD << ")  n=" << this->node[kk].npassages << "\n";
-                        }
-                        else cout << "  terminal\n";
+                        } else cout << "  terminal\n";
                     }
                     exit(1);
                 }
@@ -1085,10 +944,8 @@ void TreeC::buildtree1(int seed, int i, int rep)
     }
     this->nnodes = k + 1;
     //this->ecris(rt,i);
-    for (int m = 0; m <= k; m++)
-    {
-        if (not this->node[m].terminal)
-        {
+    for (int m = 0; m <= k; m++) {
+        if (not this->node[m].terminal) {
             this->node[m].numsetD.clear();
             this->node[m].numsetG.clear();
             this->node[m].numset.clear();
@@ -1101,8 +958,7 @@ void TreeC::buildtree1(int seed, int i, int rep)
     //cout<<"fin de tree "<<i+1<<"   "<<tree[i].nnodes<<" noeuds\n";fflush(stdout);
 }
 
-void TreeC::buildtree2(int seed, int i, int rep)
-{
+void TreeC::buildtree2(int seed, int i, int rep) {
     //cout<<"debut BUILDTREE\n";
     int k, kk;
     this->mw.randinit(seed + i, 5 * (i + seed));
@@ -1119,20 +975,17 @@ void TreeC::buildtree2(int seed, int i, int rep)
     //for (int m=0;m<10;m++) cout<<this->node[0].numset[m]<<"  ";cout<<"\n";
     k = 0;
     this->fin = false;//cout<<"avant la boucle while\n";
-    while (not this->fin)
-    {
+    while (not this->fin) {
         //cout<<k<<"\r";fflush(stdout);
         //cout<<" \nAVANT LE NOEUD "<<k<<"\n";
         //cout<<"Noeud k="<<k<<"   ";if (this->node[k].terminal) cout<<"terminal\n";else cout<<"not terminal\n";
         this->node[k].modmoy = this->node[k].getdisval2(this->mw);
         //cout<<"model "<<this->node[k].model<<"\n";
         this->node[k].terminal = (this->node[k].modmoy != -1);
-        if (not this->node[k].terminal)
-        { //cout<<"noeud non terminal\n";
+        if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
             //this->varused[this->node[k].imax] = true;cout<<"Noeud k="<<k<<"   imax="<<this->node[k].imax<<"\n";
             this->node[k].filsG = k + 1;
-            if (k == 2 * rf.nsel)
-            {
+            if (k == 2 * rf.nsel) {
                 cout << "dépassement du nombre de noeuds 1 dans l'arbre " << i << "   kk=" << kk << "\n";
                 cout << "k=" << k << "\n";
                 for (kk = 0; kk <= 30; kk++) cout << "node=" << kk << "  pere=" << this->node[kk].pere << "  filsG=" << this->node[kk].filsG << "  filsD=" << this->node[kk].filsD << "  n=" << this->node[kk].npassages << "\n";
@@ -1150,33 +1003,24 @@ void TreeC::buildtree2(int seed, int i, int rep)
 
             this->node[k].npassages++;
             //cout<<"noeud k="<<k<<"   npassages="<<this->node[k].npassages<<"\n";
-        }
-        else
-        {//cout<<"noeud terminal\n";
+        } else {//cout<<"noeud terminal\n";
             //this->node[k].model = rf.model[this->node[k].numset[0]];
             kk = k;
-            do
-            {
+            do {
                 kk = this->node[kk].pere;
                 //cout<<"on remonte d'un cran  kk="<<kk<<"   npassages="<<this->node[kk].npassages<<"\n";
-            }
-            while ((this->node[kk].npassages == 2)and (kk != 0));
+            } while ((this->node[kk].npassages == 2)and (kk != 0));
             this->fin = ((kk == 0)and (this->node[kk].npassages == 1));
-            if (not this->fin)
-            {
-                if (k == 2 * rf.nsel)
-                {
+            if (not this->fin) {
+                if (k == 2 * rf.nsel) {
                     cout << "dépassement du nombre de noeuds 2 dans l'arbre " << i << "   kk=" << kk << "\n";
                     cout << "k=" << k << "\n";
-                    for (kk = 0; kk <= k; kk++)
-                    {
+                    for (kk = 0; kk <= k; kk++) {
                         cout << "node=" << kk << "  pere=" << this->node[kk].pere;
-                        if (not this->node[kk].terminal)
-                        {
+                        if (not this->node[kk].terminal) {
                             cout << "  filsG=" << this->node[kk].filsG << " (" << this->node[kk].nsetG << ")";
                             cout << "  filsD=" << this->node[kk].filsD << " (" << this->node[kk].nsetD << ")  n=" << this->node[kk].npassages << "\n";
-                        }
-                        else cout << "  terminal\n";
+                        } else cout << "  terminal\n";
                     }
                     exit(1);
                 }
@@ -1197,10 +1041,8 @@ void TreeC::buildtree2(int seed, int i, int rep)
     }
     this->nnodes = k + 1;
     //this->ecris(rt,i);
-    for (int m = 0; m <= k; m++)
-    {
-        if (not this->node[m].terminal)
-        {
+    for (int m = 0; m <= k; m++) {
+        if (not this->node[m].terminal) {
             this->node[m].numsetD.clear();
             this->node[m].numsetG.clear();
             this->node[m].numset.clear();
@@ -1320,12 +1162,10 @@ void TreeC::buildtree2(int seed, int i, int rep)
         cout<<"\n";
         }
 */
-int RFC::bestmodel(int nscen, vector<double>& vote, const vector<double>& stat)
-{
+int RFC::bestmodel(int nscen, vector<double>& vote, const vector<double>& stat) {
     int infmodel, best, i;
     for (i = 0; i < nscen; i++) vote[i] = 0.0;
-    for (i = 0; i < ntrees; i++)
-    {
+    for (i = 0; i < ntrees; i++) {
         infmodel = tree[i].infermodel(stat);
         vote[infmodel] += 1.0;
     }
@@ -1334,23 +1174,19 @@ int RFC::bestmodel(int nscen, vector<double>& vote, const vector<double>& stat)
     return best;
 }
 
-int RFC::bestmodel2(int k, int nscen, const vector<double>& stat)
-{
+int RFC::bestmodel2(int k, int nscen, const vector<double>& stat) {
     int infmodel, best, i;
     vector<int> vote;
     bool participe;
     vote = vector<int>(nscen);
     for (i = 0; i < nscen; i++) vote[i] = 0;
-    for (i = 0; i < ntrees; i++)
-    {
+    for (i = 0; i < ntrees; i++) {
         participe = false;
-        for (int j = 0; j < tree[i].nsets; j++)
-        {
+        for (int j = 0; j < tree[i].nsets; j++) {
             participe = (k == tree[i].numset[j]);
             if (participe) break;
         }
-        if (not participe)
-        {
+        if (not participe) {
             infmodel = tree[i].infermodel(stat);
             vote[infmodel]++;
         }
@@ -1361,23 +1197,19 @@ int RFC::bestmodel2(int k, int nscen, const vector<double>& stat)
     return best;
 }
 
-int RFC::bestmodel3(int k, int nscen, double* stat)
-{
+int RFC::bestmodel3(int k, int nscen, double* stat) {
     int infmodel, best, i;
     vector<int> vote;
     bool participe;
     vote = vector<int>(nscen);
     for (i = 0; i < nscen; i++) vote[i] = 0;
-    for (i = 0; i < ntrees; i++)
-    {
+    for (i = 0; i < ntrees; i++) {
         participe = false;
-        for (int j = 0; j < tree[i].nsets; j++)
-        {
+        for (int j = 0; j < tree[i].nsets; j++) {
             participe = (k == tree[i].numset[j]);
             if (participe) break;
         }
-        if (not participe)
-        {
+        if (not participe) {
             infmodel = tree[i].infermodel2(stat);
             vote[infmodel]++;
         }
@@ -1388,8 +1220,7 @@ int RFC::bestmodel3(int k, int nscen, double* stat)
     return best;
 }
 
-void RFC::infermodel()
-{
+void RFC::infermodel() {
     int best;
     vector<double> vote;
     vote = vector<double>(rt.nscen);
@@ -1412,30 +1243,27 @@ void RFC::infermodel()
     vote.clear();
 }
 
-double RFC::training_accuracy()
-{
+double RFC::training_accuracy() {
     cout << "début de training accuracy\n";
     double sfv, ppe;
     int sum, sumt = 0, correct = 0, ndone = 0, nta = 10000, dta;
-    vector<vector<int> > vote;
-    vector<vector<double> > fvote;
+    vector<vector<int>> vote;
+    vector<vector<double>> fvote;
     vector<int> truemodel;
     vector<int> infmodel;
-    vote = vector<vector<int> >(this->nmodel);
-    fvote = vector<vector<double> >(this->nmodel);
+    vote = vector<vector<int>>(this->nmodel);
+    fvote = vector<vector<double>>(this->nmodel);
     truemodel = vector<int>(nta);
     infmodel = vector<int>(nta);
     dta = nsets - nta;
-    for (int i = 0; i < rt.nscen; i++)
-    {
+    for (int i = 0; i < rt.nscen; i++) {
         vote[i] = vector<int>(this->nmodel);
         fvote[i] = vector<double>(this->nmodel);
         for (int j = 0; j < rt.nscen; j++) vote[i][j] = 0;
     }
     //cout<<"avant la boucle multithread\n";
 #pragma omp parallel for shared(truemodel,infmodel,ndone) if(multithread)
-    for (int i = 0; i < nta; i++)
-    {
+    for (int i = 0; i < nta; i++) {
         truemodel[i] = this->model[i + dta];
         infmodel[i] = bestmodel2(i + dta, this->nmodel, this->stat[i + dta]);
         ndone++;
@@ -1458,14 +1286,12 @@ double RFC::training_accuracy()
       cout<< std::fixed<<setw(3)<<i+1<<" ";
       for (int j=0;j<rt.nscen;j++) cout<<setw(6)<<setprecision(0)<<vote[i][j]<<"  ";cout<<"\n";
       }*/
-    for (int i = 0; i < this->nmodel; i++)
-    {
+    for (int i = 0; i < this->nmodel; i++) {
         fout << std::fixed << setw(3) << i + 1 << " " << std::fixed;
         for (int j = 0; j < rt.nscen; j++) fout << setw(6) << setprecision(0) << vote[i][j] << "  ";
         fout << "\n";
     }
-    for (int i = 0; i < this->nmodel; i++)
-    {
+    for (int i = 0; i < this->nmodel; i++) {
         sum = 0;
         for (int j = 0; j < this->nmodel; j++) sum += vote[i][j];
         sumt += sum;
@@ -1476,8 +1302,7 @@ double RFC::training_accuracy()
     //cout<<"\nEn données normalisées (somme de chaque ligne=1)\n True\\Estim.\n";
     //cout<<"   ";for (int i=0;i<rt.nscen;i++) cout<<"    "<<i+1<<"  ";
     //cout<<" class.error\n";
-    for (int i = 0; i < this->nmodel; i++)
-    {
+    for (int i = 0; i < this->nmodel; i++) {
         //cout<<std::fixed<<setw(3)<<i+1<<"  "<< std::fixed;
         //for (int j=0;j<rt.nscen;j++) cout<<setw(5)<<setprecision(3)<<fvote[i][j]<<"  ";
         sfv = 0.0;
@@ -1489,8 +1314,7 @@ double RFC::training_accuracy()
     fout << "   ";
     for (int i = 0; i < this->nmodel; i++) fout << "    " << i + 1 << "  ";
     fout << " class.error\n";
-    for (int i = 0; i < this->nmodel; i++)
-    {
+    for (int i = 0; i < this->nmodel; i++) {
         fout << std::fixed << setw(3) << i + 1 << "  " << std::fixed;
         for (int j = 0; j < rt.nscen; j++) fout << setw(5) << setprecision(3) << fvote[i][j] << "  ";
         sfv = 0.0;
@@ -1509,16 +1333,14 @@ double RFC::training_accuracy()
     return ppe;
 }
 
-void var_importance3(int rep)
-{
+void var_importance3(int rep) {
     //cout<<"\nRecherche des stats les plus informatives\n";
     int ns;
     ns = rf.nstatclass;
     if (ns > rf.nstat) ns = rf.nstat;
     vector<VMD> vd;
     vd = vector<VMD>(rf.nstat);
-    for (int i = 0; i < rf.nstat; i++)
-    {
+    for (int i = 0; i < rf.nstat; i++) {
         if (nimportance[rep][i] > 0) vd[i].x = importance[rep][i] / rf.ntrees /*/(double)nimportance[i]*/;else vd[i].x = 0.0;
         vd[i].name = nomstat[i];//cout<<"vd["<<i<<"].name = "<<vd[i].name<<"\n";
         for (int j = vd[i].name.length(); j < 12; j++) vd[i].name += " ";
@@ -1527,21 +1349,18 @@ void var_importance3(int rep)
     sort(&vd[0], &vd[rf.nstat]);
     if (ns == rf.nstatclass) cout << " Classement des " << rf.nstatclass << " stats les plus informatives:\n";
     else cout << "\n\n Classement des stats selon leur informativité:\n";
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         cout << fixed << setw(4) << i + 1 << "  " << vd[i].name << "   " << fixed << setw(10) << setprecision(2) << vd[i].x;
         cout << "   (" << fixed << setw(6) << setprecision(2) << vd[i].x / vd[0].x * 100.0 << ")\n";
     }
     fout << "\nMost informative summary statistics\n";
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         fout << fixed << setw(4) << i + 1 << "  " << vd[i].name << "   " << fixed << setw(10) << setprecision(2) << vd[i].x;
         fout << "   (" << fixed << setw(6) << setprecision(2) << vd[i].x / vd[0].x * 100.0 << ")\n";
     }
 }
 
-void RFC::readstat(bool LD)
-{
+void RFC::readstat(bool LD) {
     cout << "\nLecture des données\n";
     int nscenOK = 0, nparamax = 0, iscen, bidon;
     enregC enr;
@@ -1555,26 +1374,22 @@ void RFC::readstat(bool LD)
     for (int i = 0; i < rt.nscen; i++) if (rt.nparam[i] > nparamax) nparamax = rt.nparam[i];
     enr.param = vector<float>(nparamax);
     enr.stat = vector<float>(this->nstat);
-    this->stat = vector<vector<double> >(this->nsets);
+    this->stat = vector<vector<double>>(this->nsets);
     //LECTURE DE LA TABLE DE REFERENCE
     rt.filename = path + "reftableRF.bin";
     rt.openfile2();
     bidon = 0;
     cout << "ouverture de " << rt.filename << "\n";
-    while ((nscenOK < this->nsets)and (bidon == 0))
-    {
+    while ((nscenOK < this->nsets)and (bidon == 0)) {
         bidon = rt.readrecord(&enr);//cout<<"nscenOK="<<nscenOK<<"   bidon="<<bidon<<"\n";
-        if (bidon == 0)
-        {
+        if (bidon == 0) {
             scenOK = false;
             iscen = 0;//cout<<"numscen="<<enr.numscen<<"    iscen="<<iscen<<"\n";
-            while ((not scenOK)and (iscen < this->nmodel))
-            {
+            while ((not scenOK)and (iscen < this->nmodel)) {
                 scenOK = (enr.numscen == rt.scenchoisi[iscen]);
                 iscen++;
             }
-            if (scenOK)
-            {
+            if (scenOK) {
                 this->stat[nscenOK] = vector<double>(this->nstat);
                 for (int j = 0; j < this->nstat; j++) this->stat[nscenOK][j] = (double)enr.stat[j];
                 iscen--;
@@ -1595,8 +1410,7 @@ void RFC::readstat(bool LD)
     for (int i = 0; i < this->nstat; i++) this->statname[i] = header.statname[i];
 
     //AJOUT CONDITIONNEL DES LD
-    if (LD)
-    {
+    if (LD) {
         cout << "\nAnalyse Discriminante pour l'ajout des LD...\n";
         long double *w, **X;
         int* mod;
@@ -1606,24 +1420,20 @@ void RFC::readstat(bool LD)
         w = new long double[this->nsets];
         for (int i = 0; i < this->nsets; i++) w[i] = 1.0;
         X = new long double*[this->nsets];
-        for (int i = 0; i < this->nsets; i++)
-        {
+        for (int i = 0; i < this->nsets; i++) {
             X[i] = new long double[this->nstat];
             for (int j = 0; j < this->nstat; j++) X[i][j] = (long double) this->stat[i][j];
         }
         afd = AFD(this->nsets, this->nstat, mod, w, X, 1.0);
         //cout<<"afd.nlambda = "<<afd.nlambda<<"\n";
         cout << "Fin de l'analyse discriminante\n";
-        for (int i = 0; i < this->nsets; i++)
-        {
+        for (int i = 0; i < this->nsets; i++) {
             this->stat[i].resize(this->nstat + afd.nlambda - 1);
         }
         //calcul des LD sur les jeux simulés
         statpiv = vector<long double>(afd.nlambda);
-        for (int i = 0; i < this->nsets; i++)
-        {
-            for (int j = 0; j < afd.nlambda - 1; j++)
-            {
+        for (int i = 0; i < this->nsets; i++) {
+            for (int j = 0; j < afd.nlambda - 1; j++) {
                 statpiv[j] = 0.0;
                 for (int k = 0; k < this->nstat; k++) statpiv[j] += (X[i][k] - afd.moy[k]) * afd.vectprop[k][j];
                 this->stat[i][nstat + j] = (double)statpiv[j];
@@ -1636,8 +1446,7 @@ void RFC::readstat(bool LD)
         delete []mod;
         //calcul des LD sur le jeu observé
         this->statobs.resize(this->nstat + afd.nlambda - 1);
-        for (int j = 0; j < afd.nlambda - 1; j++)
-        {
+        for (int j = 0; j < afd.nlambda - 1; j++) {
             statpiv[j] = 0.0;
             for (int k = 0; k < this->nstat; k++) statpiv[j] += ((long double)this->statobs[k] - afd.moy[k]) * afd.vectprop[k][j];
             this->statobs[nstat + j] = (double)statpiv[j];
@@ -1650,15 +1459,13 @@ void RFC::readstat(bool LD)
         for (int i = 0; i < afd.nlambda - 1; i++) this->statname[this->nstat + i] = "LD" + IntToString(i + 1);
         this->nstat += afd.nlambda - 1;
         cout << "Fin de l'ajout des composantes LD\n";
-    }
-    else cout << "Pas d'ajout des LD\n";
+    } else cout << "Pas d'ajout des LD\n";
     nomstat = vector<string>(this->nstat);
     for (int i = 0; i < this->nstat; i++) nomstat[i] = this->statname[i];
     cout << "FIN de readstat nstat=" << this->nstat << "\n";
 }
 
-void calposterior(int seed)
-{
+void calposterior(int seed) {
     cout << "\nCalcul de la Posterior Predictive Error\n";
     int k, ii, debut = 0, nt, np;
     nvoisins = (int)((double)rfmin->nsel * seuil);
@@ -1681,28 +1488,22 @@ void calposterior(int seed)
     VMC* prox;
     prox = new VMC[rfmin->nsel];
     bool participe, fin;
-    for (int i = 0; i < rfmin->nsel; i++)
-    {
+    for (int i = 0; i < rfmin->nsel; i++) {
         prox[i].ind = i;
         prox[i].x = 0;
         nt = 0;
         np = 0;
-        for (int j = 0; j < rfmin->ntrees; j++)
-        {
+        for (int j = 0; j < rfmin->ntrees; j++) {
             participe = false;
             k = i;
             ii = rfmin->tree[j].numset[k];
             participe = (i == ii);
             fin = false;
-            while ((not fin)and ((not participe)))
-            {
-                if (i > ii)
-                {
+            while ((not fin)and ((not participe))) {
+                if (i > ii) {
                     ii = rfmin->tree[j].numset[++k];
                     fin = (i < ii);
-                }
-                else
-                {
+                } else {
                     ii = rfmin->tree[j].numset[--k];
                     fin = i > ii;
                 }
@@ -1717,13 +1518,11 @@ void calposterior(int seed)
               participe=(i==rfmin->tree[j].numset[k]);
               if (participe) break;
               }*/
-            if (not participe)
-            {
+            if (not participe) {
                 nt++;
                 k = 0;
                 fin = false;
-                while ((not rfmin->tree[j].node[k].terminal)and (not fin))
-                {
+                while ((not rfmin->tree[j].node[k].terminal)and (not fin)) {
                     ii = rfmin->tree[j].node[k].imax;
                     if ((rfmin->statobs[ii] < rfmin->tree[j].node[k].cutval) and (rfmin->stat[i][ii] < rfmin->tree[j].node[k].cutval)) k = rfmin->tree[j].node[k].filsG;
                     else if ((rfmin->statobs[ii] >= rfmin->tree[j].node[k].cutval) and (rfmin->stat[i][ii] >= rfmin->tree[j].node[k].cutval)) k = rfmin->tree[j].node[k].filsD;
@@ -1755,9 +1554,8 @@ void calposterior(int seed)
     int nphistarOK;
     //double **stata;
     double** statb;
-    vector<vector<long double> > phistarOKK;
-    for (int p = 0; p < rfmin->nsel; p++)
-    {
+    vector<vector<long double>> phistarOKK;
+    for (int p = 0; p < rfmin->nsel; p++) {
         //cout<<"lecture de l'enregistrement "<<p;
         enreg[p].stat = vector<float>(rfmin->nstat);
         enreg[p].param = vector<float>(rt.nparamax);
@@ -1769,15 +1567,14 @@ void calposterior(int seed)
     statb = new double* [nj];
     for (int p = 0; p < nj; p++) statb[p] = new double [rfmin->nstat];
     cout << "nombre de colonnes de statb :" << rfmin->nstat << "\n";
-    if (LD)
-    {
+    if (LD) {
         statpiv = vector<long double>(header.nstat);
         cout << "nombre de colonnes de statpiv :" << header.nstat << "\n";
     }
     int nerror = 0, kk, nerrorscen, scenestim;
     vector<int> nscenestim;
     nscenestim = vector<int>(rt.nscen);
-    phistarOKK = vector<vector<long double> >(nj);
+    phistarOKK = vector<vector<long double>>(nj);
     for (int i = 0; i < nj; i++) phistarOKK[i] = vector<long double>(rt.nparamax);
     cout << "                                                ";
     for (int j = 0; j < rt.nscen; j++) cout << setw(5) << j + 1;
@@ -1788,23 +1585,18 @@ void calposterior(int seed)
     fout << " True\\Estim.\n        ";
     for (int j = 0; j < rt.nscen; j++) fout << setw(4) << j + 1 << "   ";
     fout << "\n";
-    for (int iscen = 0; iscen < rt.nscen; iscen++)
-    {
+    for (int iscen = 0; iscen < rt.nscen; iscen++) {
         nphistarOK = 0;
         nerrorscen = 0;
         kk = 0;
         for (int j = 0; j < rt.nscen; j++) nscenestim[j] = 0;
         for (int p = 0; p < nv; p++) if (enreg[prox[p].ind].numscen - 1 == iscen) nphistarOK++;
-        if (nphistarOK > 0)
-        {
+        if (nphistarOK > 0) {
             for (int p = 0; p < nv; p++)
-                if (enreg[prox[p].ind].numscen - 1 == iscen)
-                {
-                    for (int i = 0; i < nj; i++)
-                    {
+                if (enreg[prox[p].ind].numscen - 1 == iscen) {
+                    for (int i = 0; i < nj; i++) {
                         //cout<<"remplissage des paramètres de phistarOK["<<i<<"] pour le dataset "<<prox[p].ind<<"\n";
-                        for (int j = 0; j < rt.nparam[iscen]; j++)
-                        {
+                        for (int j = 0; j < rt.nparam[iscen]; j++) {
                             phistarOKK[i][j] = (long double)enreg[prox[p].ind].param[j];
                             //cout<<setw(15)<<setprecision(9)<<"     param["<<j<<"] = "<<phistarOKK[i][j]<<"\n";
                         }
@@ -1815,26 +1607,21 @@ void calposterior(int seed)
                     cout << "Sur " << setw(4) << kk << " particules (scenario " << iscen + 1 << ")   ";
                     if (debut == 0) debut = 10;
                     //cout<<"apres dosimulstat2\n";
-                    if (LD)
-                    {
-                        for (int i = 0; i < nj; i++)
-                        {
-                            for (int j = 0; j < afd.nlambda - 1; j++)
-                            {
+                    if (LD) {
+                        for (int i = 0; i < nj; i++) {
+                            for (int j = 0; j < afd.nlambda - 1; j++) {
                                 statpiv[j] = 0.0;
                                 for (int k = 0; k < header.nstat; k++) statpiv[j] += (statb[i][k] - afd.moy[k]) * afd.vectprop[k][j];
                                 statb[i][header.nstat + j] = (double)statpiv[j];
                             }
                         }
                     }
-                    for (int i = 0; i < nj; i++)
-                    {
+                    for (int i = 0; i < nj; i++) {
                         scenestim = rfmin->bestmodel3(prox[p].ind, rt.nscen, statb[i]);
                         //for(int j=0;j<rfmin->nstat;j++) cout<<"  "<<statb[i][j];cout<<"\n";
                         //cout<<"i="<<i<<"   scenestim="<<scenestim<<"\n";
                         nscenestim[scenestim]++;
-                        if (scenestim != iscen)
-                        {
+                        if (scenestim != iscen) {
                             nerror++;
                             nerrorscen++;
                         }
@@ -1859,12 +1646,10 @@ void calposterior(int seed)
     fout << "\nPosterior predictive error = " << pperror << "\n";
 }
 
-void TreeC::ecrifich(ofstream& foret)
-{
+void TreeC::ecrifich(ofstream& foret) {
     int n = this->node.size();
     foret.write((char*)&n, sizeof(int));
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         foret.write((char*)&(this->node[i].cutval), sizeof(double));
         foret.write((char*)&(this->node[i].filsG), sizeof(int));
         foret.write((char*)&(this->node[i].filsD), sizeof(int));
@@ -1874,21 +1659,18 @@ void TreeC::ecrifich(ofstream& foret)
     }
     int ns = this->numset.size();
     foret.write((char*)&ns, sizeof(int));
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         foret.write((char*)&(this->numset[i]), sizeof(int));
     }
 }
 
-void TreeC::lifich(ifstream& foret)
-{
+void TreeC::lifich(ifstream& foret) {
     int n, m, ns;
     double x;
     bool t;
     foret.read((char*)&m, sizeof(int));
     this->node = vector<NodeRC>(m);
-    for (int i = 0; i < m; i++)
-    {
+    for (int i = 0; i < m; i++) {
         foret.read((char*)&x, sizeof(double));
         this->node[i].cutval = x;
         foret.read((char*)&n, sizeof(int));
@@ -1905,16 +1687,14 @@ void TreeC::lifich(ifstream& foret)
     foret.read((char*)&ns, sizeof(int));
     this->nsets = ns;
     this->numset = vector<int>(ns);
-    for (int i = 0; i < ns; i++)
-    {
+    for (int i = 0; i < ns; i++) {
         foret.read((char*)&n, sizeof(int));
         this->numset[i] = n;
     }
     sort(&this->numset[0], &this->numset[nsets]);
 }
 
-void RFC::ecrifich(string nomfi)
-{
+void RFC::ecrifich(string nomfi) {
     int n, m;
     ofstream foret(nomfi.c_str(), ios::binary);
     foret.write((char*)&(this->ntrees), sizeof(int));
@@ -1933,8 +1713,7 @@ void RFC::ecrifich(string nomfi)
     n = this->stat.size();
     foret.write((char*)&n, sizeof(int));
     if (n > 0)
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
             m = this->stat[i].size();
             foret.write((char*)&m, sizeof(int));
             if (m > 0) for (int j = 0; j < m; j++) foret.write((char*)&(this->stat[i][j]), sizeof(double));
@@ -1964,8 +1743,7 @@ void RFC::ecrifich(string nomfi)
 }
 
 
-void lifich(string nomfi)
-{
+void lifich(string nomfi) {
     cout << "\ndebut de lifich\n";
     int n, m, k;
     double x;
@@ -1990,20 +1768,17 @@ void lifich(string nomfi)
 
     foret.read((char*)&n, sizeof(int));
     rfmin->statobs = vector<double>(n);
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         foret.read((char*)&x, sizeof(double));
         rfmin->statobs[i] = x;
     }
 
     foret.read((char*)&n, sizeof(int));
-    rfmin->stat = vector<vector<double> >(n);
-    for (int i = 0; i < n; i++)
-    {
+    rfmin->stat = vector<vector<double>>(n);
+    for (int i = 0; i < n; i++) {
         foret.read((char*)&m, sizeof(int));
         rfmin->stat[i] = vector<double>(m);
-        for (int j = 0; j < m; j++)
-        {
+        for (int j = 0; j < m; j++) {
             foret.read((char*)&x, sizeof(double));
             rfmin->stat[i][j] = x;
         }
@@ -2011,34 +1786,29 @@ void lifich(string nomfi)
 
     foret.read((char*)&n, sizeof(int));
     rfmin->tree = vector<TreeC>(n);
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         rfmin->tree[i].lifich(foret);
         cout << "lecture de l'arbre " << i + 1 << "\r";
         fflush(stdout);
     }
 
     foret.read((char*)&n, sizeof(int));
-    nimportance = vector<vector<int> >(n);
-    for (int i = 0; i < n; i++)
-    {
+    nimportance = vector<vector<int>>(n);
+    for (int i = 0; i < n; i++) {
         foret.read((char*)&m, sizeof(int));
         nimportance[i] = vector<int>(m);
-        for (int j = 0; j < m; j++)
-        {
+        for (int j = 0; j < m; j++) {
             foret.read((char*)&k, sizeof(int));
             nimportance[i][j] = k;
         }
     }
 
     foret.read((char*)&n, sizeof(int));
-    importance = vector<vector<double> >(n);
-    for (int i = 0; i < n; i++)
-    {
+    importance = vector<vector<double>>(n);
+    for (int i = 0; i < n; i++) {
         foret.read((char*)&m, sizeof(int));
         importance[i] = vector<double>(m);
-        for (int j = 0; j < m; j++)
-        {
+        for (int j = 0; j < m; j++) {
             foret.read((char*)&x, sizeof(double));
             importance[i][j] = x;
         }
@@ -2049,8 +1819,7 @@ void lifich(string nomfi)
     cout << "\nfin de lifich\n";
 }
 
-void dorandfor(string opt, int seed)
-{
+void dorandfor(string opt, int seed) {
     cout << "\nDébut de dorandfor\n";
     double duree;
     clock_t debut;
@@ -2070,12 +1839,10 @@ void dorandfor(string opt, int seed)
     splitwords(opt, ";", ss);
     rf.ntrees = 500;
     int sssize = (int)ss.size();
-    for (int i = 0; i < sssize; i++)
-    {
+    for (int i = 0; i < sssize; i++) {
         s0 = ss[i].substr(0, 2);
         s1 = ss[i].substr(2);
-        if (s0 == "s:")
-        {
+        if (s0 == "s:") {
             splitwords(s1, ",", ss1);
             rt.nscenchoisi = ss1.size();
             rt.scenchoisi = new int[rt.nscenchoisi];
@@ -2083,51 +1850,37 @@ void dorandfor(string opt, int seed)
             nrecpos = 0;
             for (int j = 0; j < rt.nscenchoisi; j++) nrecpos += rt.nrecscen[rt.scenchoisi[j] - 1];
             cout << "scenarios à tester : ";
-            for (int j = 0; j < rt.nscenchoisi; j++)
-            {
+            for (int j = 0; j < rt.nscenchoisi; j++) {
                 cout << rt.scenchoisi[j];
                 if (j < rt.nscenchoisi - 1) cout << ",";
             }
             cout << "\n";
             ss1.clear();
-        }
-        else if (s0 == "n:")
-        {
+        } else if (s0 == "n:") {
             rf.nsets = atoi(s1.c_str());
             cout << "nombre total de jeux de données considérés (tous scénarios confondus)= " << rf.nsets << "\n";
-        }
-        else if (s0 == "d:")
-        {
+        } else if (s0 == "d:") {
             LD = true;
             cout << "ajout des linear discriminant scores\n";
-        }
-        else if (s0 == "t:")
-        {
+        } else if (s0 == "t:") {
             rf.ntrees = atoi(s1.c_str());
             cout << "nombre d'arbres ' = " << rf.ntrees << "\n";
-        }
-        else if (s0 == "b:")
-        {
+        } else if (s0 == "b:") {
             splitwords(s1, ",", ss1);
             rf.nbootsamp = ss1.size();
             rf.bootsamp = vector<int>(rf.nbootsamp);
             for (int j = 0; j < rf.nbootsamp; j++) rf.bootsamp[j] = atoi(ss1[j].c_str());
             cout << "taille des échantillons pour bootstrap : ";
-            for (int j = 0; j < rf.nbootsamp; j++)
-            {
+            for (int j = 0; j < rf.nbootsamp; j++) {
                 cout << rf.bootsamp[j];
                 if (j < rf.nbootsamp - 1) cout << ",";
             }
             cout << "\n";
             ss1.clear();
-        }
-        else if (s0 == "k:")
-        {
+        } else if (s0 == "k:") {
             rf.nvar = atoi(s1.c_str());
             flagk = true;
-        }
-        else if (s0 == "o:")
-        {
+        } else if (s0 == "o:") {
             rf.nstatclass = atoi(s1.c_str());
             cout << "affichage des " << rf.nstatclass << " statistiques les plus efficaces\n";
             flago = true;
@@ -2135,8 +1888,8 @@ void dorandfor(string opt, int seed)
     }
     cout << "fin de l'analyse des options\n\n";
     rf.readstat(LD);
-    if (not flagk)rf.nvar = (int)sqrt(rf.nstat);
-    if (not flago)rf.nstatclass = 30;
+    if (not flagk) rf.nvar = (int)sqrt(rf.nstat);
+    if (not flago) rf.nstatclass = 30;
     fout.open(nomfiresult.c_str());
     fout << "DIYABC :                 Search of the best scenario through Random Forest                         " << asctime(timeinfo) << "\n";
     fout << "Data file       : " << header.datafilename << "\n";
@@ -2145,8 +1898,7 @@ void dorandfor(string opt, int seed)
     if (LD) fout << "Linear discriminant scores have been added to summary statistics\n";
     fout << "The forest includes " << rf.ntrees << " trees\n";
     fout << "Calibration has been performed with trees containing ";
-    for (int j = 0; j < rf.nbootsamp; j++)
-    {
+    for (int j = 0; j < rf.nbootsamp; j++) {
         fout << rf.bootsamp[j];
         if (j < rf.nbootsamp - 1) fout << ",";
     }
@@ -2154,20 +1906,18 @@ void dorandfor(string opt, int seed)
     fout << "Total number of summary statistics : " << rf.nstat << "    Number drawn at random at each node : " << rf.nvar << "\n\n";
     fout << "*************************Calibration**************************\n\n";
     ppemin = 1.0;
-    importance = vector<vector<double> >(rf.nbootsamp);
-    nimportance = vector<vector<int> >(rf.nbootsamp);
+    importance = vector<vector<double>>(rf.nbootsamp);
+    nimportance = vector<vector<int>>(rf.nbootsamp);
     obs_estscen = vector<int>(rt.nscenchoisi);
-    sim_estscen = vector<vector<int> >(rf.nsets);
+    sim_estscen = vector<vector<int>>(rf.nsets);
     rf.bienestime = vector<bool>(rf.nsets);
     vector<int> bienvu;
     bienvu = vector<int>(rf.nsets);
     obs_estim = vector<double>(rf.ntrees);
     for (int i = 0; i < rf.nsets; i++) sim_estscen[i] = vector<int>(rt.nscenchoisi);
-    for (int rep = 0; rep < rf.nbootsamp; rep++)
-    {
+    for (int rep = 0; rep < rf.nbootsamp; rep++) {
         rf.nsel = rf.bootsamp[rep];
-        for (int j = 0; j < rt.nscenchoisi; j++)
-        {
+        for (int j = 0; j < rt.nscenchoisi; j++) {
             obs_estscen[j] = 0;
             for (int i = 0; i < rf.nsets; i++) sim_estscen[i][j] = 0;
         }
@@ -2179,15 +1929,13 @@ void dorandfor(string opt, int seed)
         fout << "-----------Trees with " << rf.bootsamp[rep] << " data sets-------------\n";
         importance[rep] = vector<double>(rf.nstat);
         nimportance[rep] = vector<int>(rf.nstat);
-        for (int i = 0; i < rf.nstat; i++)
-        {
+        for (int i = 0; i < rf.nstat; i++) {
             importance[rep][i] = 0.0;
             nimportance[rep][i] = 0;
         }
         ndone = 0;
 #pragma omp parallel for shared(ndone,seed,rep,obs_estscen,sim_estscen,importance,nimportance) private(ctree) if(multithread)
-        for (int i = 0; i < rf.ntrees; i++)
-        {
+        for (int i = 0; i < rf.ntrees; i++) {
             ctree.buildtree1(seed, i, rep);
             ctree.estim();
             ctree.deletree();
@@ -2199,8 +1947,7 @@ void dorandfor(string opt, int seed)
         cout << "\n";
         ntestes = 0;
         njustes = 0;
-        for (int i = 0; i < rf.nsets; i++)
-        {
+        for (int i = 0; i < rf.nsets; i++) {
             mod = 0;
             for (int j = 1; j < rt.nscenchoisi; j++) if (sim_estscen[i][j] > sim_estscen[i][mod]) mod = j;
             rf.bienestime[i] = (rf.model[i] == mod);
@@ -2208,8 +1955,7 @@ void dorandfor(string opt, int seed)
         }
         ppe = (double)(rf.nsets - njustes) / (double)(rf.nsets);
         cout << "prior predictive error = " << ppe << "\n";
-        if (ppe <= ppemin - 0.001)
-        {
+        if (ppe <= ppemin - 0.001) {
             ppemin = ppe;
             repmin = rep;
             for (int i = 0; i < rf.nsets; i++) if (rf.bienestime[i]) bienvu[i] = 1; else bienvu[i] = 0;
@@ -2226,8 +1972,7 @@ void dorandfor(string opt, int seed)
     ndone = 0;
     //cout<<"avant omp parallel\n";
 #pragma omp parallel for shared(ndone,seed,obs_estscen,sim_estscen) private(ctree) if(multithread)
-    for (int i = 0; i < rf.ntrees; i++)
-    {
+    for (int i = 0; i < rf.ntrees; i++) {
         ctree.buildtree2(seed, i, repmin);
         obs_estim[i] = ctree.inferobs(rf.statobs);
         ctree.deletree();

@@ -17,15 +17,14 @@ using namespace std;
 /**
  * Structure ParticleSet : définition d'un ensemble de particules
  */
-struct ParticleSetC
-{
+struct ParticleSetC {
     std::vector<ParticleC> particule;
     std::vector<LocusC> locuslist;
     //std::vector<LocusGroupC> grouplist;
     int npart, nloc, ngr;
     int nsample, nscenarios;
     std::vector<int> nind;
-    std::vector<std::vector<int> > indivsexe;
+    std::vector<std::vector<int>> indivsexe;
     //std::vector<ScenarioC> scenario;
     double sexratio;
     MwcGen* mw;
@@ -46,7 +45,7 @@ struct ParticleSetC
     // simulation de particules de paramètres fixées
     void dosimulstat(int debut, int npart, bool dnatrue, bool multithread, int numscen, int seed, double** stat);
     // simulation de particules de paramètres fixées
-    void dosimulstat2(int debut, int npartic, vector<vector<long double> >& phistarOKK, bool dnatrue, bool multithread, int numscen, int seed, double** stat);
+    void dosimulstat2(int debut, int npartic, vector<vector<long double>>& phistarOKK, bool dnatrue, bool multithread, int numscen, int seed, double** stat);
     // simulation des particules utilisées pour le model checking
     void dosimulphistar(int npart, bool dnatrue,
                         bool multithread, bool firsttime, int numscen, int seed, int nsel);
