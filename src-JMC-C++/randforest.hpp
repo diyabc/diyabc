@@ -8,7 +8,6 @@
 #pragma once
 
 #include <string>
-#include <iostream>
 #include <vector>
 
 #include "randomgenerator.hpp"
@@ -33,15 +32,13 @@ public:
     vector<int> numsetG;
     vector<int> numsetD;
     int regle3(vector<VMC> vm, vector<int> b, MwcGen& mw);
-    double calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq);
-    double calGini(vector<VMC>& vm, double cutval);
-    double calvarmin(vector<VMC>& vm, double& cutvalc);
-    double calvarmoy(vector<VMC>& vm, double cutval);
-    vector<int> calmodfreq(vector<VMC> vm);
+    double calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq) const;
+    double calGini(vector<VMC>& vm, double cutval) const;
+    double calvarmin(vector<VMC>& vm, double& cutvalc) const;
+    double calvarmoy(vector<VMC>& vm, double cutval) const;
     int getdisval(MwcGen& mw);
     double getdisval2(MwcGen& mw);
 
-    //      double caldisval(int nscen, int nsets, const vector<VMC>&vm, double val, vector <int>& nn);     
     ~NodeRC() {
         if (not indvar.empty()) indvar.clear();
         if (not numset.empty()) numset.clear();
@@ -59,22 +56,15 @@ public:
     bool fin;
 
     vector<int> numset;
-    //vector <int> indsel;
     vector<int> score;
     vector<int> index;
     vector<NodeRC> node;
     vector<bool> varused;
     vector<bool> sim_participe;
 
-    void initree(int i, bool init);
+    void initree();
     int infermodel(const vector<double>& stat);
-    int infermodel2(double* stat);
-    void ecris(int num);
-    int calprofondeur(const vector<double>& stat);
-    int calprox(int n0, const vector<double>& stat, const vector<double>& statobs);
     void deletree();
-    void ecrifich(ofstream& foret);
-    void lifich(ifstream& foret);
     void buildtree1(int seed, int i, int rep);
     void buildtree2(int seed, int i, int rep);
     void estim();
@@ -98,7 +88,6 @@ public:
     int ntrees, ntot, nsets, nstat, nmodel, nvar, nsel, nstatclass, nbootsamp;
 
     vector<int> model;
-    //vector <int>indsel;
     vector<vector<double>> vote;
     vector<double> varimp;
     vector<vector<double>> stat;
@@ -109,20 +98,10 @@ public:
     vector<string> statname;
     vector<bool> bienestime;
 
-    void growtrees(int seed, int rep);
-    double training_accuracy();
-    void infermodel();
-    int bestmodel(int nmod, vector<double>& vote, const vector<double>& stat);
-    int bestmodel2(int k, int nmod, const vector<double>& stat);
-    int bestmodel3(int k, int nscen, double* stat);
-    void var_importance();
-    void var_importance2();
     void readstat(bool LD);
-    void ecrifich(string nomfi);
 
     ~RFC() {
         if (not model.empty()) model.clear();
-        //if (not indsel.empty()) indsel.clear();
         if (not vote.empty()) vote.clear();
         if (not varimp.empty()) varimp.clear();
         if (not stat.empty()) stat.clear();
@@ -136,7 +115,5 @@ public:
 };
 
 void dorandfor(std::string opt, int seed);
-void lifich(string nomfi);
-void calposterior(int seed);
 void var_importance3(int rep);
 
