@@ -26,7 +26,7 @@ class NodeRC {
 public:
     int pere, filsG, filsD, nvar, nsets, npassages, nsetG, nsetD, model, imax;
     double cutval, disval, disval2, delta, modmoy;
-    bool terminal, gauche;
+    bool terminal;
     vector<int> indvar;
     vector<int> numset;
     vector<int> numsetG;

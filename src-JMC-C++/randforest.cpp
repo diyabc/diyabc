@@ -443,7 +443,7 @@ double NodeRC::calvarmoy(vector<VMC>& vm, double cutval) const {
     vg = (sx2g - sxg * sxg / (double)ng);
     vd = (sx2d - sxd * sxd / (double)nd);
     v = (vg + vd) / (double)this->nsets;
-    cout << "      calvarmoy=" << v << "   vg=" << vg << "  vd=" << vd << "    nsets=" << this->nsets << "\n";
+    // cout << "      calvarmoy=" << v << "   vg=" << vg << "  vd=" << vd << "    nsets=" << this->nsets << "\n";
     return v;
 }
 
@@ -563,7 +563,7 @@ double NodeRC::getdisval2(MwcGen& mw) {
     vector<int> modfreq;
     modfreq = vector<int>(rf.nmodel, 0);
     for (int j = 0; j < this->nsets; j++) modfreq[vm[j].ind]++;
-    if (this->nsets == nlim) { //la limite de 5 datasets est atteinte
+    if (this->nsets <= nlim) { //la limite de 5 datasets est atteinte
         vm.clear();
         fmodmax = 0.0;
         for (int k = 1; k < rf.nmodel; k++) fmodmax += (double)(k * modfreq[k]);
@@ -642,9 +642,10 @@ double NodeRC::getdisval2(MwcGen& mw) {
     }
     this->nsetG = this->numsetG.size();
     this->nsetD = this->numsetD.size();
+	double result = -1;
     vm.clear();
     modfreq.clear();
-    if ((this->nsetG < 5)or (this->nsetD < 5)) return freqmoy;
+//    if ((this->nsetG < 5)or (this->nsetD < 5)) return freqmoy;
     return -1;
 }
 
@@ -832,8 +833,8 @@ void TreeC::buildtree2(int seed, int i, int rep) {
         //cout<<"Noeud k="<<k<<"   ";if (this->node[k].terminal) cout<<"terminal\n";else cout<<"not terminal\n";
         this->node[k].modmoy = this->node[k].getdisval2(this->mw);
         //cout<<"model "<<this->node[k].model<<"\n";
-        this->node[k].terminal = (this->node[k].modmoy != -1);
-        if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
+		this->node[k].terminal = (this->node[k].modmoy >= 0.0);
+		if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
             //this->varused[this->node[k].imax] = true;cout<<"Noeud k="<<k<<"   imax="<<this->node[k].imax<<"\n";
             this->node[k].filsG = k + 1;
             if (k == 2 * rf.nsel) {
@@ -888,8 +889,9 @@ void TreeC::buildtree2(int seed, int i, int rep) {
                 this->node[kk].npassages++;
                 this->node[k].npassages++;
             }
+
         }
-    }
+	}
     this->nnodes = k + 1;
     //this->ecris(rt,i);
     for (int m = 0; m <= k; m++) {
@@ -899,6 +901,7 @@ void TreeC::buildtree2(int seed, int i, int rep) {
             this->node[m].numset.clear();
             this->node[m].indvar.clear();
         }
+		
     }
     ndone++;
     cout << "   construction de l'arbre " << ndone << "\r";
