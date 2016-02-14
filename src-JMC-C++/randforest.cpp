@@ -549,6 +549,7 @@ int NodeRC::getdisval(MwcGen& mw) {
  *  retourne le numéro du modèle si le noeud est terminal
  */
 double NodeRC::getdisval2(MwcGen& mw) {
+	bool terminal = false;
     double va, vamin, cutvalmin, deltamax, cutvalc = 0.0;
     int modmax, freqmax, ii;
     double fmodmax, freqmoy = 0.0;
@@ -568,20 +569,23 @@ double NodeRC::getdisval2(MwcGen& mw) {
         fmodmax = 0.0;
         for (int k = 1; k < rf.nmodel; k++) fmodmax += (double)(k * modfreq[k]);
         modfreq.clear();
-        return fmodmax;
+        //return fmodmax;
+		return freqmoy;
     }
     modmax = 0;
     for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
     if (modfreq[modmax] == this->nsets) { //tous les datasets sont du même modèle
         vm.clear();
         modfreq.clear();
-        return (double)modmax;
+		return freqmoy;
+//        return (double)modmax;
     }
     modmax = regle3(vm, modfreq, mw);
     if (modmax != -1) { //tous les datasets ont les mêmes valeurs de stat
         vm.clear();
         modfreq.clear();
-        return (double)modmax;
+		return freqmoy;
+  //      return (double)modmax;
     }
     //calcul du Gini du noeud avant split
     //dfa=0.0;for (int m=0;m<rf.nmodel;m++) {c=(double)modfreq[m]/(double)this->nsets;dfa +=c*(1.0-c);}
@@ -833,7 +837,7 @@ void TreeC::buildtree2(int seed, int i, int rep) {
         //cout<<"Noeud k="<<k<<"   ";if (this->node[k].terminal) cout<<"terminal\n";else cout<<"not terminal\n";
         this->node[k].modmoy = this->node[k].getdisval2(this->mw);
         //cout<<"model "<<this->node[k].model<<"\n";
-		this->node[k].terminal = (this->node[k].modmoy >= 0.0);
+		this->node[k].terminal = (this->node[k].modmoy > -0.5);
 		if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
             //this->varused[this->node[k].imax] = true;cout<<"Noeud k="<<k<<"   imax="<<this->node[k].imax<<"\n";
             this->node[k].filsG = k + 1;
