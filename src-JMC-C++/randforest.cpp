@@ -552,7 +552,7 @@ double NodeRC::getdisval2(MwcGen& mw) {
 	bool terminal = false;
     double va, vamin, cutvalmin, deltamax, cutvalc = 0.0;
     int modmax, freqmax, ii;
-    double fmodmax, freqmoy = 0.0;
+    double freqmoy = 0.0;
     vector<VMC> vm;
     vm = vector<VMC>(this->nsets);//cout<<"Dans getdisval2 this->nsets="<<this->nsets<<"\n";
     for (int j = 0; j < this->nsets; j++) {
@@ -564,29 +564,26 @@ double NodeRC::getdisval2(MwcGen& mw) {
     vector<int> modfreq;
     modfreq = vector<int>(rf.nmodel, 0);
     for (int j = 0; j < this->nsets; j++) modfreq[vm[j].ind]++;
-    if (this->nsets <= nlim) { //la limite de 5 datasets est atteinte
+	modmax = 0;
+	for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
+	if (this->nsets <= nlim) { //la limite de 5 datasets est atteinte
         vm.clear();
-        fmodmax = 0.0;
-        for (int k = 1; k < rf.nmodel; k++) fmodmax += (double)(k * modfreq[k]);
         modfreq.clear();
-        //return fmodmax;
-		return freqmoy;
+        return freqmoy;
     }
-    modmax = 0;
-    for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
     if (modfreq[modmax] == this->nsets) { //tous les datasets sont du même modèle
         vm.clear();
         modfreq.clear();
-		return freqmoy;
-//        return (double)modmax;
+        return freqmoy;
     }
-    modmax = regle3(vm, modfreq, mw);
-    if (modmax != -1) { //tous les datasets ont les mêmes valeurs de stat
-        vm.clear();
-        modfreq.clear();
-		return freqmoy;
-  //      return (double)modmax;
-    }
+  //  modmax = regle3(vm, modfreq, mw);
+  //  if (modmax != -1) { //tous les datasets ont les mêmes valeurs de stat
+  //      vm.clear();
+		//cout << "Erreur regle 3 activee en regression, impossible" << endl;
+		//exit(1);
+  //      modfreq.clear();
+  //      return freqmoy;
+  //  }
     //calcul du Gini du noeud avant split
     //dfa=0.0;for (int m=0;m<rf.nmodel;m++) {c=(double)modfreq[m]/(double)this->nsets;dfa +=c*(1.0-c);}
     //calcul du nombre d'individus du modèle le plus fréquent à ce noeud
