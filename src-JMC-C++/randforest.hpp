@@ -91,12 +91,15 @@ public:
     vector<vector<double>> vote;
     vector<double> varimp;
     vector<vector<double>> stat;
+    vector<vector<int>> stat_sorted_ind;
     vector<vector<double>> importance;
     vector<TreeC> tree;
     vector<double> statobs;
     vector<int> bootsamp;
     vector<string> statname;
     vector<bool> bienestime;
+
+    bool sort_stat(int var, int i, int j);
 
     void readstat(bool LD);
 

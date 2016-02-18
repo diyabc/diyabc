@@ -27,7 +27,7 @@ double sqr(double x) {
     return x * x;
 }
 
-#ifdef _MSC_VER
+#if defined (_MSC_VER) && !defined (__INTEL_COMPILER)
 extern __declspec(thread) mt_struct* r;
 #else
 extern mt_struct* r;

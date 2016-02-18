@@ -11,6 +11,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iomanip>
+#include <functional>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
@@ -26,6 +27,7 @@
 
 
 using namespace std;
+using namespace std::placeholders;
 
 extern string ident, headerfilename;
 extern bool multithread;
@@ -182,7 +184,7 @@ RFC& RFC::operator=(RFC const& source) {
         imax = (int)source.model.size();
         for (int i = 0; i < imax; i++) this->model[i] = source.model[i];
     }
-	if (not this->vote.empty()) {
+    if (not this->vote.empty()) {
         imax = (int)this->vote.size();
         for (int i = 0; i < imax; i++) {
             if (not this->vote[i].empty()) this->vote[i].clear();
@@ -496,8 +498,8 @@ int NodeRC::getdisval(MwcGen& mw) {
             deltamax = fabs(vm[this->nsets - 1].x - vm[0].x);
         } while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
         cutvalmin = vm[this->nsets / 2].x;
-         this->imax = indvar[ii];
-         for (int j = 0; j < this->nsets; j++) {
+        this->imax = indvar[ii];
+        for (int j = 0; j < this->nsets; j++) {
             vm[j].x = rf.stat[this->numset[j]][this->imax];
             vm[j].ind = rf.model[this->numset[j]];
         }
@@ -549,7 +551,7 @@ int NodeRC::getdisval(MwcGen& mw) {
  *  retourne le numéro du modèle si le noeud est terminal
  */
 double NodeRC::getdisval2(MwcGen& mw) {
-	bool terminal = false;
+    bool terminal = false;
     double va, vamin, cutvalmin, deltamax, cutvalc = 0.0;
     int modmax, freqmax, ii;
     double freqmoy = 0.0;
@@ -564,9 +566,9 @@ double NodeRC::getdisval2(MwcGen& mw) {
     vector<int> modfreq;
     modfreq = vector<int>(rf.nmodel, 0);
     for (int j = 0; j < this->nsets; j++) modfreq[vm[j].ind]++;
-	modmax = 0;
-	for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
-	if (this->nsets <= nlim) { //la limite de 5 datasets est atteinte
+    modmax = 0;
+    for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
+    if (this->nsets <= nlim) { //la limite de 5 datasets est atteinte
         vm.clear();
         modfreq.clear();
         return freqmoy;
@@ -576,14 +578,14 @@ double NodeRC::getdisval2(MwcGen& mw) {
         modfreq.clear();
         return freqmoy;
     }
-  //  modmax = regle3(vm, modfreq, mw);
-  //  if (modmax != -1) { //tous les datasets ont les mêmes valeurs de stat
-  //      vm.clear();
-		//cout << "Erreur regle 3 activee en regression, impossible" << endl;
-		//exit(1);
-  //      modfreq.clear();
-  //      return freqmoy;
-  //  }
+    //  modmax = regle3(vm, modfreq, mw);
+    //  if (modmax != -1) { //tous les datasets ont les mêmes valeurs de stat
+    //      vm.clear();
+    //cout << "Erreur regle 3 activee en regression, impossible" << endl;
+    //exit(1);
+    //      modfreq.clear();
+    //      return freqmoy;
+    //  }
     //calcul du Gini du noeud avant split
     //dfa=0.0;for (int m=0;m<rf.nmodel;m++) {c=(double)modfreq[m]/(double)this->nsets;dfa +=c*(1.0-c);}
     //calcul du nombre d'individus du modèle le plus fréquent à ce noeud
@@ -608,29 +610,88 @@ double NodeRC::getdisval2(MwcGen& mw) {
         }
         vamin = calvarmoy(vm, cutvalmin);
     } else { //il y a plusieurs individus d'un modèle donné
-        for (int i = 0; i < this->nvar; i++) {
-            for (int j = 0; j < this->nsets; j++) {
-                vm[j].x = rf.stat[this->numset[j]][indvar[i]];
-                vm[j].ind = rf.model[this->numset[j]];
-            }
-            sort(&vm[0], &vm[0] + nsets);
-            va = calvarmin(vm, cutvalc);
-            if (i == 0) {
-                this->imax = indvar[i];
-                cutvalmin = cutvalc;
-                vamin = va;
-            } else {
-                if (va < vamin) {
+        double ns = static_cast<double>(this->nsets);
+        if (6.15*ns*log(ns) < static_cast<double>(rf.nsets)) {
+            for (int i = 0; i < this->nvar; i++) {
+                for (int j = 0; j < this->nsets; j++) {
+                    vm[j].x = rf.stat[this->numset[j]][indvar[i]];
+                    vm[j].ind = rf.model[this->numset[j]];
+                }
+                sort(&vm[0], &vm[0] + nsets);
+                va = calvarmin(vm, cutvalc);
+                if (i == 0) {
                     this->imax = indvar[i];
                     cutvalmin = cutvalc;
                     vamin = va;
                 }
+                else {
+                    if (va < vamin) {
+                        this->imax = indvar[i];
+                        cutvalmin = cutvalc;
+                        vamin = va;
+                    }
+                }
+            }
+            for (int j = 0; j < this->nsets; j++) {
+                vm[j].x = rf.stat[this->numset[j]][imax];
+                vm[j].ind = rf.model[this->numset[j]];
+            }
+
+        }
+        else {
+            vector<int> isInMax;
+            vector<int> isIn = vector<int>(rf.nsets, 0);
+            for (int i = 0; i < this->nvar; i++) {
+                for (int j = 0; j < this->nsets; j++) {
+                    isIn[this->numset[j]]++;
+                }
+                int j = 0;
+                int realind;
+                int current_var_ind = indvar[i];
+                vector<int>& current_stat_vec = rf.stat_sorted_ind[current_var_ind];
+                for (int jj = 0; jj < rf.nsets; jj++) {
+                    realind = current_stat_vec[jj];
+                    for (int jji = 0; jji < isIn[jj]; jji++) {
+                        vm[j].x = rf.stat[realind][current_var_ind];
+                        vm[j].ind = rf.model[realind];
+                        j++;
+                    }
+                }
+                va = calvarmin(vm, cutvalc);
+                if (i == 0) {
+                    this->imax = indvar[i];
+                    cutvalmin = cutvalc;
+                    vamin = va;
+                    isInMax = vector<int>(isIn);
+                }
+                else {
+                    if (va < vamin) {
+                        this->imax = indvar[i];
+                        cutvalmin = cutvalc;
+                        vamin = va;
+                        isInMax = vector<int>(isIn);
+                    }
+                }
+                for (int j = 0; j < this->nsets; j++) {
+                    isIn[this->numset[j]] = 0;
+                }
+
+            }
+            //for (int j = 0; j < this->nsets; j++) {
+            //    vm[j].x = rf.stat[this->numset[j]][imax];
+            //    vm[j].ind = rf.model[this->numset[j]];
+            //}
+            int j = 0;
+            for (int jj = 0; jj < rf.nsets; jj++) {
+                int realind = rf.stat_sorted_ind[imax][jj];
+                for (int jji = 0; jji < isInMax[jj]; jji++) {
+                    vm[j].x = rf.stat[realind][imax];
+                    vm[j].ind = rf.model[realind];
+                    j++;
+                }
             }
         }
-        for (int j = 0; j < this->nsets; j++) {
-            vm[j].x = rf.stat[this->numset[j]][imax];
-            vm[j].ind = rf.model[this->numset[j]];
-        }
+
     }
     //this->delta=(dfa-ginimin)*this->nsets;        
     this->disval = vamin;
@@ -643,7 +704,7 @@ double NodeRC::getdisval2(MwcGen& mw) {
     }
     this->nsetG = this->numsetG.size();
     this->nsetD = this->numsetD.size();
-	double result = -1;
+    double result = -1;
     vm.clear();
     modfreq.clear();
 //    if ((this->nsetG < 5)or (this->nsetD < 5)) return freqmoy;
@@ -668,9 +729,9 @@ void TreeC::initree() {
     this->score = vector<int>(rf.nstat);
     this->mw.samplewith(rf.nsets, this->nsets, this->numset/*this->indsel*/);
     this->sim_participe = vector<bool>(rf.nsets);
-	for (int i = 0; i < rf.nsets; i++) this->sim_participe[i] = false;
+    for (int i = 0; i < rf.nsets; i++) this->sim_participe[i] = false;
     for (int i = 0; i < this->nsets; i++) this->sim_participe[this->numset[i]] = true;
-        //for (int j=0;j<this->nsets;j++) this->numset[j] = this->indsel[j];
+    //for (int j=0;j<this->nsets;j++) this->numset[j] = this->indsel[j];
     this->varused = vector<bool>(rf.nstat, false);
 }
 
@@ -834,8 +895,8 @@ void TreeC::buildtree2(int seed, int i, int rep) {
         //cout<<"Noeud k="<<k<<"   ";if (this->node[k].terminal) cout<<"terminal\n";else cout<<"not terminal\n";
         this->node[k].modmoy = this->node[k].getdisval2(this->mw);
         //cout<<"model "<<this->node[k].model<<"\n";
-		this->node[k].terminal = (this->node[k].modmoy > -0.5);
-		if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
+        this->node[k].terminal = (this->node[k].modmoy > -0.5);
+        if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
             //this->varused[this->node[k].imax] = true;cout<<"Noeud k="<<k<<"   imax="<<this->node[k].imax<<"\n";
             this->node[k].filsG = k + 1;
             if (k == 2 * rf.nsel) {
@@ -892,7 +953,7 @@ void TreeC::buildtree2(int seed, int i, int rep) {
             }
 
         }
-	}
+    }
     this->nnodes = k + 1;
     //this->ecris(rt,i);
     for (int m = 0; m <= k; m++) {
@@ -902,7 +963,7 @@ void TreeC::buildtree2(int seed, int i, int rep) {
             this->node[m].numset.clear();
             this->node[m].indvar.clear();
         }
-		
+                
     }
     ndone++;
     cout << "   construction de l'arbre " << ndone << "\r";
@@ -934,6 +995,10 @@ void var_importance3(int rep) {
         fout << fixed << setw(4) << i + 1 << "  " << vd[i].name << "   " << fixed << setw(10) << setprecision(2) << vd[i].x;
         fout << "   (" << fixed << setw(6) << setprecision(2) << vd[i].x / vd[0].x * 100.0 << ")\n";
     }
+}
+
+bool RFC::sort_stat(int var, int i, int j) {
+    return this->stat[i][var] < this->stat[j][var];
 }
 
 void RFC::readstat(bool LD) {
@@ -1039,12 +1104,19 @@ void RFC::readstat(bool LD) {
     nomstat = vector<string>(this->nstat);
     for (int i = 0; i < this->nstat; i++) nomstat[i] = this->statname[i];
     cout << "FIN de readstat nstat=" << this->nstat << "\n";
+    cout << "Début du tri des stats" << endl;
+    vector<int> stat_range = vector<int>(this->nsets);
+    for (int i = 0; i < this->nsets; i++) stat_range[i] = i;
+    this->stat_sorted_ind = vector<vector<int>>(this->nstat,vector<int>(stat_range));
+    for (int i = 0; i < this->nstat; i++) {
+        sort(this->stat_sorted_ind[i].begin(), this->stat_sorted_ind[i].end(), bind(&RFC::sort_stat, this, i, _1, _2));
+    }
 }
 
 void dorandfor(string opt, int seed) {
     cout << "\nDébut de dorandfor\n";
     double duree;
-    clock_t debut;
+    clock_t debut,debut_buildtree2;
     debut = clock();
     time_t rawtime;
     time(&rawtime);
@@ -1193,12 +1265,14 @@ void dorandfor(string opt, int seed) {
     rf.nsel = rf.bootsamp[repmin];
     ndone = 0;
     //cout<<"avant omp parallel\n";
+    debut_buildtree2 = clock();
 #pragma omp parallel for shared(ndone,seed,obs_estscen,sim_estscen) private(ctree) if(multithread)
     for (int i = 0; i < rf.ntrees; i++) {
         ctree.buildtree2(seed, i, repmin);
         obs_estim[i] = ctree.inferobs(rf.statobs);
         ctree.deletree();
     }
+    cout << endl << "Durée buildtree2 " << TimeToStr(walltime(debut_buildtree2)) << endl;
     double som = 0.0;
     for (int i = 0; i < rf.ntrees; i++) som += obs_estim[i];
     cout << "\nsom=" << som << "\n";
