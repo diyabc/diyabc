@@ -555,16 +555,14 @@ double NodeRC::getdisval2(MwcGen& mw) {
     double va, vamin, cutvalmin, deltamax, cutvalc = 0.0;
     int modmax, freqmax, ii;
     double freqmoy = 0.0;
-    vector<VMC> vm;
-    vm = vector<VMC>(this->nsets);//cout<<"Dans getdisval2 this->nsets="<<this->nsets<<"\n";
-    for (int j = 0; j < this->nsets; j++) {
+	vector<VMC> vm = vector<VMC>(this->nsets);
+	for (int j = 0; j < this->nsets; j++) {
         vm[j].ind = rf.model[this->numset[j]];
         freqmoy += (double)rf.model[this->numset[j]];
     }
     freqmoy /= (double)this->nsets;
     //calcul du nombre d'individus de chaque modèle
-    vector<int> modfreq;
-    modfreq = vector<int>(rf.nmodel, 0);
+    vector<int> modfreq = vector<int>(rf.nmodel, 0);
     for (int j = 0; j < this->nsets; j++) modfreq[vm[j].ind]++;
     modmax = 0;
     for (int k = 1; k < rf.nmodel; k++) if (modfreq[k] > modfreq[modmax]) modmax = k;
@@ -611,8 +609,9 @@ double NodeRC::getdisval2(MwcGen& mw) {
         vamin = calvarmoy(vm, cutvalmin);
     } else { //il y a plusieurs individus d'un modèle donné
         double ns = static_cast<double>(this->nsets);
-        if (6.15*ns*log(ns) < static_cast<double>(rf.nsets)) {
-            for (int i = 0; i < this->nvar; i++) {
+		if (6.15*ns*log(ns) < static_cast<double>(rf.nsets)) {
+		//if (true) {
+			for (int i = 0; i < this->nvar; i++) {
                 for (int j = 0; j < this->nsets; j++) {
                     vm[j].x = rf.stat[this->numset[j]][indvar[i]];
                     vm[j].ind = rf.model[this->numset[j]];
@@ -636,10 +635,8 @@ double NodeRC::getdisval2(MwcGen& mw) {
                 vm[j].x = rf.stat[this->numset[j]][imax];
                 vm[j].ind = rf.model[this->numset[j]];
             }
-
         }
-        else {
-            vector<int> isInMax;
+		else {
             vector<int> isIn = vector<int>(rf.nsets, 0);
             for (int i = 0; i < this->nvar; i++) {
                 for (int j = 0; j < this->nsets; j++) {
@@ -651,7 +648,7 @@ double NodeRC::getdisval2(MwcGen& mw) {
                 vector<int>& current_stat_vec = rf.stat_sorted_ind[current_var_ind];
                 for (int jj = 0; jj < rf.nsets; jj++) {
                     realind = current_stat_vec[jj];
-                    for (int jji = 0; jji < isIn[jj]; jji++) {
+                    for (int jji = 0; jji < isIn[realind]; jji++) {
                         vm[j].x = rf.stat[realind][current_var_ind];
                         vm[j].ind = rf.model[realind];
                         j++;
@@ -659,39 +656,27 @@ double NodeRC::getdisval2(MwcGen& mw) {
                 }
                 va = calvarmin(vm, cutvalc);
                 if (i == 0) {
-                    this->imax = indvar[i];
+                    imax = indvar[i];
                     cutvalmin = cutvalc;
                     vamin = va;
-                    isInMax = vector<int>(isIn);
                 }
                 else {
                     if (va < vamin) {
-                        this->imax = indvar[i];
-                        cutvalmin = cutvalc;
+                        imax = indvar[i];
+						cutvalmin = cutvalc;
                         vamin = va;
-                        isInMax = vector<int>(isIn);
                     }
                 }
-                for (int j = 0; j < this->nsets; j++) {
-                    isIn[this->numset[j]] = 0;
+                for (int jj = 0; jj < this->nsets; jj++) {
+                    isIn[this->numset[jj]] = 0;
                 }
 
             }
-            //for (int j = 0; j < this->nsets; j++) {
-            //    vm[j].x = rf.stat[this->numset[j]][imax];
-            //    vm[j].ind = rf.model[this->numset[j]];
-            //}
-            int j = 0;
-            for (int jj = 0; jj < rf.nsets; jj++) {
-                int realind = rf.stat_sorted_ind[imax][jj];
-                for (int jji = 0; jji < isInMax[jj]; jji++) {
-                    vm[j].x = rf.stat[realind][imax];
-                    vm[j].ind = rf.model[realind];
-                    j++;
-                }
-            }
+			for (int j = 0; j < this->nsets; j++) {
+				vm[j].x = rf.stat[this->numset[j]][imax];
+				vm[j].ind = rf.model[this->numset[j]];
+			}
         }
-
     }
     //this->delta=(dfa-ginimin)*this->nsets;        
     this->disval = vamin;
