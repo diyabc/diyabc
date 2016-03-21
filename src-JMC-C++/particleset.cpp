@@ -1110,3 +1110,44 @@ string* ParticleSetC::simuldataSNP(int npart, bool multithread, int seed) {
     return ss;
 }
 
+/**
+ * Structure ParticleSet : simulation des particules utilisées pour la création de fichiers SNP
+ */
+string* ParticleSetC::simuldataSNPool(int npart, bool multithread, int seed) {
+    int numscen = 1;
+    this->npart = npart;
+    int* sOK;
+    string* ss;
+    sOK = new int[npart];
+    this->particule = vector<ParticleC>(this->npart);
+    ss = new string[npart];
+    cout << "avant le remplissage des " << this->npart << " particules\n";
+    dataobs = datasim;
+    //cout<<"apres dataobs=datasim\n";
+    for (int p = 0; p < this->npart; p++) {
+        this->particule[p].maf = datasim.maf;
+        //this->setdata(p);//cout<<"apres setdata\n";
+        //this->setgroup(p);cout<<"apres setgroup\n"; // Je supprime cette ligne car pas de groupe de locus dans les parties simul de jeux de donnees. Pierre
+        this->particule[p].ngr = groupe.size();
+        this->particule[p].grouplist = vector<LocusGroupC>(this->particule[p].ngr + 1);
+        for (int gr = 0; gr < this->particule[p].ngr + 1; gr++) {
+            this->particule[p].grouplist[gr].type = 2;
+            this->particule[p].grouplist[gr].nloc = groupe[gr].nloc;
+        } //cout<<"avant setloci\n";
+        this->setloci(p);//cout<<"apres setloci\n";
+        this->setscenarios(p, true);//cout<<"apres setscenario\n";
+        this->particule[p].mw.randinit(p, seed);
+    }
+    //cout<<"avant omp\n";
+#pragma omp parallel for shared(sOK) if(multithread)
+    for (int ipart = 0; ipart < this->npart; ipart++) {
+        //cout<<"avant dosimulpart\n";
+        sOK[ipart] = this->particule[ipart].dosimulpart(numscen);
+        //cout<<"sOK["<<ipart<<"]="<<sOK[ipart]<<"\n";
+        if (sOK[ipart] == 0) ss[ipart] = this->particule[ipart].dodataSNPool();
+        else ss[ipart] = "";
+        //cout<<ss[ipart]<<"\n";
+    }
+    return ss;
+}
+
