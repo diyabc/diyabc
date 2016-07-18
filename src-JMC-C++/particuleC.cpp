@@ -2677,9 +2677,9 @@ string ParticleC::dodataSNP() {
     string sgp, sind, spop, sex, ligne, ssr;
     //short int g;          
     int* ig;
-    //cout<<"debut de dodatasnp  nloc="<<dataobs.nloc<<"\n";
-    ig = new int[dataobs.nloc];
-    sgp = "<NM=" + DoubleToString(dataobs.sexratio / (1.0 - dataobs.sexratio)) + "NF>  <MAF=hudson> \n";
+    //cout<<"debut de dodatasnp  nloc="<<datasim.nloc<<"\n";
+    ig = new int[datasim.nloc];
+    sgp = "<NM=" + DoubleToString(datasim.sexratio / (1.0 - datasim.sexratio)) + "NF>  <MAF=hudson> \n";
     sgp += "IND   SEX   POP   ";
     for (int loc = 0; loc < this->nloc; loc++) {
         switch (this->locuslist[loc].type) {
@@ -2696,14 +2696,14 @@ string ParticleC::dodataSNP() {
         }
     }
     sgp += "\n";
-    for (int ech = 0; ech < dataobs.nsample; ech++) {
+    for (int ech = 0; ech < datasim.nsample; ech++) {
         spop = "P" + IntToString(ech + 1);
         while (spop.length() < 6) spop += " ";
         for (int loc = 0; loc < this->nloc; loc++) ig[loc] = 0;
-        for (int ind = 0; ind < dataobs.nind[ech]; ind++) {
+        for (int ind = 0; ind < datasim.nind[ech]; ind++) {
             sind = "P" + IntToString(ech + 1) + "_" + IntToString(ind + 1);
             while (sind.length() < 6) sind += " ";
-            if (dataobs.indivsexe[ech][ind] == 1) sex = " M    ";
+            if (datasim.indivsexe[ech][ind] == 1) sex = " M    ";
             else sex = " F    ";
             ligne = sind + sex + spop;
             for (int loc = 0; loc < this->nloc; loc++) {
@@ -2718,21 +2718,21 @@ string ParticleC::dodataSNP() {
                     ig[loc] += 1;
                     break;
                 case 12:
-                    if (dataobs.indivsexe[ech][ind] == 1) {
+                    if (datasim.indivsexe[ech][ind] == 1) {
                         ligne += " " + ShortIntToString(this->locuslist[loc].haplosnp[ech][ig[loc]]);
                         ig[loc] += 1;
                     }
-                    if (dataobs.indivsexe[ech][ind] == 2) {
+                    if (datasim.indivsexe[ech][ind] == 2) {
                         ligne += " " + ShortIntToString(this->locuslist[loc].haplosnp[ech][ig[loc]] + this->locuslist[loc].haplosnp[ech][ig[loc] + 1]);
                         ig[loc] += 2;
                     }
                     break;
                 case 13:
-                    if (dataobs.indivsexe[ech][ind] == 1) {
+                    if (datasim.indivsexe[ech][ind] == 1) {
                         ligne += " " + ShortIntToString(this->locuslist[loc].haplosnp[ech][ig[loc]]);
                         ig[loc] += 1;
                     }
-                    if (dataobs.indivsexe[ech][ind] == 2) {
+                    if (datasim.indivsexe[ech][ind] == 2) {
                         ligne += " 9";
                     }
                     break;
@@ -2748,6 +2748,34 @@ string ParticleC::dodataSNP() {
     }
     //cout<<sgp;
     //cout<<"fin de dodatasnp\n";
+    return sgp;
+}
+
+string ParticleC::dodataSNPool() {
+    string sgp, sind, spop, sex, ligne, ssr;
+    //short int g;          
+    int* ig;
+    int nph,nnh,npr,nnr,nt;
+    double rp;
+    double datasim.lamdapoolseq=50.0;
+    //cout<<"debut de dodatasnpool  nloc="<<datasim.nloc<<"\n";
+    ig = new int[datasim.nloc];
+    sgp = "<NM=" + DoubleToString(datasim.sexratio / (1.0 - datasim.sexratio)) + "NF>  <MAF=hudson> <MRC="+IntToString(datasim.mrc)+">\n";
+    sgp += "POOL POP_NAME:HAPLOID_SAMPLE_SIZE ";
+    for (int i=0;i<datasim.nsample;i++) sgp +=" POP"+IntToString(i+1)+":"+IntToString(this->locuslist[0].samplesize[i]);
+    for (int loc=0;loc<datasim.nloc;loc++) {
+    	for(int samp=0;samp<datasim.nsample;samp++) {
+    		nph=0;nnh=0;
+    		for(int j=0;j<this->locuslist[0].samplesize[samp];j++) if (this->locuslist[loc].haplosnp[samp][j]>0) nph++; else nnh++;
+    		if (nph+nnh>0) rp=(double)nph/((double)(nph+nnh)); else rp=0.0;
+    		nt=poisson(datasim.lamdapoolseq);
+    		npr=binom(nt,rp);nnr=nt-npr;
+    		sgp += "  "+IntToString(npr)+" "+IntToString(nnr);
+    	}
+    	sgp +="\n";
+    }
+    //cout<<sgp;
+    //cout<<"fin de dodataSNPool\n";
     return sgp;
 }
 

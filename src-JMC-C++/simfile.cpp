@@ -41,8 +41,10 @@ void dosimfile(int seed) {
     ntest = header.nsimfile;
     if (datasim.filetype == 0) cout << "nombre de fichiers genepop à simuler = " << ntest << "\n";
     if (datasim.filetype == 1) cout << "nombre de fichiers snp à simuler = " << ntest << "\n";
+    if (datasim.filetype == 2) cout << "nombre de fichiers snp PoolSeq à simuler = " << ntest << "\n";
     if (datasim.filetype == 0) sgp = ps.simulgenepop(ntest, multithread, seed);
     if (datasim.filetype == 1) sgp = ps.simuldataSNP(ntest, multithread, seed);
+    if (datasim.filetype == 2) sgp = ps.simuldataSNPool(ntest, multithread, seed);
     //cout<<"apres les simulations\n";
     for (int i = 0; i < ntest; i++) {
         string sn = IntToString(i + 1);
@@ -52,8 +54,8 @@ void dosimfile(int seed) {
         if (sgp[i] == "") cout << "une erreur s'est produite lors de la simulation du fichier numero " << i + 1 << "\n";
         else {
             nomfigp = path + nomfisim + sn;
-            if (dataobs.filetype == 0) nomfigp += ".mss";
-            if (dataobs.filetype == 1) nomfigp += ".snp";
+            if (datasim.filetype == 0) nomfigp += ".mss";
+            if (datasim.filetype == 1) nomfigp += ".snp";
             cout << "écriture du fichier " << nomfigp << "\n";
             sgp[i] += "\n";
             fgp = fopen(nomfigp.c_str(), "w");

@@ -41,6 +41,9 @@ public:
     int nsample, nmisssnp;
     std::vector<int> samplesize;
     std::vector<std::vector<short int>> ploidie;
+    //Propriétés des "locus" PoolSeq
+    std::vector<int> nposreads;
+    std::vector<int> nnegreads;
 
 
     LocusC() {
@@ -123,7 +126,7 @@ class DataC {
 public:
     std::string message, title;
     std::vector<std::vector<std::string>> indivname;
-    int nsample, nsample0, nloc, nmisshap, nmissnuc, nmisssnp, filetype;
+    int nsample, nsample0, nloc, nmisshap, nmissnuc, nmisssnp, filetype, mrc;
     double sexratio, maf;
     std::vector<MissingHaplo> misshap;
     std::vector<MissingNuc> missnuc;
@@ -142,12 +145,17 @@ public:
      * return=-1
      * return=0 si genepop
      * return=1 si snp
+     * return=2 si PoolSeq
      */
     int testfile(std::string filename);
     /**
      * lecture d'un fichier de donnée SNP et stockage des informations dans une structure DataC
      */
     int readfilesnp(std::string filename);
+    /**
+     * lecture d'un fichier de donnée PoolSeq et stockage des informations dans une structure DataC
+     */
+    int readfilePoolSeq(std::string filename);
     /**
      * supprime les locus monomorphes
      */

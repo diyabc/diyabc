@@ -339,6 +339,7 @@ string getligne(ifstream file) {
  * return=-1
  * return=0 si genepop
  * return=1 si snp
+ * return=2 si PoolSeq
  */
 int DataC::testfile(string filename) {
     //cout<<"debut de testfile fichier "<<filename<<"\n";
@@ -359,9 +360,14 @@ int DataC::testfile(string filename) {
         cout << ss[0] << " " << ss[1] << " " << ss[2] << "\n";
         if ((ss[0] == "IND")and (ss[1] == "SEX")and (ss[2] == "POP")) {
             cout << "Fichier " << filename << " : SNP\n";
-            //prem=0;
+	    	file0.close();
             return 1;
         }
+        if (ss[0] == "POOL") {
+            cout << "Fichier " << filename << " : SNP\n";
+    		file0.close();
+			return 2;
+		}
     }
     //cout<<"avant le delete[]ss\n";
     //cout<<"avant getline\n";
@@ -373,9 +379,14 @@ int DataC::testfile(string filename) {
     //cout<<"apres le deuxième splitwords\n";
     if ((ss[0] == "IND")and (ss[1] == "SEX")and (ss[2] == "POP")) {
         cout << "Fichier " << filename << " : SNP\n";
-        //prem=1;
+    	file0.close();
         return 1;
     }
+    if (ss[0] == "POOL") {
+        cout << "Fichier " << filename << " : SNP\n";
+    	file0.close();
+		return 2;
+	}
     file0.close();
     ifstream file(filename.c_str(), ios::in);
     getline(file, ligne);
@@ -423,7 +434,96 @@ int DataC::testfile(string filename) {
     //cout<<"avant return 0 dans testfile\n";
     return 0;
 }
-
+/**
+ * lecture d'un fichier de donnée PoolSeq et stockage des informations dans une structure DataC
+ */
+int DataC::readfilePoolSeq(string filename) {
+    int stringnpos = (int)string::npos;
+    int ech, ind, nech, nss, j0, j1, k0, k1, l0, l1;
+    size_t p;
+    LocusC locuscourant;
+    string s1, s, sss;
+    vector<string> ss;
+    vector<int>sampsize;
+    ifstream file(filename.c_str(), ios::in);
+    if (!file.is_open()) {
+        this->message = "Data.cpp File " + filename + " not found";
+        return 1;
+    } else this->message = "";
+//Lecture de la première ligne et récupération éventuelle du sex-ratio, de la maf et du mrc
+    getline(file, s1);
+    s1 = purgetab(s1);
+    j0 = s1.find("<NM=");
+    k0 = s1.find("<MAF=");
+    l0 = s1.find("<MRC=");
+    cout << "k0=" << k0 << "\n";
+    if (j0 != stringnpos) {
+        //cout<<"j0="<<j0<<"\n";
+        j1 = s1.find("NF>", j0 + 3);
+        s = s1.substr(j0 + 4, j1 - (j0 + 4));
+        this->sexratio = atof(s.c_str()) / (1.0 + atof(s.c_str()));
+    } else this->sexratio = 0.5;
+    if (k0 != stringnpos) {
+        s = s1.substr(k0, s1.length());
+        cout << "s=" << s << "\n";
+        k1 = s.find(">");
+        cout << "k1=" << k1 << "\n";
+        s = s.substr(5, k1 - 5);
+        cout << "s=" << s << "\n";
+        this->maf = atof(s.c_str());
+        cout << "MAF=" << this->maf << "\n";
+    } else this->maf = 0.0;
+    if (l0 != stringnpos) {
+        s = s1.substr(l0, s1.length());
+        cout << "s=" << s << "\n";
+        l1 = s.find(">");
+        cout << "l1=" << l1 << "\n";
+        s = s.substr(5, l1 - 5);
+        cout << "s=" << s << "\n";
+        this->mrc = atof(s.c_str());
+        cout << "MRC=" << this->mrc << "\n";
+    } else this->mrc = 1;
+//lecture de la deuxième ligne
+    getline(file, s1);
+    s1 = purgetab(s1);
+    splitwords(s1, " ", ss);
+    nss = ss.size();
+	this->nsample = nss-2;
+	popname.resize(this->nsample);
+	sampsize.resize(this->nsample);
+	for (int i=0;i<this->nsample;i++) {
+		p=ss[i+2].find(":");
+		popname[i]=ss[i+2].substr(0,p);
+		s=ss[i+2].substr(p+1,6);
+		sampsize[i]=atoi(s.c_str());
+	}
+//lecture des lignes suivantes;
+	this->locus.resize(0);
+	locuscourant.type=15;
+	locuscourant.nsample=this->nsample;
+	locuscourant.nposr = vector<int>(this->nsample);
+	locuscourant.nnegr = vector<int>(this->nsample);
+	locuscourant.samplesize = vector<int>(this->nsample);
+	while (not file.eof()) {
+		getline(file,s1);
+	    s1 = purgetab(s1);
+		splitwords(s1," ",ss);
+		nss = ss.size();
+		if (nss != 2*this->nsample) {
+			this->message = "Wrong number of items on line "+IntToString(this->nloc+2);
+			return 1;
+		}
+		for (int j=0;j<this->nsample;j++) {
+			locuscourant.nposr[j]=atoi(ss[2*j].c_str());
+			locuscourant.nnegr[j]=atoi(ss[2*j+1].c_str());
+			locuscourant.samplesize[j]=sampsize[j];
+		}
+		this->locus.push_back(locuscourant);
+	}
+	this->nloc = this->locus.size();
+    file.close();
+    return 0;
+}
 /**
  * lecture d'un fichier de donnée SNP et stockage des informations dans une structure DataC
  */
@@ -1474,6 +1574,12 @@ int DataC::loadfromfile(string filename) {
         this->missingdata();
         cout << "apres missingdata\n";
     }
+    if (this->filetype == 2) {
+		error = this->readfilePoolSeq(filename);
+        if (error != 0) return error;
+        cout << "fin de la lecturedu fichier "+filename+"\n";
+        exit(1);
+	}    
     this->nsample0 = this->nsample;
     return 0;
 }
