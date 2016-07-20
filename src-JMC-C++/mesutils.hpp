@@ -1,12 +1,12 @@
 // mesutils.h
 //
 
-#ifndef MESUTILS_H_
-#define MESUTILS_H_
+#pragma once
 
 using namespace std;
 #include <string>
 #include <vector>
+#include <time.h>
 
 struct matC
 {
@@ -23,7 +23,7 @@ struct compC
   bool operator () (matC const & lhs, matC const & rhs) const;
 };
 
-double walltime (double * t0);
+double walltime (clock_t& t0);
 int getwordint (std::string s, int num);
 double getwordfloat (std::string s, int num);
 std::string * splitwords (std::string s, std::string sep, int * k);
@@ -84,4 +84,3 @@ inline std::string char2string (char * c)
 	return std::string(c);
 }
 void ecritTable(int** table, int m, int n);
-#endif

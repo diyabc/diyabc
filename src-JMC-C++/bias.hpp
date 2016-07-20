@@ -5,21 +5,14 @@
  *      Author: ppudlo
  */
 
-#ifndef BIAS_H_
-#define BIAS_H_
-#include <vector>
+#pragma once
+
 #include <string>
-
-#include "header.hpp"
-#include "matrices.hpp"
-#include "mesutils.hpp"
-#include "particleset.hpp"
-
 
 struct enreC {
     int numscen;
     double *paramvv,*paramvvC,*paramvvS,*stat;
-	string *name;
+	std::string *name;
 };
 
 // modifie les paramètres historiques en accord avec les priors/valeurs des pseudo-observés
@@ -36,6 +29,3 @@ void ecrires(int ntest,int npv,int nsel);
 void setcompo(int p);
 //Interprête la ligne de paramètres de l'option biais et lance les calculs correspondants
 void dobias(std::string opt,  int seed);
-
-
-#endif /* BIAS_H_ */

@@ -5,13 +5,13 @@
  *      Author: ppudlo
  */
 
-#ifndef PARTICULEC_H_
-#define PARTICULEC_H_
+#pragma once
+
 #include <string>
+#include <vector>
+
 #include "history.hpp"
 #include "data.hpp"
-#include "randomgenerator.hpp"
-#include "mesutils.hpp"
 
 #define MICMISSING -9999
 #define SEQMISSING ""
@@ -263,4 +263,3 @@ class ParticleC
    void docalstat(int gr);
 
  };
-#endif /* PARTICULEC_H_ */

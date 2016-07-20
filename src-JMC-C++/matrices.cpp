@@ -3,7 +3,8 @@
 #include <iomanip>
 #include <iostream>
 #include <cmath>
-#include <stdio.h>
+#include <iso646.h>
+
 #include "matrices.hpp"
 
 using namespace std;

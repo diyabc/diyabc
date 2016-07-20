@@ -7,14 +7,13 @@
  */
 
 
+#include <string>
+#include <vector>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <cstring>
 #include <sstream>
 #include <stdlib.h>
-#include <ctype.h>
-#include <vector>
 #include <time.h>
 
 #include "mesutils.hpp"
@@ -357,7 +356,7 @@ string  getligne(ifstream file) {
 int DataC::testfile(string filename){
     //cout<<"debut de testfile fichier "<<filename<<"\n";
     ifstream file0(filename.c_str(), ios::in);
-    if (file0 == NULL) {cout<<"file0=NULL\n";return -1;}
+    if (!file0.is_open()) {cout<<"file0=NULL\n";return -1;}
     int nss;
     string ligne;
     vector<string> ss;
@@ -544,7 +543,7 @@ int  DataC::readfilesnp(string filename){
     vector<string> ss;
     ifstream file(filename.c_str(), ios::in);
     this->maf=0.0;
-    if (file == NULL) {
+    if (!file.is_open()) {
         this->message = "Data.cpp File "+filename+" not found";
         return 1;
     } else this->message="";
@@ -1119,7 +1118,7 @@ int DataC::readfile(string filename){
     size_t j,j0,j1;
     stringstream out;
     ifstream file(filename.c_str(), ios::in);
-    if (file == NULL) {
+    if (!file.is_open()) {
         this->message = "Data.cpp File "+filename+" not found";
         return 1;
     } else this->message="";

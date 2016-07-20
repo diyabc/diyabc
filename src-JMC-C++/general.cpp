@@ -1,19 +1,45 @@
-
-#include <iostream>
-#include <string.h>
 #include <string>
-#include <sstream>
-#include <unistd.h>
-#include <sys/time.h>
-#include <sys/stat.h>
-#include <omp.h>
+#include <vector>
 #include <cstdlib>
 #include <stdexcept>
-#include <vector>
-extern "C"
-{
-    #include "../dcmt0.6.1/include/dc.h"
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+
+#include <string.h>
+#include <iso646.h>
+#include <sys/stat.h>
+
+#ifdef _MSC_VER
+#include "../wingetopt/src/getopt.h"
+#else
+#include <unistd.h>
+#endif
+
+#ifdef _OPENMP
+#include <omp.h>
+#else
+typedef int omp_int_t;
+
+inline omp_int_t omp_get_thread_num() {
+	return 0;
 }
+
+inline omp_int_t omp_get_max_threads() {
+	return 1;
+}
+
+inline omp_int_t omp_get_num_threads() {
+	return 1;
+}
+
+inline void omp_set_num_threads(int) {}
+#endif
+
+extern "C" {
+#include "../dcmt0.6.1/include/dc.h"
+}
+
 #include "acploc.hpp"
 #include "header.hpp"
 #include "particleset.hpp"
@@ -26,9 +52,10 @@ extern "C"
 #include "modchec.hpp"
 #include "randomgenerator.hpp"
 #include "data.hpp"
-#include "particuleC.hpp"
 #include "history.hpp"
 #include "randforest.hpp"
+#include "mesutils.hpp"
+
 
 extern "C" void __libc_freeres(void);
 
@@ -132,7 +159,8 @@ int nrecneeded,nenr=100,nenrOK,*neOK,*netot;
 int debuglevel=0;
 int num_threads=0;
 string sremtime,scurfile;
-double clock_zero=0.0,debut,duree,debutf,dureef,time_file=0.0,time_reftable=0.0,debutr,dureer,remtime;
+double duree,debutf,dureef,time_file=0.0,time_reftable=0.0,remtime;
+clock_t debut, debutr;
 ofstream fd;
 
 bool RNG_must_be_saved;
@@ -181,7 +209,7 @@ void analyseRNG(string & modpar) {
     string RNGfilename = modpar;
     
     ifstream fichier(RNGfilename.c_str(), ios::in|ios::binary);
-    if(fichier == NULL){
+    if(!fichier.is_open()){
         stringstream erreur;
         erreur << "File " << RNGfilename << " does not exist.\n"
         << "I cannot analyse it.\n";
@@ -223,7 +251,7 @@ int main(int argc, char *argv[]){
         bool flagp=false,flagi=false,flags=false,simOK,stoprun=false;
         string message,soptarg,estpar,comppar,confpar,acplpar,biaspar,modpar, rngpar, randforpar;
         
-        debut=walltime(&clock_zero);
+        debut=clock();
         srand (time(NULL));
         seed = rand() % 1000;
         while((optchar = getopt(argc,argv,"i:p:z:r:e:s:b:c:qkf:g:d:hmqj:a:t:n:w:xyl:o:R:F:Q")) !=-1) {
@@ -490,7 +518,7 @@ int main(int argc, char *argv[]){
             RNG_filename = path + string("RNG_state_") + convertInt4(computer_identity) + string(".bin");
             ifstream test_file(RNG_filename.c_str(), ios::in);
             //cout<<"avant la lecture du ficher "<<RNG_filename<<"\n";
-            if(test_file == NULL){
+            if(!test_file.is_open()){
                 stringstream erreur;
                 erreur << "File " << RNG_filename << " does not exist.\n"
                 << "Use option -n to create it before doing anything else.\n";
@@ -562,8 +590,7 @@ int main(int argc, char *argv[]){
                     }
                     cout<<"nparammax="<<header.nparamtot+3*header.ngroupes<<"\n";
                     firsttime=true;stoprun=false;
-                    clock_zero=0.0;
-                    debutr=walltime(&clock_zero);
+                    debutr= clock();
                     if (not header.drawuntil) {
                         neOK = new int[header.nscenarios];
                         netot= new int[header.nscenarios];
@@ -784,7 +811,7 @@ int main(int argc, char *argv[]){
             RNG_must_be_saved = false;
         }
         /* Fin: pour le nouveau RNG      */
-        duree=walltime(&debut);
+        duree=walltime(debut);
         if (debuglevel<0) cout<<"durée ="<<TimeToStr(duree)<<"\n";
         //int aaa;
         //cin>>aaa;

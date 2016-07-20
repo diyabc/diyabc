@@ -5,13 +5,9 @@
  *      Author: ppudlo
  */
 
-#ifndef COMPARSCEN_H_
-#define COMPARSCEN_H_
-#include <string>
-#include "header.hpp"
-#include "matrices.hpp"
-#include "mesutils.hpp"
+#pragma once
 
+#include <string>
 
 struct matligneC
 {
@@ -59,5 +55,3 @@ int polytom_logistic_regression(int nli, int nco, long double **cmatX0,
 posteriorscenC* call_polytom_logistic_regression(int nts, float *stat_obs, int nscenutil,int *scenchoisiutil);
 posteriorscenC* comp_logistic(int nts,float *stat_obs);
 void docompscen(std::string opt);
-
-#endif /* COMPARSCEN_H_ */

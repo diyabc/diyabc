@@ -5,9 +5,8 @@
  *      Author: ppudlo
  */
 
-#ifndef ESTIMPARAM_H_
-#define ESTIMPARAM_H_
-#include <string>
+#pragma once
+
 #include "history.hpp"
 
 /**
@@ -107,5 +106,3 @@ void saveparstat(int nsel, std::string path, std::string ident);
 * effectue l'estimation ABC des paramètres (directe + régression locale)
 */
 void doestim(std::string opt);
-
-#endif /* ESTIMPARAM_H_ */

@@ -5,15 +5,18 @@
  *      Author: cornuet
  */
 
+#include <string>
 #include <vector>
 #include <cmath>
 #include <time.h>
+#include <iomanip>
 
 #include "matrices.hpp"
 #include "mesutils.hpp"
 #include "reftable.hpp"
 #include "acploc.hpp"
 #include "header.hpp"
+
 
 /*
 #ifndef HEADER

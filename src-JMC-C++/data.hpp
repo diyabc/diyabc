@@ -5,8 +5,7 @@
  *      Author: jmc
  *
 */
-#ifndef DATA_H_
-#define DATA_H_
+#pragma once
 
 #include <string>
 #include <vector>
@@ -213,7 +212,3 @@ public:
 	 */
 	int loadfromfile(std::string filename);
 };
-
-
-
-#endif /* DATA_H_ */

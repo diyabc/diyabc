@@ -1,10 +1,10 @@
 // matrices.h
 //
 
-#ifndef MATRICES_H_
-#define MATRICES_H_
+#pragma once
 
 #define EPSILON 9.62964972193617926528E-35
+
 
 void libereD (int n, double * * A);
 void libereL (int n, long double * * A);
@@ -22,4 +22,3 @@ double kappa (int n, long double * * A);
 int inverse_Tik (int n, long double * * A, long double * * C);
 int inverse_Tik2 (int n, long double * * A, long double * * C, long double coeff);
 
-#endif

@@ -5,12 +5,16 @@
  *      Author: ppudlo
  */
 
-#ifndef REFTABLE_H_
-#define REFTABLE_H_
+#pragma once
+
 #include <string>
+#include <vector>
 #include <fstream>
+
 #include "history.hpp"
 #include "header.hpp"
+
+using namespace std;
 
 class enregC {
 public:
@@ -106,6 +110,3 @@ public:
     void cal_dist(int nrec, int nsel, float *stat_obs, bool scenarioteste, bool allscenarios);
     int readparam(vector <float>& param);
 };
-
-
-#endif /* REFTABLE_H_ */

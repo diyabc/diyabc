@@ -5,10 +5,11 @@
  *      Author: ppudlo
  */
 
-#ifndef MODCHEC_H_
-#define MODCHEC_H_
+#pragma once
+
 #include <string>
 #include <vector>
+
 bool resetstats(std::string s);
 std::string pseudoprior2(long double x);
 int detphistarOK(int nsel, long double **phistar);
@@ -18,5 +19,3 @@ void call_acp(int nr, int ns, int nstat, int *numscen,long double **ssref,
 void domodchec(std::string opt,int seed);
 
 int compatphistar(std::vector<int> & numcompat);
-
-#endif /* MODCHEC_H_ */

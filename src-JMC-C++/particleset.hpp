@@ -5,11 +5,14 @@
  *      Author: ppudlo
  */
 
-#ifndef PARTICLESET_H_
-#define PARTICLESET_H_
+#pragma once
+
+#include <string>
+#include <vector>
 
 #include "particuleC.hpp"
 
+using namespace std;
 
 /**
 * Structure ParticleSet : définition d'un ensemble de particules
@@ -57,6 +60,3 @@ struct ParticleSetC
 	void free_particule(int npart);
 	string* simuldataSNPool(int npart, bool multithread, int seed);
 };
-
-
-#endif /* PARTICLESET_H_ */

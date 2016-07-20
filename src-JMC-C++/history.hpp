@@ -5,12 +5,13 @@
  *      Author: ppudlo
  */
 
-#ifndef HISTORY_H_
-#define HISTORY_H_
+#pragma once
 
 #include <string>
-#include "randomgenerator.hpp"
+#include <vector>
+#include <iso646.h> // necessary to have "and/or" keywoards in MSVC
 
+#include "randomgenerator.hpp"
 
 /**
  * struct StatC :éléments de définition d'une summary statistic
@@ -279,7 +280,3 @@ public:
   void ecris();
 
 };
-
-
-
-#endif /* HISTORY_H_ */

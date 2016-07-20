@@ -11,7 +11,12 @@
 #include <sstream>
 #include <stdexcept>
 #include "randomgenerator.hpp"
+#ifdef _MSC_VER
+#include "../wingetopt/src/getopt.h"
+#include <iso646.h>
+#else
 #include <unistd.h>
+#endif
 #include <time.h>
 
 using namespace std;
@@ -80,7 +85,7 @@ int main(int argc, char *argv[]){
 	// Quitter si RNG_state_0000.bin existe deja
 	string firstRNGfile = path + "RNG_state_0000.bin";
 	ifstream test_file(firstRNGfile.c_str(), ios::in);
-	if((test_file != NULL) && (force == false)){
+	if((test_file.is_open()) && (force == false)){
 		cout << "Some files saving the RNG states already exist." << endl
 		     << "Use -f if you want to overwrite it." << endl;
 		return 0;

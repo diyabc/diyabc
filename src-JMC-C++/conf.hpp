@@ -5,11 +5,9 @@
  *      Author: ppudlo
  */
 
-#ifndef CONF_H_
-#define CONF_H_
+#pragma once
+
 #include <string>
-
-
 
 // Ecriture de l'entete du fichier confidence.txt contenant les résultats
 void ecrientete(int nrec, int ntest,int nseld, int nselr,int nlogreg,std::string shist,std::string smut, bool AFD, int nsel0);
@@ -22,5 +20,3 @@ float* transfAFD(int nrec,int nsel, int p);
 // et lance les calculs correspondants
 void doconf(std::string opt, int seed);
 
-
-#endif /* CONF_H_ */

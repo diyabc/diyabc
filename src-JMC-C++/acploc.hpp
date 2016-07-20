@@ -5,10 +5,9 @@
  *      Author: ppudlo
  */
 
-#ifndef ACPLOC_H_
-#define ACPLOC_H_
-#include <iomanip>
-using namespace std;
+#pragma once
+
+#include <string>
 
 struct resACPC
 {
@@ -20,6 +19,4 @@ struct resACPC
 resACPC ACP(int nli,int nco, long double **X, long double prop,int index);
 void cal_acp();
 void cal_loc();
-void doacpl(string opt);
-
-#endif /* ACPLOC_H_ */
+void doacpl(std::string opt);

@@ -5,31 +5,18 @@
  *      Author: cornuet
  */
 
-#include <algorithm>
+#include <string>
 #include <vector>
 #include <cmath>
 #include <iomanip>
+#include <algorithm>
 
+#include "mesutils.hpp"
+#include "matrices.hpp"
 #include "comparscen.hpp"
 #include "reftable.hpp"
 #include "header.hpp"
-/*
-#ifndef HEADER
-#include "header.cpp"
-#define HEADER
-#endif
 
-
-#ifndef MATRICES
-#include "matrices.cpp"
-#define MATRICES
-#endif
-
-#ifndef MESUTILS
-#include "mesutils.cpp"
-#define MESUTILS
-#endif
-*/
 using namespace std;
 
 extern string progressfilename, path;
@@ -337,7 +324,7 @@ void rempli_mat0(int n, float* stat_obs) {
 * à 1 et qu'il n'y ait pas de dépassement
 * de la taille maximale du type long double dans l'exponentielle
 */
-void expbeta(int bsize, long double *b, long double *eb) {
+void expbeta(int bsize, std::vector<long double> b, std::vector<long double> eb) {
   long double mi = b[0], ma = b[0], s = 0.0;
   int i;
   for (i=1; i<bsize; i++) {
@@ -363,7 +350,7 @@ void expbeta(int bsize, long double *b, long double *eb) {
 void remplimatriceYP(int nli, int nco, int nmodel, long double **cmatP,
     long double *cmatYP, long double *cbeta, long double **cmatX,
     long double *cvecW, long double **cmatY, long double *csmatP) {
-  long double betax[nmodel+1],ebetax[nmodel+1];
+  std::vector<long double> betax(nmodel + 1), ebetax(nmodel + 1);
   int i,j,imod;
 
   for (i=0; i<nli; i++) {

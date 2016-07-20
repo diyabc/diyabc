@@ -5,28 +5,32 @@
  *      Author: cornuet
  */
 
-#include <math.h>
-#include <stdlib.h>
+#include <string>
+#include <vector>
 #include <fstream>
 #include <sstream>
-#include <string>
 #include <stdexcept>
 #include <time.h>
-#include <vector>
-extern"C"{
-#include "../dcmt0.6.1/include/dc.h"
-}
+#include <math.h>
+#include <stdlib.h>
+
 #include "mesutils.hpp"
 #include "randomgenerator.hpp"
-//#include <time.h>
-//#include <cstddef>
-//#define MODULO 16777216
+
+extern"C" {
+#include "../dcmt0.6.1/include/dc.h"
+}
+
 using namespace std;
 
 double sqr(double x) {return x*x;}
 
+#if defined (_MSC_VER) && !defined (__INTEL_COMPILER)
+extern __declspec(thread) mt_struct* r;
+#else
 extern mt_struct* r;
 #pragma omp threadprivate(r)
+#endif
 
 extern string path;
 
@@ -347,7 +351,7 @@ void doinitRNG(string rngpar){
 	// Quitter si RNG_state_0000.bin existe deja
 	string firstRNGfile = path + "RNG_state_0000.bin";
 	ifstream test_file(firstRNGfile.c_str(), ios::in);
-	if((test_file != NULL) && (force == false)){
+	if((test_file.is_open()) && (force == false)){
 		cout << "Some files saving the RNG states already exist." << endl
 		     << "Use f flag if you want to overwrite it." << endl;
 		test_file.close();

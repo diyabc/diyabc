@@ -4,17 +4,18 @@
  *  Created on: 8 déc. 2011
  *      Author: ppudlo
  */
-#include <vector>
+#pragma once
 
-extern"C"{
-#include "../dcmt0.6.1/include/dc.h"
-}
+#include <vector>
 #include <fstream>
 #include <iostream>
 #include <string>
 
-#ifndef RANDOMGENERATOR_H_
-#define RANDOMGENERATOR_H_
+#include <iso646.h>>
+
+extern"C" {
+#include "../dcmt0.6.1/include/dc.h"
+}
 
 using namespace std;
 
@@ -60,5 +61,3 @@ mt_struct** loadRNG(int & sizeofmts, std::string filename);
 // converti l'entier number en une string de 4 caractères.
 std::string convertInt4(int number);
 void doinitRNG(std::string rngpar);
-
-#endif /* RANDOMGENERATOR_H_ */

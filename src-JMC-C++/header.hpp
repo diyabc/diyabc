@@ -5,15 +5,14 @@
  *      Author: ppudlo
  */
 
-#ifndef HEADER_H_
-#define HEADER_H_
+#pragma once
+
+
 #include <string>
-#include <fstream>
 #include <vector>
-#include "data.hpp"
+#include <iostream>
+
 #include "history.hpp"
-#include "particuleC.hpp"
-#include "header.hpp"
 
 class MutParameterC
 {
@@ -75,6 +74,3 @@ private:
     //HeaderC(const HeaderC & source) {};
     //HeaderC & operator=(const HeaderC & source) { return *this;} ;
 };
-
-
-#endif /* HEADER_H_ */
