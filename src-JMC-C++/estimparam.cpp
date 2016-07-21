@@ -4,11 +4,14 @@
  *  Created on: 9 march 2011
  *      Author: cornuet
  */
+
+#include <string>
 #include <vector>
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <time.h>
+
 #include "header.hpp"
 #include "reftable.hpp"
 #include "matrices.hpp"

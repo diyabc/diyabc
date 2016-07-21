@@ -21,16 +21,16 @@ extern"C" {
 #include "../dcmt0.6.1/include/dc.h"
 }
 
-using namespace std;
-
-double sqr(double x) {return x*x;}
-
 #if defined (_MSC_VER) && !defined (__INTEL_COMPILER)
 extern __declspec(thread) mt_struct* r;
 #else
 extern mt_struct* r;
 #pragma omp threadprivate(r)
 #endif
+
+using namespace std;
+
+double sqr(double x) {return x*x;}
 
 extern string path;
 

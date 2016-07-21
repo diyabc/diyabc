@@ -1,22 +1,17 @@
-/*
-
-
-
-*/
-#include <cstdio>
-#include <cmath>
+#include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-//#include <complex>
 #include <iomanip>
 #include <utility>
-#include <string>
-#include <cstring>
-#include <algorithm>
-#include <cstdlib>
 #include <stdexcept>
+#include <algorithm>
+
+#include <cstdio>
+#include <cmath>
+#include <cstring>
+#include <cstdlib>
 #include <time.h>
 
 #include "randomgenerator.hpp"
@@ -24,23 +19,10 @@
 #include "data.hpp"
 #include "history.hpp"
 #include "particuleC.hpp"
-#include "history.hpp"
+#include "header.hpp"
 
 
 extern int debuglevel;
-/*
-#ifndef PARTICULEC
-#include "particuleC.cpp"
-#define PARTICULEC
-#endif
-
-#ifndef DATA
-#include "data.cpp"
-#define DATA
-#endif
-*/
-
-#include "header.hpp"
 
 extern string * stat_type;
 extern int* stat_num;
@@ -1340,7 +1322,7 @@ int HeaderC::readHeader(string headerfilename){
 	//cout<<"debut de readheader\n";
 	//cout<<"readHeader headerfilename = "<<headerfilename<<"\n";
 	ifstream file(headerfilename.c_str(), ios::in);
-	if (file == NULL) {
+	if (!file.is_open()) {
 		this->message = "Header file "+headerfilename+" not found";
 		cout<<this->message<<"\n";
 		throw std::runtime_error(this->message);
@@ -1725,7 +1707,7 @@ int HeaderC::readHeadersim(string headersimfilename){
 //	if (debuglevel==2) cout<<"debut de readheadersim\n";
 	//cout<<"readHeader headerfilename = "<<headerfilename<<"\n";
 	ifstream file(headersimfilename.c_str(), ios::in);
-	if (file == NULL) {
+	if (!file.is_open()) {
 		this->message = "HeaderSim  File "+string(headersimfilename)+" not found";
 		cout<<this->message<<"\n";
 		return 1;

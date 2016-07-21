@@ -4,15 +4,18 @@
  *  Created on: 8 déc. 2011
  *      Author: ppudlo
  */
+
+#include <vector>
 #include <string>
 #include <iostream>
-#include <vector>
 #include <cstdlib>
-using namespace std;
 
 #include "randomgenerator.hpp"
 #include "mesutils.hpp"
 #include "history.hpp"
+
+using namespace std;
+
 
 
 vector <string> histparname;

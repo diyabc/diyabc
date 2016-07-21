@@ -4,49 +4,27 @@
  *  Created on: 23 sept. 2010
  *      Author: cornuet
  */
-#include <cstdio>
-#include <cmath>
+
+#include <string>
 #include <vector>
 #include <iostream>
-//#include <complex>
 #include <utility>
-#include <string>
 #include <algorithm>
 #include <cstdlib>
+#include <cstdio>
+#include <cmath>
+
+#ifdef _OPENMP
 #include <omp.h>
-
-
+#else
+#define omp_get_thread_num() 0
+#endif
 
 #include "randomgenerator.hpp"
 #include "mesutils.hpp"
 #include "data.hpp"
 #include "history.hpp"
-
-/*
- * #ifndef RANDOMGENERATOR
- * #include "randomgenerator.cpp"
- * #define RANDOMGENERATOR
- * #endif
- * #ifndef MESUTILS
- * #include "mesutils.cpp"
- * #define MESUTILS
- * #endif
- * #ifndef DATA
- * #include "data.cpp"
- * #define DATA
- * #endif
- * #ifndef HISTORY
- * #include "history.cpp"
- * #define HISTORY
- * #endif
- * 
- * #ifndef SUMSTAT
- * #include "sumstat.cpp"
- * #define SUMSTAT
- * #endif
- */
 #include "particuleC.hpp"
-
 
 using namespace std;
 

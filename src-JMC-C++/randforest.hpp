@@ -1,7 +1,7 @@
 /*
 * randforest.h
 *
-*  Created on: 28 fÃ©vrier 2014
+*  Created on: 28 février 2014
 *      Author: jmcornuet
 */
 
@@ -119,3 +119,4 @@ public:
 
 void dorandfor(std::string opt, int seed);
 void var_importance3(int rep);
+

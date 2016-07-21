@@ -4,46 +4,18 @@
  *  Created on: 20 september 2011
  *      Author: cornuet
  */
+
 #include <vector>
 #include <string>
+#include <iomanip>
+#include <stdlib.h>
+#include <cmath>
 
 #include "header.hpp"
 #include "reftable.hpp"
-#include "matrices.hpp"
 #include "mesutils.hpp"
 #include "particleset.hpp"
-#include "modchec.hpp"
-/*
-#ifndef HEADER
-#include "header.cpp"
-#define HEADER
-#endif
-
-#ifndef VECTOR
-#include <vector>
-#define VECTOR
-#endif
-
-#ifndef MATRICES
-#include "matrices.cpp"
-#define MATRICES
-#endif
-
-#ifndef MESUTILS
-#include "mesutils.cpp"
-#define MESUTILS
-#endif
-
-
-#ifndef PARTICLESET
-#include "particleset.cpp"
-#define PARTICLESET
-#endif
-*/
 #include "simfile.hpp"
-#include <stdlib.h>
-#include <math.h>
-#include <iomanip>
 
 extern ParticleSetC ps;
 extern enregC* enreg;

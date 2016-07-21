@@ -9,17 +9,11 @@
 #include <time.h>
 #include <math.h>
 
-/*
-
-#ifndef MATRICES
-#include "matrices.cpp"
-#define MATRICES
-#endif
-*/
 
 #include "matrices.hpp"
 #include "randomgenerator.hpp"
 #include "mesutils.hpp"
+
 
 using namespace std;
 

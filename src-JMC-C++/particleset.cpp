@@ -5,25 +5,22 @@
  *  Created on: 23 sept. 2010
  *      Author: cornuet
  */
+
 #include <string>
-#include <omp.h>
+#include <vector>
 #include <cstdlib>
 
-/*
-#ifndef HEADER
-#include "header.cpp"
-#define HEADER
+#ifdef _OPENMP
+#include <omp.h>
+#else
+#define omp_get_thread_num() 0
 #endif
 
-#ifndef REFTABLE
-#include "reftable.cpp"
-#define REFTABLE
-#endif
-*/
 #include "header.hpp"
 #include "reftable.hpp"
 #include "particuleC.hpp"
 #include "particleset.hpp"
+#include "mesutils.hpp"
 
 using namespace std;
 

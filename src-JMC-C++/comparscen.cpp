@@ -445,7 +445,7 @@ bool cal_loglik(int nli, int nmodel, int rep, long double *cloglik,
     {
         int imod,i,j,l;
         long double esd=0, ebma, sum=0.0, mi=b0[0], ma=b0[0];
-        long double vecD[nmodel];
+		std::vector<long double> vecD(nmodel);
         //cout<<"debut calcul_psd nmodel="<<nmodel<<"\n";
         if (nmodel>0) {for (i=1;i<nmodel;i++) {if (mi>b0[i]) mi=b0[i];if (ma<b0[i]) ma=b0[i];}}
         if (ma-mi<1000.0){
@@ -522,7 +522,7 @@ void calcul_psd(int nmodel, long double *b0, long double **matV,
     long double *sd, long double *px) {
   int imod,i,j,l;
   long double esd=0.0, ebma, sum=0.0, mi=b0[0], ma=b0[0];
-  long double vecD [nmodel+1]; // on elargit la taille
+  std::vector<long double> vecD(nmodel + 1); // on elargit la taille
 
   // cherche min et max
   if (nmodel > 0)

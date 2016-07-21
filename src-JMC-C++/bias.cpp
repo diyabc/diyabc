@@ -5,6 +5,7 @@
  *      Author: cornuet
  */
 
+#include <string>
 #include <vector>
 #include <cstdlib>
 #include <cmath>
@@ -16,10 +17,10 @@
 #include "estimparam.hpp"
 #include "reftable.hpp"
 #include "header.hpp"
-#include "matrices.hpp"
 #include "mesutils.hpp"
 #include "particleset.hpp"
 #include "modchec.hpp"
+
 
 /*
 #ifndef HEADER

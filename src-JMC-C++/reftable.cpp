@@ -1,35 +1,32 @@
-
+#include <string>
+#include <vector>
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <sstream>
 #include <stdexcept>
-#include <cstring>
-#include <vector>
 #include <algorithm>
 #include <cmath>
+
+#ifdef _MSC_VER
+#define _AMD64_
+#include "../windirent.h"
+#else
 #include <dirent.h>
+#endif
 
 #include "randomgenerator.hpp"
 #include "mesutils.hpp"
 #include "history.hpp"
-#include "data.hpp"
-#include "particuleC.hpp"
 #include "header.hpp"
 #include "reftable.hpp"
-
-//#ifndef MESUTILS
-//#include "mesutils.cpp"
-//#define MESUTILS
-//#endif
-
 
 
 using namespace std;
 
 
 extern int nrecneeded;
-extern double remtime,debutr;
+extern double remtime;
+extern clock_t debutr;
 extern string  progressfilename,path;
 extern vector <ScenarioC> scenario;
 extern HeaderC header;
@@ -231,7 +228,7 @@ int ReftableC::writerecords(int nenr, enregC *enr) {
     
     for (int i=0;i<this->nscen;i++) {nb=this->nrecscen[i]+nrs[i];this->fifo.write((char*)&nb,sizeof(int));}
     fifo.flush();
-    remtime=walltime(&debutr)*(nrecneeded-this->nrec-nenr)/(this->nrec+nenr-this->nrec0);
+    remtime=walltime(debutr)*(nrecneeded-this->nrec-nenr)/(this->nrec+nenr-this->nrec0);
     f1<<this->nrec+nenr<<"\n";
     f1<<TimeToStr(remtime)<<"\n";
     f1.close();

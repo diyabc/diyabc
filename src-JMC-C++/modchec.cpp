@@ -5,38 +5,20 @@
  *      Author: cornuet
  */
 
+#include <string>
 #include <vector>
-#include <cstdlib>
 #include <iostream>
 #include <iomanip>
+#include <cstdlib>
 #include <cmath>
 #include <time.h>
 
-
 #include "header.hpp"
 #include "reftable.hpp"
-#include "matrices.hpp"
 #include "mesutils.hpp"
 #include "particleset.hpp"
 #include "acploc.hpp"
 #include "estimparam.hpp"
-/*
-#ifndef HEADER
-#include "header.cpp"
-#define HEADER
-#endif
-
-
-#ifndef MATRICES
-#include "matrices.cpp"
-#define MATRICES
-#endif
-
-#ifndef MESUTILS
-#include "mesutils.cpp"
-#define MESUTILS
-#endif
-*/
 
 using namespace std;
 
