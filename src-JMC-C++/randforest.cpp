@@ -333,8 +333,10 @@ double NodeRC::calGinimin(vector<VMC>& vm, double& cutvalc, vector<int> modfreq)
 		//cout<<"calGinimin j="<<j<<"\n";
 		res = 0.0;
 		for (int m = 0; m < rf.nmodel; m++) {
-			if (gg > 0) cg = (double)ga[m] / (double)gg; else cg = 0.0;
-			if (dd > 0) cd = (double)dr[m] / (double)dd; else cd = 0.0;
+			if (gg > 0) cg = (double)ga[m] / (double)gg;
+			else cg = 0.0;
+			if (dd > 0) cd = (double)dr[m] / (double)dd;
+			else cd = 0.0;
 			res += cg * (1.0 - cg) * (double)gg + cd * (1.0 - cd) * (double)dd;
 		}
 		res = res / (double)(gg + dd);
@@ -420,8 +422,10 @@ double NodeRC::calGini(vector<VMC>& vm, double cutval) const {
 		}
 	}
 	for (int m = 0; m < rf.nmodel; m++) {
-		if (gg > 0) cg = (double)ga[m] / (double)gg; else cg = 0.0;
-		if (dd > 0) cd = (double)dr[m] / (double)dd; else cd = 0.0;
+		if (gg > 0) cg = (double)ga[m] / (double)gg;
+		else cg = 0.0;
+		if (dd > 0) cd = (double)dr[m] / (double)dd;
+		else cd = 0.0;
 		gini += cg * (1.0 - cg) * (double)gg + cd * (1.0 - cd) * (double)dd;
 	}
 	gini /= (double)(gg + dd);
@@ -499,7 +503,8 @@ int NodeRC::getdisval(MwcGen& mw) {
 			}
 			sort(&vm[0], &vm[0] + nsets);
 			deltamax = fabs(vm[this->nsets - 1].x - vm[0].x);
-		} while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
+		}
+		while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
 		cutvalmin = vm[this->nsets / 2].x;
 		this->imax = indvar[ii];
 		for (int j = 0; j < this->nsets; j++) {
@@ -603,7 +608,8 @@ double NodeRC::getdisval2(MwcGen& mw) {
 			}
 			sort(&vm[0], &vm[0] + nsets);
 			deltamax = fabs(vm[this->nsets - 1].x - vm[0].x);
-		} while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
+		}
+		while (deltamax < fabs(vm[this->nsets / 2].x * 1E-10));
 		cutvalmin = vm[this->nsets / 2].x;
 		//ginimin=calGini(vm,cutvalmin);
 		this->imax = indvar[ii];
@@ -615,7 +621,7 @@ double NodeRC::getdisval2(MwcGen& mw) {
 	}
 	else { //il y a plusieurs individus d'un modèle donné
 		double ns = static_cast<double>(this->nsets);
-		if (6.15*ns*log(ns) < static_cast<double>(rf.nsets)) {
+		if (6.15 * ns * log(ns) < static_cast<double>(rf.nsets)) {
 			//if (true) {
 			for (int i = 0; i < this->nvar; i++) {
 				for (int j = 0; j < this->nsets; j++) {
@@ -705,8 +711,10 @@ double NodeRC::getdisval2(MwcGen& mw) {
 int TreeC::infermodel(const vector<double>& stat) {
 	int k = 0;
 	do {
-		if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG; else k = node[k].filsD;
-	} while (not node[k].terminal);
+		if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG;
+		else k = node[k].filsD;
+	}
+	while (not node[k].terminal);
 	return node[k].model;
 }
 
@@ -760,8 +768,10 @@ void TreeC::estim() {
 double TreeC::inferobs(vector<double>& stat) {
 	int k = 0;
 	do {
-		if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG; else k = node[k].filsD;
-	} while (not node[k].terminal);
+		if (stat[node[k].imax] < node[k].cutval) k = node[k].filsG;
+		else k = node[k].filsD;
+	}
+	while (not node[k].terminal);
 	return node[k].modmoy;
 }
 
@@ -813,12 +823,13 @@ void TreeC::buildtree1(int seed, int i, int rep) {
 			//cout<<"noeud k="<<k<<"   npassages="<<this->node[k].npassages<<"\n";
 		}
 		else {//cout<<"noeud terminal\n";
-			  //this->node[k].model = rf.model[this->node[k].numset[0]];
+			//this->node[k].model = rf.model[this->node[k].numset[0]];
 			kk = k;
 			do {
 				kk = this->node[kk].pere;
 				//cout<<"on remonte d'un cran  kk="<<kk<<"   npassages="<<this->node[kk].npassages<<"\n";
-			} while ((this->node[kk].npassages == 2) and (kk != 0));
+			}
+			while ((this->node[kk].npassages == 2) and (kk != 0));
 			this->fin = ((kk == 0) and (this->node[kk].npassages == 1));
 			if (not this->fin) {
 				if (k == 2 * rf.nsel) {
@@ -890,7 +901,7 @@ void TreeC::buildtree2(int seed, int i, int rep) {
 		//cout<<"model "<<this->node[k].model<<"\n";
 		this->node[k].terminal = (this->node[k].modmoy > -0.5);
 		if (not this->node[k].terminal) { //cout<<"noeud non terminal\n";
-										  //this->varused[this->node[k].imax] = true;cout<<"Noeud k="<<k<<"   imax="<<this->node[k].imax<<"\n";
+			//this->varused[this->node[k].imax] = true;cout<<"Noeud k="<<k<<"   imax="<<this->node[k].imax<<"\n";
 			this->node[k].filsG = k + 1;
 			if (k == 2 * rf.nsel) {
 				cout << "dépassement du nombre de noeuds 1 dans l'arbre " << i << "   kk=" << kk << "\n";
@@ -912,12 +923,13 @@ void TreeC::buildtree2(int seed, int i, int rep) {
 			//cout<<"noeud k="<<k<<"   npassages="<<this->node[k].npassages<<"\n";
 		}
 		else {//cout<<"noeud terminal\n";
-			  //this->node[k].model = rf.model[this->node[k].numset[0]];
+			//this->node[k].model = rf.model[this->node[k].numset[0]];
 			kk = k;
 			do {
 				kk = this->node[kk].pere;
 				//cout<<"on remonte d'un cran  kk="<<kk<<"   npassages="<<this->node[kk].npassages<<"\n";
-			} while ((this->node[kk].npassages == 2) and (kk != 0));
+			}
+			while ((this->node[kk].npassages == 2) and (kk != 0));
 			this->fin = ((kk == 0) and (this->node[kk].npassages == 1));
 			if (not this->fin) {
 				if (k == 2 * rf.nsel) {
@@ -973,7 +985,8 @@ void var_importance3(int rep) {
 	vector<VMD> vd;
 	vd = vector<VMD>(rf.nstat);
 	for (int i = 0; i < rf.nstat; i++) {
-		if (nimportance[rep][i] > 0) vd[i].x = importance[rep][i] / rf.ntrees /*/(double)nimportance[i]*/; else vd[i].x = 0.0;
+		if (nimportance[rep][i] > 0) vd[i].x = importance[rep][i] / rf.ntrees /*/(double)nimportance[i]*/;
+		else vd[i].x = 0.0;
 		vd[i].name = nomstat[i];//cout<<"vd["<<i<<"].name = "<<vd[i].name<<"\n";
 		for (int j = vd[i].name.length(); j < 12; j++) vd[i].name += " ";
 	}
@@ -1030,7 +1043,7 @@ void RFC::readstat(bool LD) {
 				for (int j = 0; j < this->nstat; j++) this->stat[nscenOK][j] = (double)enr.stat[j];
 				iscen--;
 				this->model[nscenOK] = iscen;// enr.numscen-1;
-											 //if (nscenOK<10) cout<<"scenOK=true   enr.numscen="<<this->model[nscenOK]<<"   nscenOK="<<nscenOK<<"\n";
+				//if (nscenOK<10) cout<<"scenOK=true   enr.numscen="<<this->model[nscenOK]<<"   nscenOK="<<nscenOK<<"\n";
 				nscenOK++;
 			}
 		}
@@ -1254,7 +1267,9 @@ void dorandfor(string opt, int seed) {
 		if (ppe <= ppemin - 0.001) {
 			ppemin = ppe;
 			repmin = rep;
-			for (int i = 0; i < rf.nsets; i++) if (rf.bienestime[i]) bienvu[i] = 1; else bienvu[i] = 0;
+			for (int i = 0; i < rf.nsets; i++)
+				if (rf.bienestime[i]) bienvu[i] = 1;
+				else bienvu[i] = 0;
 		}
 	}
 	cout << "\nRésultat de la calibration avec " << rf.nsets << " : nsel=" << rf.bootsamp[repmin] << "  (prior predictive error = " << ppemin << ")\n\n";
@@ -1289,4 +1304,3 @@ void dorandfor(string opt, int seed) {
 	fout << "\n\nTotal duration =" << TimeToStr(duree) << "\n";
 	fout.close();
 }
-

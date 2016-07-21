@@ -9,4 +9,4 @@
 
 void dosimfile(int seed);
 void dosimstat(int seed);
-int detpstarOK(int nsel, int scen, long double **phistar);
+int detpstarOK(int nsel, int scen, long double** phistar);
