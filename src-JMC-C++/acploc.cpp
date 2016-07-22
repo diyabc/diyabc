@@ -17,24 +17,6 @@
 #include "acploc.hpp"
 #include "header.hpp"
 
-
-/*
-#ifndef HEADER
-#include "header.cpp"
-#define HEADER
-#endif
-
-#ifndef MATRICES
-#include "matrices.cpp"
-#define MATRICES
-#endif
-
-#ifndef MESUTILS
-#include "mesutils.cpp"
-#define MESUTILS
-#endif
-*/
-
 using namespace std;
 extern enregC* enreg;
 extern HeaderC header;
@@ -54,7 +36,7 @@ int nacp = 100000, nprog, iprog;
  */
 
 
-resACPC ACP(int nli, int nco, long double** X, long double prop, int index) {
+resACPC ACP(int nli, int nco, vector<vector<long double>>& X, long double prop, int index) {
 	resACPC res;
 	res.proportion = prop;
 	res.index = index;
@@ -187,51 +169,54 @@ resACPC ACP(int nli, int nco, long double** X, long double prop, int index) {
 *   Prépare et appelle une ACP sur les summary stats
 */
 void cal_acp() {
-	long double **matstat, *pca_statobs;
+	vector<vector<long double>> matstat;
+	vector<long double> pca_statobs;
 	//float *stat_obs;
 	enregC enr;
-	int *numscen, k, bidon;
+	vector<int> numscen;
+	int k, bidon;	
 	resACPC rACP;
 	//header.calstatobs(statobsfilename);
 	//stat_obs = header.stat_obs; 
 	cout << "header.nstat=" << header.nstat << "\n";
-	for (int i = 0; i < header.nstat; i++) cout << header.stat_obs[i] << "\n";
+	for (auto i = 0; i < header.nstat; i++) cout << header.stat_obs[i] << "\n";
 	cout << "apres read_statobs\n";
 	int nparamax = 0;
-	for (int i = 0; i < rt.nscen; i++) if (rt.nparam[i] > nparamax) nparamax = rt.nparam[i];
+	for (auto i = 0; i < rt.nscen; i++) if (rt.nparam[i] > nparamax) nparamax = rt.nparam[i];
 	//cout<<nparamax<<"\n";
 	enr.param = vector<float>(nparamax);
 	enr.stat = vector<float>(rt.nstat);
 	if (nacp > rt.nrec) nacp = rt.nrec;
-	matstat = new long double*[nacp];
-	numscen = new int [nacp];
-	pca_statobs = new long double[rt.nstat];
+	matstat = vector<vector<long double>>(nacp);
+	numscen = vector<int>(nacp);
+	pca_statobs = vector<long double>(rt.nstat);
 	rt.openfile2();
-	for (int p = 0; p < nacp; p++) {
+	for (auto p = 0; p < nacp; p++) {
 		bidon = rt.readrecord(&enr);
 		if (bidon == 0) {
-			matstat[p] = new long double[rt.nstat];
+			matstat[p] = vector<long double>(rt.nstat);
 			numscen[p] = enr.numscen;
-			for (int j = 0; j < rt.nstat; j++) matstat[p][j] = enr.stat[j];
+			for (auto j = 0; j < rt.nstat; j++) matstat[p][j] = enr.stat[j];
 		}
 	}
 	rt.closefile();
 	cout << "apres la lecture des " << nacp << " enregistrements\n";
 	if (header.reference) {
-		long double** matstat0;
-		int nacp0 = 0, *numscen0;
-		matstat0 = new long double*[nacp];
-		numscen0 = new int [nacp];
+		vector<vector<long double>> matstat0;
+		auto nacp0 = 0;
+		vector<int> numscen0;
+		matstat0 = vector<vector<long double>>(nacp);
+		numscen0 = vector<int>(nacp);
 		for (int p = 0; p < nacp; p++) {
 			if (matstat[p][0] <= 1.0) {
-				matstat0[nacp0] = new long double[rt.nstat];
+				matstat0[nacp0] = vector<long double>(rt.nstat);
 				numscen0[nacp0] = numscen[p];
-				for (int j = 0; j < rt.nstat; j++) matstat0[nacp0][j] = matstat[p][j];
+				for (auto j = 0; j < rt.nstat; j++) matstat0[nacp0][j] = matstat[p][j];
 				nacp0++;
 			}
 		}
 		nacp = nacp0;
-		for (int p = 0; p < nacp; p++) {
+		for (auto p = 0; p < nacp; p++) {
 			numscen[p] = numscen0[p];
 			for (int j = 0; j < rt.nstat; j++) matstat[p][j] = matstat0[p][j];
 		}
@@ -257,14 +242,14 @@ void cal_acp() {
 	f1.open(nomfiACP.c_str());
 	f1 << setiosflags(ios::fixed) << nacp << " " << rACP.nlambda;
 	f1 << setprecision(3);
-	for (int i = 0; i < rACP.nlambda; i++) f1 << " " << (rACP.lambda[i] / rACP.slambda);
+	for (auto i = 0; i < rACP.nlambda; i++) f1 << " " << (rACP.lambda[i] / rACP.slambda);
 	f1 << "\n";
 	f1 << "0";
-	for (int i = 0; i < rACP.nlambda; i++) f1 << " " << pca_statobs[i];
+	for (auto i = 0; i < rACP.nlambda; i++) f1 << " " << pca_statobs[i];
 	f1 << "\n";
-	for (int i = 0; i < nacp; i++) {
+	for (auto i = 0; i < nacp; i++) {
 		f1 << numscen[i];
-		for (int j = 0; j < rACP.nlambda; j++) f1 << " " << rACP.princomp[i][j];
+		for (auto j = 0; j < rACP.nlambda; j++) f1 << " " << rACP.princomp[i][j];
 		f1 << "\n";
 	}
 	f1.close();

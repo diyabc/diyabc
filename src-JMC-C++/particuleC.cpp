@@ -201,10 +201,8 @@ ParticleC& ParticleC::operator=(ParticleC const& source) {
 	//this->nconditions = source.nconditions;
 	this->naccept = source.naccept;
 	this->ntentes = source.ntentes;
-	if (source.matQ != NULL) {
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) this->matQ[i][j] = source.matQ[i][j];
-		}
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) this->matQ[i][j] = source.matQ[i][j];
 	}
 	return *this;
 }

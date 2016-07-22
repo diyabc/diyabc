@@ -56,10 +56,10 @@ set (PROJECT_initRNGproject_SRCS
 add_executable(general ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 add_executable(initRNGproject ${PROJECT_initRNGproject_SRCS})
 
-# if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "Intel"))
-#   target_compile_features(general PRIVATE cxx_right_angle_brackets)
-#   target_compile_features(initRNGproject PRIVATE cxx_right_angle_brackets)
-# endif()
+if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "Intel"))
+  target_compile_features(general PRIVATE cxx_right_angle_brackets)
+  target_compile_features(initRNGproject PRIVATE cxx_right_angle_brackets)
+endif()
 
 set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")
 

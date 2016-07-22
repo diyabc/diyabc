@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include <iso646.h>>
+#include <iso646.h>
 
 extern"C" {
 #include "../dcmt0.6.1/include/dc.h"

@@ -42,7 +42,8 @@ extern vector<ScenarioC> scenario;
 
 extern ofstream fprog;
 
-long double **ssphistar, **ssref;
+long double **ssphistar;
+vector<vector<long double>> ssref;
 
 bool resetstats(string s) {
 	cout << "debut de resetstats\n";
@@ -481,7 +482,7 @@ void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs) 
 
 }
 
-void call_acp(int nr, int ns, int nstat, int* numscen, long double** ssref, long double** ssphistar, float* stat_obs) {
+void call_acp(int nr, int ns, int nstat, int* numscen, vector<vector<long double>>& ssref, long double** ssphistar, float* stat_obs) {
 	resACPC rACP;
 	long double *pca_statobs, **pca_ss;
 	pca_statobs = new long double[nstat];
@@ -727,8 +728,8 @@ void domodchec(string opt, int seed) {
 			newrefpart = 10000;
 			cout << "newrefparts=" << newrefpart << "\n";
 			numscen = new int[newrefpart];
-			ssref = new long double*[newrefpart];
-			for (int i = 0; i < newrefpart; i++) ssref[i] = new long double[header.nstat];
+			ssref = vector<vector<long double>>(newrefpart);
+			for (int i = 0; i < newrefpart; i++) ssref[i] = vector<long double>(header.nstat);
 			nsr = 0;
 			firsttime = true;
 			cout << "avant le while (nsr<newrefpart)\n";
@@ -762,8 +763,8 @@ void domodchec(string opt, int seed) {
 			newrefpart = scenario.size() * 10000;
 			cout << "newrefparts=" << newrefpart << "\n";
 			numscen = new int[newrefpart];
-			ssref = new long double*[newrefpart];
-			for (int i = 0; i < newrefpart; i++) ssref[i] = new long double[header.nstat];
+			ssref = vector<vector<long double>>(newrefpart);
+			for (int i = 0; i < newrefpart; i++) ssref[i] = vector<long double>(header.nstat);
 			nsr = 0;
 			while (nsr < newrefpart) {
 				bidon = rt.readrecord(&enr);
