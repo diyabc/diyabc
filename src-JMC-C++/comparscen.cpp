@@ -1226,7 +1226,7 @@ void docompscen(string opt) {
 		if (s0 == "s:") {
 			splitwords(s1, ",", ss1);
 			rt.nscenchoisi = ss1.size();
-			rt.scenchoisi = new int[rt.nscenchoisi];
+			rt.scenchoisi = vector<int>(rt.nscenchoisi);
 			for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = atoi(ss1[j].c_str());
 			cout << "scenario(s) choisi(s) : ";
 			for (int j = 0; j < rt.nscenchoisi; j++) {

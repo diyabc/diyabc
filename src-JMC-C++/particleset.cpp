@@ -24,7 +24,7 @@
 
 using namespace std;
 
-extern enregC* enreg;
+extern vector<enregC> enreg;
 extern long double** phistar;
 extern long double** phistarOK;
 extern int debuglevel;

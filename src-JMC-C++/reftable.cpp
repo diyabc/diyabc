@@ -31,29 +31,17 @@ extern string progressfilename, path;
 extern vector<ScenarioC> scenario;
 extern HeaderC header;
 
-
-bool operator<(const enregC& lhs, const enregC& rhs) {
-	return lhs.dist < rhs.dist;
-}
-
-
 void ReftableC::sethistparamname(HeaderC const& header) {
 	cout << "debut de sethistparamname\n";
 	int nparamvar = 0, pp;
 	this->nparamut = header.nparamut;
 	cout << "nparamut=" << header.nparamut << "    nscenarios=" << scenario.size() << "\n";
-	if (this->nhistparam != NULL) {
-		delete [] nhistparam;
-		nhistparam = NULL;
-	}
-	this->nhistparam = new int[scenario.size()];
+	this->nhistparam.clear();
+	this->nhistparam = vector<int>(scenario.size());
 	this->histparam.resize(scenario.size(), vector<HistParameterC>(0));
 	this->histparamlength = scenario.size();
-	if (this->mutparam != NULL) {
-		delete [] mutparam;
-		mutparam = NULL;
-	}
-	if (header.nparamut > 0) this->mutparam = new MutParameterC[header.nparamut];
+	this->mutparam.clear();
+	if (header.nparamut > 0) this->mutparam = vector<MutParameterC>(header.nparamut);
 	cout << "avant la boucle des scenarios  nscenarios =" << scenario.size() << "\n";
 	int imax = (int)scenario.size();
 	for (int i = 0; i < imax; i++) {
@@ -149,17 +137,14 @@ int ReftableC::writeheader() {
 	return 0; //retour normal
 }
 
-int ReftableC::readrecord(enregC* enr) {
-	int bidon = 0;
-	//cout<<"debut de readrecord\n";
-	//try {
+int ReftableC::readrecord(enregC& enr) {
 	if (this->fifo.eof()) {
 		return 1;
 	}
-	this->fifo.read((char*)&(enr->numscen), sizeof(int));//cout<<"dans readrecord enr->numscen="<<enr->numscen<<"    this->nscen="<<this->nscen<<"\n";
+	this->fifo.read((char*)&(enr.numscen), sizeof(int));
 
-	if (enr->numscen > this->nscen) {
-		cout << "\nThe reftable.bin file is corrupted. numscen=" << enr->numscen << "\n";
+	if (enr.numscen > this->nscen) {
+		cout << "\nThe reftable.bin file is corrupted. numscen=" << enr.numscen << "\n";
 		FILE* flog;
 		flog = fopen(progressfilename.c_str(), "w");
 		fprintf(flog, "%s", "The reftable.bin file is corrupted. Clone the project and simulate a new file.\n");
@@ -167,33 +152,14 @@ int ReftableC::readrecord(enregC* enr) {
 		stringstream erreur;
 		erreur << "The reftable.bin file is corrupted. Clone the project and simulate a new file.\n";
 		throw std::runtime_error(erreur.str());
-		//exit(1);
 	}
-	//throw(1);
-	//cout<<"numscen = "<<enr->numscen<<"   nparam="<<this->nparam[enr->numscen-1]<<"\n";
-	//cout<<"enr->param.size="<<enr->param.size()<<"\n";
-	for (int i = 0; i < this->nparam[enr->numscen - 1]; i++) {
-		this->fifo.read((char*)&(enr->param[i]), sizeof(float));/*cout<<enr->param[i]<<"\n";*/
+	for (int i = 0; i < this->nparam[enr.numscen - 1]; i++) {
+		this->fifo.read((char*)&(enr.param[i]), sizeof(float));
 	}
-	//throw(2);
-	//cout <<"\n";
 	for (int i = 0; i < this->nstat; i++) {
-		this->fifo.read((char*)&(enr->stat[i]), sizeof(float));/*cout<<enr->stat[i]<<"  ";if ((i%10)==9) cout<<"\n";*/
+		this->fifo.read((char*)&(enr.stat[i]), sizeof(float));
 	}
-	//throw(3);
-	/*}
-	 *		catch(int e) {
-	 *			cout<<"reftable.bin file is corrupted\n";
-	 *		    if (e==1) cout<<"Impossible to read the scenario number\n";
-	 *		    if (e==2) cout<<"Impossible to read one parameter value\n";
-	 *		    if (e==3) cout<<"Impossible to read one summary statistics value\n";
-	 *			bidon=e;
-}*/
-
-	//cout <<"\n";
-	//cout<<"fin de readrecord\n";
-	//cin>>bidon;
-	return bidon;
+	return 0;
 }
 
 int ReftableC::readparam(vector<float>& param) {
@@ -208,7 +174,7 @@ int ReftableC::readparam(vector<float>& param) {
 	return numscen;
 }
 
-int ReftableC::writerecords(int nenr, enregC* enr) {
+int ReftableC::writerecords(int nenr, vector<enregC>& enr) {
 	int bidon;
 	for (int i = 0; i < nenr; i++) {
 		if (enr[i].message != "OK") {
@@ -540,7 +506,7 @@ void ReftableC::bintotxt() {
 	splitwords(header.entete, " ", ss);
 	this->sethistparamname(header);
 	while (not fifo.eof()) {
-		bidon = this->readrecord(&enr);
+		bidon = this->readrecord(enr);
 		if (bidon != 0) cout << "probleme à la lecture du reftable\n";
 		//cout<<"numscen="<<enr.numscen<<"\n\n";
 
@@ -612,7 +578,7 @@ void ReftableC::bintotxt2() {
 	enr.param = vector<float>(npm);
 	enr.stat = vector<float>(this->nstat);
 	while (not fifo.eof()) {
-		bidon = this->readrecord(&enr);
+		bidon = this->readrecord(enr);
 		if (bidon != 0) cout << "probleme à la lecture du reftable\n";
 		fprintf(f1, "%3d    ", enr.numscen);
 		printf("%3d    ", enr.numscen);
@@ -650,7 +616,7 @@ void ReftableC::bintocsv(HeaderC const& header) {
 	enr.param = vector<float>(npm);
 	enr.stat = vector<float>(this->nstat);
 	for (int j = 0; j < this->nrec; j++) {
-		bidon = this->readrecord(&enr);
+		bidon = this->readrecord(enr);
 		if (bidon != 0) cout << "probleme à la lecture du reftable\n";
 		f2 << enr.numscen << "\n";
 		for (int i = 0; i < header.nstat; i++) {
@@ -883,7 +849,7 @@ int ReftableC::cal_varstat() {
 	sx2 = new long double[this->nstat];
 	min = new long double[this->nstat];
 	max = new long double[this->nstat];
-	var_stat = new long double[this->nstat];
+	var_stat = vector<long double>(this->nstat);
 	for (int j = 0; j < this->nstat; j++) {
 		sx[j] = 0.0;
 		sx2[j] = 0.0;
@@ -898,7 +864,7 @@ int ReftableC::cal_varstat() {
 	i = 0;
 	while (i < nrecutil) {
 		//cout<<"avant readrecord\n";
-		bidon = this->readrecord(&enr);
+		bidon = this->readrecord(enr);
 		if (bidon != 0)cout << "problème dans la lecture du reftable\n";
 		//cout<<"coucou\n";
 		scenOK = false;
@@ -947,7 +913,7 @@ void ReftableC::alloue_enrsel(int nsel) {
 	int nparamax = 0;
 	for (int i = 0; i < this->nscen; i++) if (this->nparam[i] > nparamax) nparamax = this->nparam[i];
 	//cout<<"alloue_enrsel nsel="<<nsel<<"   nparamax="<<nparamax<<"\n";fflush(stdout);
-	this->enrsel = new enregC[2 * nsel];
+	this->enrsel = vector<enregC>(2 * nsel);
 	for (int i = 0; i < 2 * nsel; i++) {
 		this->enrsel[i].param = vector<float>(nparamax);
 		this->enrsel[i].stat = vector<float>(this->nstat);
@@ -957,13 +923,8 @@ void ReftableC::alloue_enrsel(int nsel) {
 /**
  * desalloue la mémoire de enrsel
  */
-void ReftableC::desalloue_enrsel(int nsel) {
-	for (int i = 0; i < 2 * nsel; i++) {
-		this->enrsel[i].param.clear();
-		this->enrsel[i].stat.clear();
-	}
-	delete []this->enrsel;
-	this->enrsel = NULL;
+void ReftableC::desalloue_enrsel() {
+	this->enrsel.clear();
 }
 
 /**
@@ -997,7 +958,7 @@ void ReftableC::cal_dist(int nrec, int nsel, float* stat_obs, bool scenarioteste
 		else nrecOK = nn;
 		while ((nrecOK < 2 * nn)and (this->nreclus < nrec)) {
 			do {
-				bidon = this->readrecord(&(this->enrsel[nrecOK]));
+				bidon = this->readrecord(this->enrsel[nrecOK]);
 				if (bidon != 0) cout << "bidon=" << bidon << "\n";
 			}
 			while (bidon != 0);

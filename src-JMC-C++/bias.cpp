@@ -22,29 +22,12 @@
 #include "modchec.hpp"
 
 
-/*
-#ifndef HEADER
-#include "header.cpp"
-#define HEADER
-#endif
-#ifndef MATRICES
-#include "matrices.cpp"
-#define MATRICES
-#endif
-#ifndef MESUTILS
-#include "mesutils.cpp"
-#define MESUTILS
-#endif
-#ifndef PARTICLESET
-#include "particleset.cpp"
-#define PARTICLESET
-#endif
-*/
+
 using namespace std;
 
 extern ReftableC rt;
 extern ParticleSetC ps;
-extern enregC* enreg;
+extern vector<enregC> enreg;
 extern bool multithread;
 extern string progressfilename, path;
 extern string scurfile;
@@ -2025,7 +2008,7 @@ void dobias(string opt, int seed) {
 		}
 	}
 	rt.nscenchoisi = 1;
-	rt.scenchoisi = new int[rt.nscenchoisi];
+	rt.scenchoisi = vector<int>(rt.nscenchoisi);
 	rt.scenchoisi[0] = rt.scenteste;
 	if (posterior) {
 		//calcul des posteriors
@@ -2067,10 +2050,10 @@ void dobias(string opt, int seed) {
 			cout << "Not enough suitable particles (" << nphistarOK << ")to perform model checking. Stopping computations." << endl;
 			exit(1);
 		}
-		rt.desalloue_enrsel(nsel);
+		rt.desalloue_enrsel();
 	}
 	npv = rt.nparam[rt.scenteste - 1];
-	enreg = new enregC[ntest];
+	enreg = vector<enregC>(ntest);
 	for (int p = 0; p < ntest; p++) {
 		enreg[p].stat = vector<float>(header.nstat);
 		enreg[p].param = vector<float>(npv);
@@ -2116,11 +2099,7 @@ void dobias(string opt, int seed) {
 	fprog.close();
 	header.readHeader(headerfilename);
 	cout << "apres readHeader\n";
-	for (int p = 0; p < ntest; p++) {
-		enreg[p].param.clear();
-		enreg[p].stat.clear();
-	}
-	delete []enreg;
+	enreg.clear();
 	det_numpar();
 	cout << "naparmcom = " << nparamcom << "   nparcomp = " << nparcompo << "   nparscaled = " << nparscaled << "\n";
 	cout << "header.nstat=" << header.nstat << "    rt.nstat=" << rt.nstat << "\n";
@@ -2325,7 +2304,7 @@ void dobias(string opt, int seed) {
 		fprog.close();
 	}
 	ftrace.close();
-	rt.desalloue_enrsel(nsel);
+	rt.desalloue_enrsel();
 	//		for (int i=0;i<nsel;i++) delete []phistar[i];delete phistar;
 	if (original) {
 		for (int i = 0; i < nsimpar; i++) delete []simpar[i];

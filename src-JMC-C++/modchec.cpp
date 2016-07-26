@@ -26,7 +26,7 @@ extern int debuglevel;
 extern ParticleSetC ps;
 extern HeaderC header;
 extern ReftableC rt;
-extern enregC* enreg;
+extern vector<enregC> enreg;
 extern int nenr, numtransf;
 extern int nparamcom, nparcompo, nparscaled;
 extern string progressfilename, statobsfilename, headerfilename, path, ident;
@@ -558,7 +558,7 @@ void domodchec(string opt, int seed) {
 			splitwords(s1, ",", ss1);
 			rt.nscenchoisi = ss1.size();
 			if (rt.nscenchoisi > 1) rt.nscenchoisi = 1;
-			rt.scenchoisi = new int[rt.nscenchoisi];
+			rt.scenchoisi = vector<int>(rt.nscenchoisi);
 			for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = atoi(ss1[j].c_str());
 			nrecpos = rt.nrecscen[rt.scenchoisi[0] - 1];
 			cout << "scenario choisi : " << rt.scenchoisi[0] << "\n";
@@ -685,7 +685,7 @@ void domodchec(string opt, int seed) {
 	if (newstat) usestats = resetstats(snewstat);
 	if (not usestats) cout << "problème dans la construction des nouvelles stats\n";
 	cout << "header.nstat = " << header.nstat << "\n";
-	enreg = new enregC[nenr];
+	enreg = vector<enregC>(nenr);
 	cout << "apres new enregC[nenr]\n";
 	for (int p = 0; p < nenr; p++) {
 		enreg[p].stat = vector<float>(header.nstat);
@@ -767,7 +767,7 @@ void domodchec(string opt, int seed) {
 			for (int i = 0; i < newrefpart; i++) ssref[i] = vector<long double>(header.nstat);
 			nsr = 0;
 			while (nsr < newrefpart) {
-				bidon = rt.readrecord(&enr);
+				bidon = rt.readrecord(enr);
 				if (bidon != 0) cout << "probleme à la lecture du reftable\n";
 				numscen[nsr] = enr.numscen;
 				for (int j = 0; j < rt.nstat; j++) ssref[nsr][j] = enr.stat[j];

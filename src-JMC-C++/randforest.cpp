@@ -1030,7 +1030,7 @@ void RFC::readstat(bool LD) {
 	bidon = 0;
 	cout << "ouverture de " << rt.filename << "\n";
 	while ((nscenOK < this->nsets) and (bidon == 0)) {
-		bidon = rt.readrecord(&enr);//cout<<"nscenOK="<<nscenOK<<"   bidon="<<bidon<<"\n";
+		bidon = rt.readrecord(enr);//cout<<"nscenOK="<<nscenOK<<"   bidon="<<bidon<<"\n";
 		if (bidon == 0) {
 			scenOK = false;
 			iscen = 0;//cout<<"numscen="<<enr.numscen<<"    iscen="<<iscen<<"\n";
@@ -1148,7 +1148,7 @@ void dorandfor(string opt, int seed) {
 		if (s0 == "s:") {
 			splitwords(s1, ",", ss1);
 			rt.nscenchoisi = ss1.size();
-			rt.scenchoisi = new int[rt.nscenchoisi];
+			rt.scenchoisi = vector<int>(rt.nscenchoisi);
 			for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = atoi(ss1[j].c_str());
 			nrecpos = 0;
 			for (int j = 0; j < rt.nscenchoisi; j++) nrecpos += rt.nrecscen[rt.scenchoisi[j] - 1];

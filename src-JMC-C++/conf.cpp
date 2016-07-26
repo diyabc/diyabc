@@ -9,6 +9,7 @@
 #include <vector>
 #include <iomanip>
 #include <cstdlib>
+#include <numeric>
 #include <time.h>
 
 #include "bias.hpp"
@@ -21,37 +22,8 @@
 #include "modchec.hpp"
 
 
-/*
-#ifndef HEADER
-#include "header.cpp"
-#define HEADER
-#endif
-
-#ifndef VECTOR
-#include <vector>
-#define VECTOR
-#endif
-
-#ifndef MATRICES
-#include "matrices.cpp"
-#define MATRICES
-#endif
-
-#ifndef MESUTILS
-#include "mesutils.cpp"
-#define MESUTILS
-#endif
-
-
-#ifndef PARTICLESET
-#include "particleset.cpp"
-#define PARTICLESET
-#endif
-*/
-
-
 extern ParticleSetC ps;
-extern enregC* enreg;
+extern vector<enregC> enreg;
 double time_readfile = 0.0;
 extern string scurfile, path, ident, headerfilename, progressfilename;
 extern HeaderC header;
@@ -403,7 +375,7 @@ void traitenreg(string s, int nrec, int nseld, int nselr, int nrecp, int nlogreg
 		cout << "ncordir=" << ncdir << "   ncorlog=" << nclog << "\n";
 
 	}
-	rt.desalloue_enrsel(nsel);
+	rt.desalloue_enrsel();
 	if (nlogreg == 1) liberecmat(rt.nscen, nselr, rt.nstat);
 	prop[0] = (double)ncdir / (double)nrecp;
 	prop[1] = (double)nclog / (double)nrecp;
@@ -414,7 +386,7 @@ void pperror(bool prior, int nrec, int nrecp, int nsel0, int nseld, int nselr, i
 	int nstatOK, ns, *num;
 	//long double **phistar;
 	double** stat;
-	enreg = new enregC[nrecp];
+	enreg = vector<enregC>(nrecp);
 	nstatOK = rt.cal_varstat();
 	cout << "nstatOK=" << nstatOK << "\n";
 	int nphistarOK;
@@ -510,25 +482,21 @@ void pperror(bool prior, int nrec, int nrecp, int nsel0, int nseld, int nselr, i
 				delete [] stat;
 			}
 		}
-		rt.desalloue_enrsel(nsel0);
+		rt.desalloue_enrsel();
 		iprog += 9;
 		fprog.open(progressfilename.c_str());
 		fprog << iprog << "   " << nprog << "\n";
 		fprog.close();
 		traitenreg("posterior", nrec, nseld, nselr, nrecp, nlogreg, prop, nomfitrace);
 	}
-	for (int p = 0; p < nrecp; p++) {
-		enreg[p].stat.clear();
-		enreg[p].param.clear();
-	}
-	delete [] enreg;
+	enreg.clear();
 }
 
 int calnrecpos() {
 	int nrpos = 0;
 	rt.nscenchoisi = rt.nscen;
-	rt.scenchoisi = new int[rt.nscenchoisi];
-	for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = j;
+	rt.scenchoisi = vector<int>(rt.nscenchoisi);
+	iota(rt.scenchoisi.begin(), rt.scenchoisi.end(), 0);
 	for (int j = 0; j < rt.nscenchoisi; j++) nrpos += rt.nrecscen[rt.scenchoisi[j] - 1];
 	return nrpos;
 }
@@ -576,7 +544,7 @@ void doconf(string opt, int seed) {
 		if (s0 == "s:") {
 			splitwords(s1, ",", ss1);
 			rt.nscenchoisi = ss1.size();
-			rt.scenchoisi = new int[rt.nscenchoisi];
+			rt.scenchoisi = vector<int>(rt.nscenchoisi);
 			for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = atoi(ss1[j].c_str());
 			nrecpos = 0;
 			for (int j = 0; j < rt.nscenchoisi; j++) nrecpos += rt.nrecscen[rt.scenchoisi[j] - 1];
@@ -670,8 +638,8 @@ void doconf(string opt, int seed) {
 	}
 	if (rt.nscenchoisi == 0) {
 		rt.nscenchoisi = rt.nscen;
-		rt.scenchoisi = new int[rt.nscenchoisi];
-		for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = j + 1;
+		rt.scenchoisi = vector<int>(rt.nscenchoisi);
+		iota(rt.scenchoisi.begin(), rt.scenchoisi.end(), 1);
 		nrecpos = 0;
 		for (int j = 0; j < rt.nscenchoisi; j++) nrecpos += rt.nrecscen[rt.scenchoisi[j] - 1];
 		if (nrec > nrecpos) nrec = nrecpos;
@@ -715,9 +683,8 @@ void doconf(string opt, int seed) {
 		scenchoibackup = new int[rt.nscenchoisi];
 		for (int j = 0; j < nscenchoibackup; j++) scenchoibackup[j] = rt.scenchoisi[j];
 		rt.nscenchoisi = rt.nscen;
-		delete [] rt.scenchoisi;
-		rt.scenchoisi = new int[rt.nscen];
-		for (int j = 0; j < rt.nscen; j++) rt.scenchoisi[j] = j + 1;
+		rt.scenchoisi.resize(rt.nscen);
+		iota(rt.scenchoisi.begin(), rt.scenchoisi.end(), 1);
 		nomfitrace = path + ident + "_traceprior.txt";
 		//ftrace2.open(nomfitrace.c_str());
 		pperror(true, nrec, nrecb, nsel0, nseld, nselr, nlogreg, seed, prop, nomfitrace);
@@ -728,8 +695,7 @@ void doconf(string opt, int seed) {
 		cout << "Approche directe" << setiosflags(ios::fixed) << setw(9) << setprecision(3) << propcordirprior << "\n";
 		cout << "Approche logistique" << setiosflags(ios::fixed) << setw(6) << setprecision(3) << propcorlogprior << "\n";
 		rt.nscenchoisi = nscenchoibackup;
-		delete [] rt.scenchoisi;
-		rt.scenchoisi = new int[rt.nscenchoisi];
+		rt.scenchoisi.resize(rt.nscenchoisi);
 		for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = scenchoibackup[j];
 		cout << "---------------------------------------------------------------\n";
 	}
@@ -743,9 +709,8 @@ void doconf(string opt, int seed) {
 		scenchoibackup = new int[rt.nscenchoisi];
 		for (int j = 0; j < nscenchoibackup; j++) scenchoibackup[j] = rt.scenchoisi[j];
 		rt.nscenchoisi = rt.nscen;
-		delete [] rt.scenchoisi;
-		rt.scenchoisi = new int[rt.nscen];
-		for (int j = 0; j < rt.nscen; j++) rt.scenchoisi[j] = j + 1;
+		rt.scenchoisi.resize(rt.nscen);
+		iota(rt.scenchoisi.begin(), rt.scenchoisi.end(), 1);
 		nomfitrace = path + ident + "_traceposterior.txt";
 		//ftrace2.open(nomfitrace.c_str());
 		pperror(false, nrec, nrecc, nsel0, nseld, nselr, nlogreg, seed, prop, nomfitrace);
@@ -756,9 +721,8 @@ void doconf(string opt, int seed) {
 		cout << "Approche directe" << setiosflags(ios::fixed) << setw(9) << setprecision(3) << propcordirposterior << "\n";
 		cout << "Approche logistique" << setiosflags(ios::fixed) << setw(6) << setprecision(3) << propcorlogposterior << "\n";
 		rt.nscenchoisi = nscenchoibackup;
-		delete [] rt.scenchoisi;
-		rt.scenchoisi = new int[rt.nscenchoisi];
-		for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = scenchoibackup[j];
+		rt.scenchoisi.resize(rt.nscenchoisi);
+		rt.scenchoisi.assign(scenchoibackup, scenchoibackup + rt.nscenchoisi);
 		cout << "---------------------------------------------------------------\n";
 	}
 	//FIN du calcul de la posterior predictive error
@@ -773,7 +737,7 @@ void doconf(string opt, int seed) {
 			scenchoibackup = new int[rt.nscenchoisi];
 			for (int j = 0; j < nscenchoibackup; j++) scenchoibackup[j] = rt.scenchoisi[j];
 			rt.nscenchoisi = 1;
-			rt.scenchoisi = new int[rt.nscenchoisi];
+			rt.scenchoisi = vector<int>(rt.nscenchoisi);
 			rt.scenchoisi[0] = rt.scenteste;
 			cout << "rt.nrec=" << rt.nrec << "\n";
 			nstatOK = rt.cal_varstat();
@@ -814,18 +778,18 @@ void doconf(string opt, int seed) {
 				cout << "Not enough suitable particles (" << nphistarOK << ")to perform model checking. Stopping computations." << endl;
 				exit(1);
 			}
-			rt.desalloue_enrsel(nsel);
+			rt.desalloue_enrsel();
 			rt.nscenchoisi = nscenchoibackup;
-			delete [] rt.scenchoisi;
-			rt.scenchoisi = new int[rt.nscenchoisi];
-			for (int j = 0; j < nscenchoibackup; j++) rt.scenchoisi[j] = scenchoibackup[j];
+			rt.scenchoisi.resize(rt.nscenchoisi);
+			rt.scenchoisi.assign(scenchoibackup, scenchoibackup + rt.nscenchoisi);
+
 		}
 		cout << "\n---------------------------------------------------------------\n";
 		cout << "\nDebut du calcul de la confiance  pour le scenario " << rt.scenchoisi[0] << "\n";
 
 
 		npv = rt.nparam[rt.scenteste - 1];
-		enreg = new enregC[ntest];
+		enreg = vector<enregC>(ntest);
 		for (int p = 0; p < ntest; p++) {
 			enreg[p].stat = vector<float>(header.nstat);
 			enreg[p].param = vector<float>(npv);
@@ -933,7 +897,7 @@ void doconf(string opt, int seed) {
 			cout << "\n";
 		}
 		//ftrace2.close();
-		rt.desalloue_enrsel(nsel);
+		rt.desalloue_enrsel();
 		if (nlogreg == 1) liberecmat(rt.nscenchoisi, nselr, rt.nstat);
 		f11 << "\nNumber of times the scenario has the highest posterior probability\nTotal  ";
 		for (int i = 0; i < rt.nscenchoisi; i++) f11 << setiosflags(ios::fixed) << setw(9) << nbestdir[i];

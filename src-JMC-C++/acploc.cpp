@@ -192,7 +192,7 @@ void cal_acp() {
 	pca_statobs = vector<long double>(rt.nstat);
 	rt.openfile2();
 	for (auto p = 0; p < nacp; p++) {
-		bidon = rt.readrecord(&enr);
+		bidon = rt.readrecord(enr);
 		if (bidon == 0) {
 			matstat[p] = vector<long double>(rt.nstat);
 			numscen[p] = enr.numscen;
@@ -299,12 +299,12 @@ void cal_loc() {
 	cout << "avant la lecture des enregistrements  header.reference = " << header.reference << "\n";
 	for (int p = 0; p < rt.nrec; p++) {
 		if (not header.reference) {
-			bidon = rt.readrecord(&enr);
+			bidon = rt.readrecord(enr);
 			if (bidon != 0) cout << "probleme dans la lecture de la table de référence n=" << p << "\n";
 		}
 		else {
 			do {
-				bidon = rt.readrecord(&enr);
+				bidon = rt.readrecord(enr);
 			}
 			while ((bidon == 0)and (enr.stat[0] > 1.0));
 		}

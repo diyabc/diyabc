@@ -145,7 +145,7 @@ ReftableC rt;
 HeaderC header;
 ParticleSetC ps;
 struct stat stFileInfo;
-enregC *enreg, *enregOK;
+vector<enregC> enreg, enregOK;
 
 //char *headerfilename, *reftablefilename,*datafilename,*statobsfilename, *reftablelogfilename,*path,*ident,*stopfilename, *progressfilename;
 //char *;
@@ -590,7 +590,7 @@ int main(int argc, char* argv[]) {
 				cout << "DEBUT  nrecneeded=" << nrecneeded << "   rt.nrec=" << rt.nrec << "    rt.nstat=" << rt.nstat << "   nscenarios=" << scenario.size() << "\n";
 				if (nrecneeded > rt.nrec) {
 					rt.openfile();
-					enreg = new enregC[nenr];
+					enreg = vector<enregC>(nenr);
 					for (int p = 0; p < nenr; p++) {
 						enreg[p].stat = vector<float>(header.nstat);
 						//cout<<"enreg.param = new float["<<header.nparamtot+3*header.ngroupes <<"]\n";
@@ -667,7 +667,7 @@ int main(int argc, char* argv[]) {
 							fd.close();
 							cout << "nenrOK=" << nenrOK << "\n";
 							if (nenrOK > 0) {
-								enregOK = new enregC[nenrOK];
+								enregOK = vector<enregC>(nenrOK);
 								for (int p = 0; p < nenrOK; p++) {
 									enregOK[p].stat = vector<float>(header.nstat);
 									enregOK[p].param = vector<float>(header.nparamtot + 3 * header.ngroupes);
@@ -694,23 +694,15 @@ int main(int argc, char* argv[]) {
 								else cout << "\n";
 								stoprun = (stat(stopfilename.c_str(), &stFileInfo) == 0);
 								if (stoprun) remove(stopfilename.c_str());
-								for (int i = 0; i < nenrOK; i++) {
-									enregOK[i].param.clear();
-									enregOK[i].stat.clear();
-								}
-								delete [] enregOK;
+								enregOK.clear();
 							}
 						}
 						if (firsttime) firsttime = false;
 						//if (stoprun) cout<<"STOPRUN=TRUE\n";
 					}
 					//cout<<"fin du while\n";
-					for (int i = 0; i < nenr; i++) {
-						if (not enreg[i].param.empty()) enreg[i].param.clear();
-						if (not enreg[i].stat.empty()) enreg[i].stat.clear();
-					}
 					//cout<<"avant delete [] enreg\n";
-					delete [] enreg;
+					enreg.clear();
 					//cout<<"apres delete [] enreg\n";
 					//ps.libere(nenr);
 					rt.closefile();
@@ -855,10 +847,7 @@ int main(int argc, char* argv[]) {
 
 		}
 		//cout<<"avant les delete []\n";
-		if (rt.mutparam != NULL) {
-			delete [] rt.mutparam;
-			rt.mutparam = NULL;
-		}
+		rt.mutparam.clear();
 		//cout<<"1\n";
 		if (not rt.nparam.empty()) rt.nparam.clear();
 		//cout<<"2\n";

@@ -1263,7 +1263,7 @@ void lisimparO() {
 	int i = 0;
 	rt.openfile2();
 	while (i < nsimpar) {
-		bidon = rt.readrecord(&enr);
+		bidon = rt.readrecord(enr);
 		if (bidon != 0) cout << "problème dans la lecture du reftable\n";
 		m = 0;
 		scenOK = false;
@@ -1298,7 +1298,7 @@ void lisimparC() {
 	int i = 0;
 	rt.openfile2();
 	while (i < nsimpar) {
-		bidon = rt.readrecord(&enr);
+		bidon = rt.readrecord(enr);
 		if (bidon != 0) cout << "problème dans la lecture du reftable\n";
 		m = 0;
 		scenOK = false;
@@ -1407,7 +1407,7 @@ void lisimparS() {
 	int i = 0;
 	rt.openfile2();
 	while (i < nsimpar) {
-		bidon = rt.readrecord(&enr);
+		bidon = rt.readrecord(enr);
 		if (bidon != 0) cout << "problème à la lecture de la reftable\n";
 		m = 0;
 		scenOK = false;
@@ -2023,7 +2023,7 @@ void doestim(string opt) {
 		if (s0 == "s:") {
 			splitwords(s1, ",", ss1);
 			rt.nscenchoisi = ss1.size();
-			rt.scenchoisi = new int[rt.nscenchoisi];
+			rt.scenchoisi = vector<int>(rt.nscenchoisi);
 			for (int j = 0; j < rt.nscenchoisi; j++) rt.scenchoisi[j] = atoi(ss1[j].c_str());
 			nrecpos = 0;
 			for (int j = 0; j < rt.nscenchoisi; j++) nrecpos += rt.nrecscen[rt.scenchoisi[j] - 1];
@@ -2241,7 +2241,7 @@ void doestim(string opt) {
 		cout << "--->" << iprog << "   sur " << nprog << "\n";
 	}
 	saveparstat(nsel, path, ident);
-	rt.desalloue_enrsel(nsel);
+	rt.desalloue_enrsel();
 	iprog += 2;
 	fprog.open(progressfilename.c_str());
 	fprog << iprog << "   " << nprog << "\n";
