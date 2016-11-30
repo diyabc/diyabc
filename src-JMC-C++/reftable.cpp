@@ -266,38 +266,38 @@ int ReftableC::testfile(string reftablefilename, int npart) {
 	bool corrompu = false;
 	cout << "\nverification de l'integrite de la table de reference \nfichier" << reftablefilename << "\n";
 	this->fifo.open(reftablefilename.c_str(), ios::in | ios::out | ios::binary);
-	this->fifo.seekg(0);
-	this->fifo.read((char*)&(this->nrec), sizeof(int));
+	this->fifo.seekg(0, ios::beg);
+	this->fifo.read(reinterpret_cast<char*>(&(this->nrec)), sizeof(int));
 	cout << "nrec = " << this->nrec << "\n";
 	if (this->nrec < 1) {
 		this->fifo.close();
 		cout << "fichier reftable.bin vide\n\n";
 		return 1;
 	}
-	this->fifo.read((char*)&(this->nscen), sizeof(int));
+	this->fifo.read(reinterpret_cast<char*>(&(this->nscen)), sizeof(int));
 	if (not this->nrecscen.empty()) nrecscen.clear();
 	this->nrecscen = vector<int>(this->nscen);
-	for (int i = 0; i < this->nscen; i++) {
-		this->fifo.read((char*)&(this->nrecscen[i]), sizeof(int));/*cout<<"nrecscen["<<i<<"] = "<<this->nrecscen[i]<<"\n";*/
+	for (auto i = 0; i < this->nscen; i++) {
+		this->fifo.read(reinterpret_cast<char*>(&(this->nrecscen[i])), sizeof(int));cout<<"nrecscen["<<i<<"] = "<<this->nrecscen[i]<<"\n";
 	}
 	if (not this->nparam.empty()) this->nparam.clear();
 	this->nparam = vector<int>(nscen);
-	for (int i = 0; i < this->nscen; i++) {
-		this->fifo.read((char*)&(this->nparam[i]), sizeof(int));/*cout<<"nparam["<<i<<"] = "<<this->nparam[i]<<"\n";*/
+	for (auto i = 0; i < this->nscen; i++) {
+		this->fifo.read(reinterpret_cast<char*>(&(this->nparam[i])), sizeof(int));cout<<"nparam["<<i<<"] = "<<this->nparam[i]<<"\n";
 	}
-	this->fifo.read((char*)&(this->nstat), sizeof(int));//cout<<"nstat = "<<this->nstat<<"\n";
+	this->fifo.read(reinterpret_cast<char*>(&(this->nstat)), sizeof(int));cout<<"nstat = "<<this->nstat<<"\n";
 
-	for (int i = 0; i < this->nscen; i++) this->nrecscen[i] = 0;
+	for (auto i = 0; i < this->nscen; i++) this->nrecscen[i] = 0;
 	int numscen, k, npmax;
 	float x;
 	cout << this->nscen << " scenario(s)\n";
 	for (k = 0; k < this->nrec; k++) {
 		if ((k % npart) == 0) cout << k + npart << "\r";
-		this->fifo.read((char*)&(numscen), sizeof(int));
+		this->fifo.read(reinterpret_cast<char*>(&numscen), sizeof(int));
 		if (numscen <= this->nscen) {
 			this->nrecscen[numscen - 1]++;
-			for (int i = 0; i < this->nparam[numscen - 1]; i++) this->fifo.read((char*)&x, sizeof(float));
-			for (int i = 0; i < this->nstat; i++) this->fifo.read((char*)&x, sizeof(float));
+			for (auto i = 0; i < this->nparam[numscen - 1]; i++) this->fifo.read(reinterpret_cast<char*>(&x), sizeof(float));
+			for (auto i = 0; i < this->nstat; i++) this->fifo.read(reinterpret_cast<char*>(&x), sizeof(float));
 		}
 		else {
 			corrompu = true;
@@ -314,7 +314,7 @@ int ReftableC::testfile(string reftablefilename, int npart) {
 	}
 	enregC e;
 	npmax = 0;
-	for (int i = 0; i < this->nscen; i++) if (npmax < this->nparam[i]) npmax = this->nparam[i];
+	for (auto i = 0; i < this->nscen; i++) if (npmax < this->nparam[i]) npmax = this->nparam[i];
 	e.param = vector<float>(npmax);
 	e.stat = vector<float>(this->nstat);
 	int nb;
