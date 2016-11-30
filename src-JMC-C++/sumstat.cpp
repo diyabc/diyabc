@@ -156,7 +156,7 @@ void ParticleC::calfreqpool(int gr) {
 					printf("loc %3d    sa %d     samplesize %3d   freq[0]=%10.6Lf \n", loc, samp, this->locuslist[loc].samplesize[samp], this->locuslist[loc].freq[samp][0]);
 				}
 			}
-		} 
+		}
 	}
 }
 
@@ -396,14 +396,13 @@ void ParticleC::cal_snf3r(int gr, int numsnp) {
 	int sample2 = this->grouplist[gr].sumstatsnp[numsnp].samp2 - 1;
 	this->grouplist[gr].sumstatsnp[numsnp].sw = 0.0;
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
-	for (iloc = 0; iloc<this->grouplist[gr].nloc; iloc++) {
+	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
 		this->grouplist[gr].sumstatsnp[numsnp].w[iloc] = this->locuslist[loc].weight;
-		if (this->locuslist[loc].weight>0.0) {
-			if ((samplesize(loc, sample1)>0) and (samplesize(loc, sample2)>0)) {
+		if (this->locuslist[loc].weight > 0.0) {
+			if ((samplesize(loc, sample1) > 0) and (samplesize(loc, sample2) > 0)) {
 				int np = samplesize(loc, sample);
-				if (dataobs.filetype == 2)
-				{ //Poolseq
+				if (dataobs.filetype == 2) { //Poolseq
 					double a1p = this->locuslist[loc].nreads1[sample];
 					double c1p = this->locuslist[loc].nreads[sample];
 					double a2p = this->locuslist[loc].nreads1[sample1];
@@ -416,8 +415,7 @@ void ParticleC::cal_snf3r(int gr, int numsnp) {
 					double betaAC = (a1p * a3p) / c1p / c3p;
 					this->grouplist[gr].sumstatsnp[numsnp].x[iloc] = alpha + betaBC - betaAB - betaAC;
 				}
-				else
-				{ // SNP
+				else { // SNP
 					f1 = this->locuslist[loc].freq[sample][0];
 					f2 = this->locuslist[loc].freq[sample1][0];
 					f3 = this->locuslist[loc].freq[sample2][0];

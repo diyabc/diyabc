@@ -22,7 +22,6 @@
 #include "modchec.hpp"
 
 
-
 using namespace std;
 
 extern ReftableC rt;

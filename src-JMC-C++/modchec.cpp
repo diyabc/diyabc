@@ -42,7 +42,7 @@ extern vector<ScenarioC> scenario;
 
 extern ofstream fprog;
 
-long double **ssphistar;
+long double** ssphistar;
 vector<vector<long double>> ssref;
 
 bool resetstats(string s) {

@@ -23,6 +23,7 @@ public:
 	vector<float> stat;
 	long double dist;
 	std::string message;
+
 	friend bool operator<(const enregC& lhs, const enregC& rhs) {
 		return lhs.dist < rhs.dist;
 	}

@@ -278,14 +278,17 @@ int ReftableC::testfile(string reftablefilename, int npart) {
 	if (not this->nrecscen.empty()) nrecscen.clear();
 	this->nrecscen = vector<int>(this->nscen);
 	for (auto i = 0; i < this->nscen; i++) {
-		this->fifo.read(reinterpret_cast<char*>(&(this->nrecscen[i])), sizeof(int));cout<<"nrecscen["<<i<<"] = "<<this->nrecscen[i]<<"\n";
+		this->fifo.read(reinterpret_cast<char*>(&(this->nrecscen[i])), sizeof(int));
+		cout << "nrecscen[" << i << "] = " << this->nrecscen[i] << "\n";
 	}
 	if (not this->nparam.empty()) this->nparam.clear();
 	this->nparam = vector<int>(nscen);
 	for (auto i = 0; i < this->nscen; i++) {
-		this->fifo.read(reinterpret_cast<char*>(&(this->nparam[i])), sizeof(int));cout<<"nparam["<<i<<"] = "<<this->nparam[i]<<"\n";
+		this->fifo.read(reinterpret_cast<char*>(&(this->nparam[i])), sizeof(int));
+		cout << "nparam[" << i << "] = " << this->nparam[i] << "\n";
 	}
-	this->fifo.read(reinterpret_cast<char*>(&(this->nstat)), sizeof(int));cout<<"nstat = "<<this->nstat<<"\n";
+	this->fifo.read(reinterpret_cast<char*>(&(this->nstat)), sizeof(int));
+	cout << "nstat = " << this->nstat << "\n";
 
 	for (auto i = 0; i < this->nscen; i++) this->nrecscen[i] = 0;
 	int numscen, k, npmax;

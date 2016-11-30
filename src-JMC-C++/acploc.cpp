@@ -174,7 +174,7 @@ void cal_acp() {
 	//float *stat_obs;
 	enregC enr;
 	vector<int> numscen;
-	int k, bidon;	
+	int k, bidon;
 	resACPC rACP;
 	//header.calstatobs(statobsfilename);
 	//stat_obs = header.stat_obs; 
