@@ -214,7 +214,7 @@ void ParticleSetC::resetparticle(int p) {
 				this->particule[p].grouplist[gr].k2moy = groupe[gr].k2moy; //k2moy
 			}
 		}
-		else if (groupe[gr].type == 2) { //SNP
+		else if (groupe[gr].type >= 2) { //SNP ///////////// modif JMC 08 nov 2016 -----> type==2 changé en type>=2
 			for (int i = 0; i < this->particule[p].grouplist[gr].nstatsnp; i++) {
 				this->particule[p].grouplist[gr].sumstatsnp[i].defined = false;
 			}
