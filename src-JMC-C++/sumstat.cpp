@@ -409,7 +409,7 @@ void ParticleC::cal_snf3r(int gr, int numsnp) {
 					double c2p = this->locuslist[loc].nreads[sample1];
 					double a3p = this->locuslist[loc].nreads1[sample2];
 					double c3p = this->locuslist[loc].nreads[sample2];
-					double alpha = np * a1p * (a1p - c1p) / (np - 1) / c1p / (c1p - 1);
+					double alpha = ((np * a1p * (a1p - 1)) / (c1p * (c1p - 1)) - (a1p / c1p)) / (np - 1);
 					double betaBC = (a2p * a3p) / c2p / c3p;
 					double betaAB = (a1p * a2p) / c1p / c2p;
 					double betaAC = (a1p * a3p) / c1p / c3p;
