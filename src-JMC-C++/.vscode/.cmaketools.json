@@ -1,0 +1,9 @@
+{
+  "variant": {
+    "label": "RelWithDebInfo",
+    "keywordSettings": {
+      "buildType": "reldeb"
+    },
+    "description": "Perform optimizations AND include debugging information"
+  }
+}

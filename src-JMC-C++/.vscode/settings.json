@@ -1,0 +1,8 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "cmake.buildDirectory": "${workspaceRoot}/../../build",
+    "cmake.configureEnvironment": {
+        "CC" : "clang-3.8",
+        "CXX": "clang++-3.8"
+    }
+}
