@@ -5,5 +5,8 @@
       "buildType": "reldeb"
     },
     "description": "Perform optimizations AND include debugging information"
-  }
+  },
+  "activeEnvironments": [
+    "Visual C++ 14.0 - amd64"
+  ]
 }

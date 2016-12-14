@@ -23,6 +23,15 @@
                 "limitSymbolsToIncludedHeaders" : true,
                 "databaseFilename" : ""
             }
+        },
+        {
+            "name": "MingW",
+            "includePath": ["c:/msys64/mingw64/x86_64-w64-mingw32/include"],
+            "browse" : {
+                "limitSymbolsToIncludedHeaders" : true,
+                "databaseFilename" : ""
+            }
         }
+
     ]
 }

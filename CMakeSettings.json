@@ -3,16 +3,16 @@
         {
         "name": "Visual Studio 15 x86",
         "generator": "Visual Studio 15 2017",
-        "buildRoot":  "${env.LOCALAPPDATA}\\CMakeBuild\\${workspaceHash}\\build\\${name}",
+        "buildRoot":  "${workspaceRoot}/../build-msvc3",
         "cmakeCommandArgs":  "",
         "buildCommandArgs": "-m -v:minimal"
         },
-        {
+      {
         "name": "Visual Studio 15 x64",
         "generator": "Visual Studio 15 2017 Win64",
-        "buildRoot":  "${env.LOCALAPPDATA}\\CMakeBuild\\${workspaceHash}\\build\\${name}",
-        "cmakeCommandArgs":  "",
+        "buildRoot": "${workspaceRoot}/../build-msvc3",
+        "cmakeCommandArgs": "",
         "buildCommandArgs": "-m -v:minimal"
-        }
+      }
     ]
 }
