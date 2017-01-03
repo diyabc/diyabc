@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.6)
 
 project (diyabc)
-
+enable_testing()
 
 add_subdirectory (dcmt0.6.1)
 
@@ -14,7 +14,6 @@ ELSE()
 ENDIF()
 
 add_subdirectory (src-JMC-C++)
-
 
 
 
