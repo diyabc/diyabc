@@ -24,12 +24,6 @@ double sqr(double);
 class MwcGen // FIXME: attention, n'est plus un mwc.
 {
 public:
-	// FIXME: attention, ne sert plus a rien !!!!
-	void randinit(unsigned int indice, unsigned int indice2);
-
-	// FIXME: attention, ne sert plus a rien !!!!
-	void ecris();
-
 	// renvoie un nombre entre 0 (inclus) et 1 (exclu)
 	double random();
 	// renvoie un entier entre 0 (inclus) et max (exclu)

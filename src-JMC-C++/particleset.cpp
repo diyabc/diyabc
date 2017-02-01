@@ -240,7 +240,6 @@ void ParticleSetC::init_particule(int npart, bool dnatrue, bool simulfile, int s
 		if (debuglevel == 5) cout << "setloci   nloc=" << this->particule[p].nloc << "\n";
 		this->setscenarios(p, simulfile);
 		if (debuglevel == 5) cout << "setscenarios\n";
-		this->particule[p].mw.randinit(p, seed);
 		if (debuglevel == 5) cout << "                    apres init_particule 					particule " << p << "\n";
 	}
 
@@ -1150,7 +1149,6 @@ string* ParticleSetC::simuldataSNP(int npart, bool multithread, int seed) {
 		} //cout<<"avant setloci\n";
 		this->setloci(p);//cout<<"apres setloci\n";
 		this->setscenarios(p, true);//cout<<"apres setscenario\n";
-		this->particule[p].mw.randinit(p, seed);
 	}
 	//cout<<"avant omp\n";
 #pragma omp parallel for shared(sOK) if(multithread)
@@ -1202,7 +1200,6 @@ string* ParticleSetC::simuldataSNPool(int npart, bool multithread, int seed) {
 		cout << "apres setloci\n";
 		this->setscenarios(p, true);
 		cout << "apres setscenario\n";
-		this->particule[p].mw.randinit(p, seed);
 	}
 	//cout<<"avant omp\n";
 #pragma omp parallel for shared(sOK) if(multithread)

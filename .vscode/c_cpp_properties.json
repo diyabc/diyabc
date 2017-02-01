@@ -10,7 +10,7 @@
         },
         {
             "name": "Linux",
-            "includePath": ["/usr/include"],
+            "includePath": ["/opt/boost/include","/opt/llvm/include/c++/v1","/opt/llvm/lib/clang/3.9.1/include","/usr/include"],
             "browse" : {
                 "limitSymbolsToIncludedHeaders" : true,
                 "databaseFilename" : ""

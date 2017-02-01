@@ -778,7 +778,6 @@ double TreeC::inferobs(vector<double>& stat) {
 void TreeC::buildtree1(int seed, int i, int rep) {
 	//cout<<"debut BUILDTREE\n";
 	int k, kk;
-	this->mw.randinit(seed + i, 3 * (i + seed));
 	this->initree();
 	//cout<<"apres initree de tree "<<i<<"\n";fflush(stdout);
 	this->node[0].nsets = this->nsets;
@@ -879,7 +878,6 @@ void TreeC::buildtree1(int seed, int i, int rep) {
 void TreeC::buildtree2(int seed, int i, int rep) {
 	//cout<<"debut BUILDTREE\n";
 	int k, kk;
-	this->mw.randinit(seed + i, 5 * (i + seed));
 	this->initree();
 	//cout<<"apres initree de tree "<<i<<"\n";fflush(stdout);
 	this->node[0].nsets = this->nsets;

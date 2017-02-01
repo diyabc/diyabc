@@ -36,20 +36,6 @@ double sqr(double x) {
 
 extern string path;
 
-void MwcGen::randinit(unsigned int indice, unsigned int indice2) {
-	//		this->mult = multipli[indice % 10000];
-	//        srand(indice2);
-	//        this->mwcx = rand() % MODULO;
-	//		srand(indice2*indice);
-	//        this->carry= rand() % MODULO;
-	//        //std::cout << "mwcx = " << this->mwcx << "   carry = " << this->carry << "\n";
-}
-
-void MwcGen::ecris() {
-	//		std::cout<<"mwcx ="<<this->mwcx<<"    mult="<<this->mult<<"   carry="<<this->carry<<"\n";
-	//
-}
-
 double MwcGen::random() {
 	//		unsigned long int y ;
 	//		double r;

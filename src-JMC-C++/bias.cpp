@@ -1911,7 +1911,6 @@ void dobias(string opt, int seed) {
 	bool firstime = true;
 	string bidon;
 	long double **phistar, **phistarcompo, **phistarscaled;
-	mw.randinit(0, seed);
 	progressfilename = path + ident + "_progress.txt";
 	scurfile = path + "pseudo-observed_datasets_" + ident + ".txt";
 	nomfitrace = path + ident + "_trace.txt";

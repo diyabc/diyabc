@@ -695,7 +695,6 @@ int HeaderC::readHeaderGroupPrior(ifstream& file) {
 		if (debuglevel == 2) cout << "header.txt : fin de la lecture de la partie définition des groupes\n";
 		//Mise à jour des locus séquences
 		MwcGen mwc;
-		mwc.randinit(999, time(NULL));
 		int nsv;
 		bool nouveau;
 		if (debuglevel == 2) cout << "avant la boucle sur les locus\n";
@@ -1922,7 +1921,6 @@ int HeaderC::readHeadersimGroupSNP() {
 int HeaderC::readHeadersimFin() {
 	//Mise à jour des locus séquences
 	MwcGen mwc;
-	mwc.randinit(999, time(NULL));
 	int nsv, gr, j;
 	bool nouveau;
 	if (datasim.filetype == 0) {

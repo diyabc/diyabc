@@ -58,7 +58,7 @@ add_executable(general-test general-test.cpp ${PROJECT_general_SRCS} ${PROJECT_g
 add_executable(initRNGproject ${PROJECT_initRNGproject_SRCS})
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
-
+include_directories(${Boost_INCLUDE_DIRS})
 add_test(NAME f3reich WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/f3reich/pool COMMAND general-test)
 
 if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "Intel"))
