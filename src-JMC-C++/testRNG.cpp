@@ -1,4 +1,5 @@
-/*
+#define BOOST_TEST_MODULE testRNG
+#include <boost/test/included/unit_test.hpp>/*
  * testRNG.cpp
  *
  *  Created on: 10 déc. 2011
@@ -9,9 +10,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <omp.h>
-using namespace std;
-#include "randomgenerator.h"
+#include "randomgenerator.hpp"
 
+using namespace std;
 
 mt_struct* r;
 #pragma omp threadprivate(r)
@@ -20,6 +21,8 @@ mt_struct **mtss2;
 int countRNG;
 
 int nb_threads;
+bool multithread=true;
+string path;
 
 void initRNG (int seed)
 {
@@ -45,7 +48,8 @@ void freeRNG (void)
 	free_mt_struct_array(mtss, countRNG);
 }
 
-int main(){
+BOOST_AUTO_TEST_CASE(testRNG)
+{
 #pragma omp parallel
 	{
 		nb_threads = omp_get_num_threads();
@@ -88,10 +92,9 @@ int main(){
 
     // compare après sauvegarde et après recharge, doit être égal.
     for(int i = 0; i < nb_threads; ++i){
-    	cout << i << endl;
-    	cout << resultat1[i] << endl;
-    	cout << resultat2[i] << endl << endl;
+    	cout << "Thread : " << i << endl;
+		BOOST_TEST( resultat1[i] = resultat2[i]);
+    	// cout << resultat1[i] << endl;
+    	// cout << resultat2[i] << endl << endl;
     }
-
-	return 0;
 }

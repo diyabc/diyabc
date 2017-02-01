@@ -120,26 +120,6 @@ mt_struct *r;
 mt_struct **mtss;
 int countRNG;
 
-void initRNG(int seed)
-{
-  cout << "Debut initialisation RNG." << endl;
-  int NB_THREADS;
-#pragma omp parallel
-  {
-    NB_THREADS = omp_get_num_threads();
-  }
-  // mt_struct **mtss; global variable
-  mtss = get_mt_parameters_st(32, 521, 0, NB_THREADS - 1, 4172, &countRNG);
-  for (int idxThread = 0; idxThread < countRNG; idxThread++)
-    sgenrand_mt(idxThread + seed, mtss[idxThread]);
-
-#pragma omp parallel
-  {
-    r = mtss[omp_get_thread_num()];
-  }
-  cout << "Fin initialisation RNG." << endl;
-}
-
 void freeRNG(void)
 {
   free_mt_struct_array(mtss, countRNG);
@@ -310,7 +290,6 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
   }
   cout << "I have read RNGs' states from file " << RNG_filename << endl;
   RNG_must_be_saved = true;
-  //initRNG(seed);
 
   boost::filesystem::path full_path(boost::filesystem::current_path());
   std::cout << "Current path is : " << full_path << std::endl;

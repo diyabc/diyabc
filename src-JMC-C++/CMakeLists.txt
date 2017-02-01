@@ -53,18 +53,28 @@ set (PROJECT_initRNGproject_SRCS
   matrices.cpp
   randomgenerator.cpp)
 
+set (PROJECT_testRNGproject_SRCS
+  testRNG.cpp
+  mesutils.cpp
+  matrices.cpp
+  randomgenerator.cpp)
+
+
 add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 add_executable(general-test general-test.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 add_executable(initRNGproject ${PROJECT_initRNGproject_SRCS})
+add_executable(testRNGproject ${PROJECT_testRNGproject_SRCS})
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 add_test(NAME f3reich WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/f3reich/pool COMMAND general-test)
+add_test(NAME testRNG COMMAND testRNGproject)
 
 if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "Intel"))
   target_compile_features(general PRIVATE cxx_right_angle_brackets)
   target_compile_features(general-test PRIVATE cxx_right_angle_brackets)
   target_compile_features(initRNGproject PRIVATE cxx_right_angle_brackets)
+  target_compile_features(testRNGproject PRIVATE cxx_right_angle_brackets)
 endif()
 
 set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")
@@ -72,6 +82,7 @@ set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")
 target_link_libraries(general dcmt)
 target_link_libraries(general-test dcmt ${Boost_LIBRARIES})
 target_link_libraries(initRNGproject dcmt)    
+target_link_libraries(testRNGproject dcmt ${Boost_LIBRARIES})    
 
 if (MSVC)
   target_link_libraries(general wingetopt)
@@ -87,6 +98,7 @@ if (OPENMP_FOUND)
     target_link_libraries(general -lomp)
     target_link_libraries(general-test -lomp)
     target_link_libraries(initRNGproject -lomp) 
+    target_link_libraries(testRNGproject -lomp) 
   endif()
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
