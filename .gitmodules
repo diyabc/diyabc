@@ -1,6 +1,6 @@
 [submodule "wingetopt"]
 	path = wingetopt
-	url = https://github.com/alex85k/wingetopt
+	url = https://github.com/alex85k/wingetopt.git
 [submodule "dcmt"]
 	path = dcmt
 	url = https://github.com/MersenneTwister-Lab/dcmt.git
