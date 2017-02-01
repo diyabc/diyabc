@@ -18,7 +18,7 @@
 #include "randomgenerator.hpp"
 
 extern"C" {
-#include "../dcmt0.6.1/include/dc.h"
+#include "../dcmt/include/dc.h"
 }
 
 #if defined (_MSC_VER) && !defined (__INTEL_COMPILER)

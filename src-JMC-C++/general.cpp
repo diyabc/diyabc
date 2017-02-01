@@ -37,7 +37,7 @@ inline void omp_set_num_threads(int) {}
 #endif
 
 extern "C" {
-#include "../dcmt0.6.1/include/dc.h"
+#include "../dcmt/include/dc.h"
 }
 
 #include "acploc.hpp"
