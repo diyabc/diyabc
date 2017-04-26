@@ -2,36 +2,63 @@
     "configurations": [
         {
             "name": "Mac",
-            "includePath": ["/usr/include"],
-            "browse" : {
-                "limitSymbolsToIncludedHeaders" : true,
-                "databaseFilename" : ""
+            "includePath": [
+                "/usr/include"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "",
+                "path": [
+                    "/usr/include"
+                ]
             }
         },
         {
             "name": "Linux",
-            "includePath": ["/opt/boost/include","/opt/llvm/include/c++/v1","/opt/llvm/lib/clang/3.9.1/include","/usr/include"],
-            "browse" : {
-                "limitSymbolsToIncludedHeaders" : true,
-                "databaseFilename" : ""
+            "includePath": [
+                "/opt/boost/include",
+                "/opt/llvm/include/c++/v1",
+                "/opt/llvm/lib/clang/3.9.1/include",
+                "/usr/include"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "",
+                "path": [
+                    "/opt/boost/include",
+                    "/opt/llvm/include/c++/v1",
+                    "/opt/llvm/lib/clang/3.9.1/include",
+                    "/usr/include"
+                ]
             }
         },
         {
             "name": "Win32",
-            "includePath": ["c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"],
-            "browse" : {
-                "limitSymbolsToIncludedHeaders" : true,
-                "databaseFilename" : ""
+            "includePath": [
+                "c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "",
+                "path": [
+                    "c:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include"
+                ]
             }
         },
         {
             "name": "MingW",
-            "includePath": ["c:/msys64/mingw64/x86_64-w64-mingw32/include","c:/msys64/mingw64/include"],
-            "browse" : {
-                "limitSymbolsToIncludedHeaders" : true,
-                "databaseFilename" : ""
+            "includePath": [
+                "c:/msys64/mingw64/x86_64-w64-mingw32/include",
+                "c:/msys64/mingw64/include"
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "",
+                "path": [
+                    "c:/msys64/mingw64/x86_64-w64-mingw32/include",
+                    "c:/msys64/mingw64/include"
+                ]
             }
         }
-
     ]
 }
