@@ -51,7 +51,7 @@ public:
 	int readHeaderHistParam(std::ifstream& file);
 	int readHeaderLoci(std::ifstream& file);
 	int readHeaderGroupPrior(std::ifstream& file);
-	int readHeaderAllStat(std::ifstream& file);
+	int readHeaderAllStat(std::ifstream& file, std::string headerfilename);
 	int readHeaderGroupStat(std::ifstream& file);
 	int readHeaderEntete(std::ifstream& file);
 	int buildSuperScen();

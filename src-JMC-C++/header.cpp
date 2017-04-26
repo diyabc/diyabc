@@ -748,7 +748,7 @@ int HeaderC::readHeaderGroupPrior(ifstream& file) {
 	return 0;
 }
 
-int HeaderC::readHeaderAllStat(ifstream& file) {
+int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 	string s1;
 	int j, k, gr, nstatgr, nsamp = dataobs.nsample;
 	cout << "debut de readHeaderAllStat\n";
@@ -768,11 +768,17 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 	else this->entetemut = "";
 	//cout<<this->entete<<"\n";
 
+	file.seekg (0, file.beg); //remise à zéro de file
+	string headerRFfilename;
+	headerRFfilename = headerfilename.substr(0,headerfilename.find(".txt"))+"RF.txt";
+	cout<<headerRFfilename<<"\n";
+	ofstream fileRF(headerRFfilename.c_str(), std::ofstream::out);
+
 	this->nstat = 0;
 	//cout<<"Fin de la lecture bidon du header\n";
 	vector<StatsnpC> statsnp;
 	StatsnpC stsnp;
-	bool trouve;
+	//bool trouve;
 	statsnp.resize(0);
 	int catsnp;
 	k = 0;
@@ -798,12 +804,27 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 		}
 		this->nstat += nstatgr;
 		groupe[gr].nstat = nstatgr;//cout<<"gr="<<gr<<"   nstat="<<nstatgr<<"\n";
+
+		getline(file,s1);fileRF <<s1<<"\n";
+		getline(file,s1);
+		s1 = s1.substr(0,s1.find("and "))+"and ";
+		fileRF <<s1<<this->nstat<<" summary statistics\n";
+		bool trouve=false;
+		while (!trouve) {
+			getline(file,s1);//cout <<s1<<"\n";
+			trouve=(s1.substr(0,24) == "group summary statistics");
+			if (!trouve) fileRF <<s1<<"\n";
+		}
+		fileRF <<"group summary statistics ("<<groupe[gr].nstat<<")\n";
+		fileRF <<"group G1 ("<<groupe[gr].nstat<<")\n";
 		//DEFINITION DES STAT
 		groupe[gr].sumstat = vector<StatC>(nstatgr);//cout<<"dimensionnement\n";
 		//cout<<"type du groupe : "<<groupe[gr].type<<"\n";
 		if (groupe[gr].type == 0) { //MICROSAT 
 			for (int i = 1; i <= 4; i++) {
+				fileRF <<stat_type[i];				
 				for (int sa = 1; sa <= nsamp; sa++) {
+					fileRF <<" "<<sa;
 					groupe[gr].sumstat[k].cat = i;
 					groupe[gr].sumstat[k].samp = sa;
 					s1 = stat_type[i] + "_" + IntToString(gr) + "_" + IntToString(sa);
@@ -811,11 +832,14 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 					//cout<<"k="<<k<<"  "<<this->entetestat<<"\n";
 					k++;
 				}
+				fileRF <<"\n";				
 			}
 			if (nsamp > 1) {
 				for (int i = 5; i <= 11; i++) {
+					fileRF <<stat_type[i];
 					for (int sa = 1; sa <= nsamp; sa++) {
 						for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
+							fileRF <<" "<<sa<<"&"<<sa1;
 							groupe[gr].sumstat[k].cat = i;
 							groupe[gr].sumstat[k].samp = sa;
 							groupe[gr].sumstat[k].samp1 = sa1;
@@ -824,6 +848,7 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 							//cout<<"k="<<k<<"  "<<this->entetestat<<"\n";
 							k++;
 							if (i == 9) {
+								fileRF <<" "<<sa<<"&"<<sa1;
 								groupe[gr].sumstat[k].cat = i;
 								groupe[gr].sumstat[k].samp = sa1;
 								groupe[gr].sumstat[k].samp1 = sa;
@@ -833,14 +858,17 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 							}
 						}
 					}
+					fileRF <<"\n";
 				}
 			}
 			if (nsamp > 2) {
 				for (int i = 12; i <= 12; i++) {
+					fileRF <<stat_type[i];
 					for (int sa = 1; sa <= nsamp; sa++) {
 						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
 							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
 								if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
+									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
 									groupe[gr].sumstat[k].cat = i;
 									groupe[gr].sumstat[k].samp = sa;
 									groupe[gr].sumstat[k].samp1 = sa1;
@@ -852,46 +880,47 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 							}
 						}
 					}
+					fileRF<<"\n";
 				}
 			}
 		}
 		if (groupe[gr].type == 1) { //DNA SEQUENCE
 			for (int i = -1; i >= -8; i--) {
+				j=12;do {j++;}while(i!=stat_num[j]);
+				fileRF <<stat_type[j];
 				for (int sa = 1; sa <= nsamp; sa++) {
 					groupe[gr].sumstat[k].cat = i;
 					groupe[gr].sumstat[k].samp = sa;
-					j = 12;
-					do {
-						j++;
-					}
-					while (i != stat_num[j]);
 					s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa);
 					this->entetestat += centre(s1, 14);
 
+					fileRF <<" "<<sa;
 					k++;
 				}
+				fileRF<<"\n";
 			}
 			if (nsamp > 1) {
 				for (int i = -9; i >= -13; i--) {
+					j=12;do {j++;}while(i!=stat_num[j]);
+					fileRF <<stat_type[j];
 					for (int sa = 1; sa <= nsamp; sa++) {
 						for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
 							groupe[gr].sumstat[k].cat = i;
 							groupe[gr].sumstat[k].samp = sa;
 							groupe[gr].sumstat[k].samp1 = sa1;
-							j = 12;
-							do {
-								j++;
-							}
-							while (i != stat_num[j]);
 							s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
 							this->entetestat += centre(s1, 14);
+							fileRF <<" "<<sa<<"&"<<sa1;
 							k++;
 						}
 					}
+					fileRF <<"\n";
 				}
 			}
 			if (nsamp > 2) {
 				for (int i = -14; i >= -14; i--) {
+					j=12;do {j++;}while(i!=stat_num[j]);
+					fileRF <<stat_type[j];
 					for (int sa = 1; sa <= nsamp; sa++) {
 						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
 							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
@@ -900,18 +929,15 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 									groupe[gr].sumstat[k].samp = sa;
 									groupe[gr].sumstat[k].samp1 = sa1;
 									groupe[gr].sumstat[k].samp2 = sa2;
-									j = 12;
-									do {
-										j++;
-									}
-									while (i != stat_num[j]);
 									s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
 									this->entetestat += centre(s1, 14);
+									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
 									k++;
 								}
 							}
 						}
 					}
+					fileRF <<"\n";
 				}
 			}
 		}
@@ -920,16 +946,14 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 			for (int i = 21; i <= 24; i++) {
 				catsnp = (i - 21) / 4;
 				//cout<<"i="<<i<<"   catsnp="<<catsnp<<"\n";
+				j=25;do {j++;}while(i!=stat_num[j]);
+				fileRF <<stat_type[j];
 				for (int sa = 1; sa <= nsamp; sa++) {
 					groupe[gr].sumstat[k].cat = i;
 					groupe[gr].sumstat[k].samp = sa;
-					j = 25;
-					do {
-						j++;
-					}
-					while (i != stat_num[j]);
 					s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa);
 					this->entetestat += centre(s1, 14);
+					fileRF <<" "<<sa;
 					//cout<<this->entetestat<<"\n";
 					trouve = false;
 					if (statsnp.size() > 0) {
@@ -950,23 +974,22 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 					}
 					k++;
 				}
+				fileRF <<"\n";
 			}
 			//cout<<"fin des sumstat 21 à 24 statsnp.size ="<<statsnp.size()<<"\n";
 			if (nsamp > 1) {
 				for (int i = 25; i <= 32; i++) {
 					catsnp = (i - 21) / 4;
+				    j=25;do {j++;}while(i!=stat_num[j]);
+				    fileRF <<stat_type[j];		
 					for (int sa = 1; sa <= nsamp; sa++) {
 						for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
 							groupe[gr].sumstat[k].cat = i;
 							groupe[gr].sumstat[k].samp = sa;
 							groupe[gr].sumstat[k].samp1 = sa1;
-							j = 25;
-							do {
-								j++;
-							}
-							while (i != stat_num[j]);
 							s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
 							this->entetestat += centre(s1, 14);
+							fileRF <<" "<<sa<<"&"<<sa1;
 							trouve = false;
 							if (statsnp.size() > 0) {
 								for (int jj = 0; jj < (int)statsnp.size(); jj++) {
@@ -988,12 +1011,15 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 							k++;
 						}
 					}
+					fileRF <<"\n";
 				}
 				//cout<<"fin des sumstat 25 à 32 statsnp.size ="<<statsnp.size()<<"\n";
 			}
 			if (nsamp > 2) {
 				for (int i = 33; i <= 36; i++) {
 					catsnp = (i - 21) / 4;
+					j=25;do {j++;}while(i!=stat_num[j]);
+					fileRF <<stat_type[j];
 					for (int sa = 1; sa <= nsamp; sa++) {
 						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
 							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
@@ -1002,13 +1028,9 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 									groupe[gr].sumstat[k].samp = sa;
 									groupe[gr].sumstat[k].samp1 = sa1;
 									groupe[gr].sumstat[k].samp2 = sa2;
-									j = 25;
-									do {
-										j++;
-									}
-									while (i != stat_num[j]);
 									s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
 									this->entetestat += centre(s1, 14);
+									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
 									//cout<<"samples "<<sa<<", "<<sa1<<" et "<<sa2<<"\n";
 									trouve = false;
 									if (statsnp.size() > 0) {
@@ -1034,12 +1056,15 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 							}
 						}
 					}
+					fileRF <<"\n";
 				}
 			}
 			//cout<<"fin des sumstat 33 à 36 statsnp.size ="<<statsnp.size()<<"\n";
 			if (nsamp > 2) {
 				for (int i = 37; i <= 40; i++) {
 					catsnp = (i - 21) / 4;
+					j=25;do {j++;}while(i!=stat_num[j]);
+					fileRF <<stat_type[j];
 					for (int sa = 1; sa <= nsamp; sa++) {
 						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
 							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
@@ -1048,13 +1073,9 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 									groupe[gr].sumstat[k].samp = sa;
 									groupe[gr].sumstat[k].samp1 = sa1;
 									groupe[gr].sumstat[k].samp2 = sa2;
-									j = 25;
-									do {
-										j++;
-									}
-									while (i != stat_num[j]);
 									s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
 									this->entetestat += centre(s1, 14);
+									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
 									//cout<<"samples "<<sa<<", "<<sa1<<" et "<<sa2<<"\n";
 									trouve = false;
 									if (statsnp.size() > 0) {
@@ -1080,6 +1101,7 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 							}
 						}
 					}
+					fileRF<<"\n";
 				}
 			}
 			//cout<<"fin des sumstat 37 à 40 statsnp.size ="<<statsnp.size()<<"\n";
@@ -1112,6 +1134,9 @@ int HeaderC::readHeaderAllStat(ifstream& file) {
 	//cout<<"\n\nthis->entetestat=\n"<<this->entetestat<<"\n";
 
 	cout << "\n\nthis->entete=\n" << this->entete << "\n";
+	fileRF <<"\n"<<this->entete<<"\n";
+	fileRF.close();
+
 	return 0;
 }
 
@@ -1316,11 +1341,34 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 			if (debuglevel == 2) cout << "fin de la stat " << k << "\n";
 		}
 		groupe[gr].nstatsnp = statsnp.size();
-		//cout<<"groupe[gr].nstatsnp="<<groupe[gr].nstatsnp<<"\n";
+		// tri des stat dans l'ordre de général.cpp
+		StatsnpC ssnp;
+		for (int i=0;i<groupe[gr].nstatsnp-1;i++) {
+			for (int j=i+1;j<groupe[gr].nstatsnp;j++) {
+				if (statsnp[i].cat>statsnp[j].cat) {
+					ssnp.cat = statsnp[i].cat;
+					ssnp.samp = statsnp[i].samp;
+					ssnp.samp1 = statsnp[i].samp1;
+					ssnp.samp2 = statsnp[i].samp2;
+					ssnp.defined = statsnp[i].defined;
+					statsnp[i].cat = statsnp[j].cat;
+					statsnp[i].samp = statsnp[j].samp; 
+					statsnp[i].samp1 = statsnp[j].samp1; 
+					statsnp[i].samp2 = statsnp[j].samp2;
+					statsnp[i].defined = statsnp[j].defined;
+					statsnp[j].cat = ssnp.cat;
+					statsnp[j].samp = ssnp.samp; 
+					statsnp[j].samp1 = ssnp.samp1; 
+					statsnp[j].samp2 = ssnp.samp2;
+					statsnp[j].defined = ssnp.defined;
+				}
+			}
+		}
+		cout<<"groupe[gr].nstatsnp="<<groupe[gr].nstatsnp<<"\n";
 		if (groupe[gr].nstatsnp > 0) {
 			groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
 			for (int i = 0; i < groupe[gr].nstatsnp; i++) {
-				groupe[gr].sumstatsnp[i].cat = statsnp[i].cat;
+				groupe[gr].sumstatsnp[i].cat=statsnp[i].cat;cout <<i<<"  "<<statsnp[i].cat<<"  "<<stat_type[4*statsnp[i].cat+21]<< "\n";
 				groupe[gr].sumstatsnp[i].samp = statsnp[i].samp;
 				groupe[gr].sumstatsnp[i].samp1 = statsnp[i].samp1;
 				groupe[gr].sumstatsnp[i].samp2 = statsnp[i].samp2;
@@ -1541,7 +1589,7 @@ int HeaderC::readHeader(string headerfilename) {
 		cout << "----------------------------------------apres readHeaderGroupStat\n";
 	}
 	else {
-		error = readHeaderAllStat(file);
+		error = readHeaderAllStat(file,headerfilename);
 		cout << "----------------------------------------apres readHeaderAllStat\n";
 	}
 	if (error != 0) return error;
@@ -2233,6 +2281,7 @@ string HeaderC::calstatobs(string statobsfilename) {
 		for (int j = 0; j < 5; j++) cout << "stat_obs[" << j << "]=" << this->stat_obs[j] << "\n";
 		cout << "   .../...\n";
 		for (int j = this->nstat - 6; j < this->nstat; j++) cout << "stat_obs[" << j << "]=" << this->stat_obs[j] << "\n";
+		//for (int j=12;j<36;j++)  cout<<"stat_obs["<<j<<"]="<<this->stat_obs[j]<<"\n";
 	}
 	if (debuglevel == 2) cout << "avant libere \n";
 	//particuleobs.libereobs(true);
