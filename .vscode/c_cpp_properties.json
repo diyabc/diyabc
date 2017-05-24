@@ -17,8 +17,8 @@
             "name": "Linux",
             "includePath": [
                 "/opt/boost/include",
+                "/usr/include/c++/v1",
                 "/opt/llvm/include/c++/v1",
-                "/opt/llvm/lib/clang/3.9.1/include",
                 "/usr/include"
             ],
             "browse": {
@@ -26,8 +26,8 @@
                 "databaseFilename": "",
                 "path": [
                     "/opt/boost/include",
+                    "/usr/include/c++/v1",
                     "/opt/llvm/include/c++/v1",
-                    "/opt/llvm/lib/clang/3.9.1/include",
                     "/usr/include"
                 ]
             }
