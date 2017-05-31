@@ -13,12 +13,14 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
+#include <atomic>
 
 #ifdef _OPENMP
 #include <omp.h>
 #else
 #define omp_get_thread_num() 0
 #endif
+
 
 #include "randomgenerator.hpp"
 #include "mesutils.hpp"
@@ -30,6 +32,7 @@ using namespace std;
 
 extern string* stat_type;
 extern int* stat_num;
+extern atomic<int> numloop, rejectedbymrc;
 
 extern int debuglevel;
 extern string reftablelogfilename;
@@ -2482,9 +2485,11 @@ int ParticleC::dosimulpart(int numscen) {
 			if (not this->mafreached(loc)) loc--;
 		}
 		//cout<<"mrc="<<this->mrc<<"\n";
+		numloop++;
 		if ((this->locuslist[loc].type >= 15)and (this->mrc > 0)) {
 			if (not this->mrcreached(loc)) {/*cout<<"------------>locus "<<loc<<" rejected for insufficient MRC\n";*/
 				loc--;
+				rejectedbymrc++;
 			}
 		}
 		//if (loc==99) break;

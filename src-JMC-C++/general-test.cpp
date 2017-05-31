@@ -119,6 +119,8 @@ mt_struct *r;
 #pragma omp threadprivate(r)
 mt_struct **mtss;
 int countRNG;
+atomic<int> numloop {0};
+atomic<int> rejectedbymrc {0};
 
 void freeRNG(void)
 {
@@ -470,6 +472,8 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
         firsttime = false;
       //if (stoprun) cout<<"STOPRUN=TRUE\n";
     }
+    cout << "Nombre de simu avant mrc : " << numloop << endl;
+		cout << "Nombre de rejets par mrc : " << rejectedbymrc << endl;
     //cout<<"fin du while\n";
     //cout<<"avant delete [] enreg\n";
     enreg.clear();

@@ -71,10 +71,10 @@ add_test(NAME f3reich WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/f3reich/pool CO
 add_test(NAME testRNG COMMAND testRNGproject)
 
 if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "Intel"))
-  target_compile_features(general PRIVATE cxx_right_angle_brackets)
-  target_compile_features(general-test PRIVATE cxx_right_angle_brackets)
-  target_compile_features(initRNGproject PRIVATE cxx_right_angle_brackets)
-  target_compile_features(testRNGproject PRIVATE cxx_right_angle_brackets)
+  target_compile_features(general PRIVATE cxx_right_angle_brackets cxx_std_11)
+  target_compile_features(general-test PRIVATE cxx_right_angle_brackets cxx_std_11)
+  target_compile_features(initRNGproject PRIVATE cxx_right_angle_brackets cxx_std_11)
+  target_compile_features(testRNGproject PRIVATE cxx_right_angle_brackets cxx_std_11)
 endif()
 
 set_directory_properties(PROPERTIES COMPILE_OPTIONS "-g;-O3")

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <atomic>
 
 #include <string.h>
 #include <iso646.h>
@@ -114,6 +115,8 @@ mt_struct* r;
 #pragma omp threadprivate(r)
 mt_struct** mtss;
 int countRNG;
+atomic<int> numloop {0};
+atomic<int> rejectedbymrc {0};
 
 void freeRNG(void) {
 	free_mt_struct_array(mtss, countRNG);
@@ -682,6 +685,9 @@ int main(int argc, char* argv[]) {
 					}
 					//cout<<"fin du while\n";
 					//cout<<"avant delete [] enreg\n";
+					cout << "Total number of simulated loci : " << numloop << endl;
+					cout << "Number of rejected loci : " << rejectedbymrc << endl;
+					cout << "Number of valid loci " << numloop - rejectedbymrc << 
 					enreg.clear();
 					//cout<<"apres delete [] enreg\n";
 					//ps.libere(nenr);
