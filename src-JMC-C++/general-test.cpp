@@ -77,6 +77,8 @@ int *stat_num;
 ofstream fprog;
 ofstream fpar;
 
+namespace bf = boost::filesystem;
+
 void initstat_typenum()
 {
   string stat_type0[NSTAT] = {"PID", "NAL", "HET", "VAR", "MGW", "N2P", "H2P", "V2P", "FST", "LIK", "DAS", "DM2", "AML", "NHA", "NSS", "MPD", "VPD", "DTA", "PSS", "MNS", "VNS", "NH2", "NS2", "MP2", "MPB", "HST", "SML", "HP0", "HM1", "HV1", "HMO", "NP0", "NM1", "NV1", "NMO", "FP0", "FM1", "FV1", "FMO", "AP0", "AM1", "AV1", "AMO", "RP0", "RM1", "RV1", "RMO"};
@@ -171,34 +173,6 @@ int readheaders()
     throw std::runtime_error(erreur.str()); // exit(1)
   }
   message = header.calstatobs(statobsfilename);
-  if (debuglevel == 1)
-    cout << "apres header.calstatobs\n";
-  datafilename = header.datafilename;
-  if (debuglevel == 1)
-    cout << "datafile name : " << header.datafilename << "\n";
-  k = rt.testfile(reftablefilename, nenr);
-  if (k == 0)
-  {
-    k = rt.readheader(reftablefilename, reftablelogfilename, reftabscen);
-    if (debuglevel == 1)
-      cout << "apres rt.readheader k=" << k << "   rt.nparam[0]=" << rt.nparam[0] << "\n";
-    rt.sethistparamname(header);
-    if (debuglevel == 1)
-      cout << "sethistparamname"
-           << "\n";
-  }
-  return k;
-}
-
-/**
- * lecture du fichier headersim.txt
- */
-int readheadersim()
-{
-  int k;
-  if (debuglevel == 1)
-    cout << "avant header.readHeadersim    headersimfilename=" << headersimfilename << "\n";
-  k = header.readHeadersim(headersimfilename);
   return k;
 }
 
@@ -246,6 +220,8 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
   bool flagp = false, flagi = false, flags = false, simOK, stoprun = false;
   string message, soptarg, estpar, comppar, confpar, acplpar, biaspar, modpar, rngpar, randforpar;
 
+  // Copy the reference RNG 
+
   debut = clock();
   srand(time(NULL));
   seed = rand() % 1000;
@@ -264,8 +240,8 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
     omp_set_num_threads(num_threads);
 
   mtss = NULL;
-
-  RNG_filename = path + string("RNG_state_") + convertInt4(computer_identity) + string(".bin");
+  RNG_filename = "../../RNG_state_0000.bin";
+  // RNG_filename = path + string("RNG_state_") + convertInt4(computer_identity) + string(".bin");
   ifstream test_file(RNG_filename.c_str(), ios::in);
   //cout<<"avant la lecture du ficher "<<RNG_filename<<"\n";
   if (!test_file.is_open())
@@ -296,199 +272,6 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
   boost::filesystem::path full_path(boost::filesystem::current_path());
   std::cout << "Current path is : " << full_path << std::endl;
   int res = readheaders();
-
-  k = readheaders();
-  cout << "apres readheader   k=" << k << "\n";
-  cout << dataobs.title << "\n nloc = " << dataobs.nloc << "   nsample = " << dataobs.nsample << "   ";
-  fflush(stdin);
-  cout << "k=" << k << "\n";
-  if (k == 1)
-  {
-    cout << "general k==1\n";
-    rt.datapath = datafilename;
-    rt.nscen = header.nscenarios;
-    rt.nrec = 0;
-    int scenariosize = (int)scenario.size();
-    rt.nrecscen = vector<int>(scenariosize);
-    for (int i = 0; i < scenariosize; i++)
-      rt.nrecscen[i] = 0;
-    rt.nparam = vector<int>(scenariosize);
-    for (int i = 0; i < scenariosize; i++)
-      rt.nparam[i] = scenario[i].nparamvar;
-    rt.nstat = header.nstat;
-    cout << "general avant rt.writeheader\n";
-    rt.filename = reftablefilename;
-    rt.writeheader();
-    rt.sethistparamname(header);
-  }
-  else if (k == 2)
-  {
-    throw std::runtime_error("cannot create reftable file\n");
-    //cout<<"cannot create reftable file\n"; exit(1);
-  }
-  cout << "DEBUT  nrecneeded=" << nrecneeded << "   rt.nrec=" << rt.nrec << "    rt.nstat=" << rt.nstat << "   nscenarios=" << scenario.size() << "\n";
-  if (nrecneeded > rt.nrec)
-  {
-    cout << "je rentre là" << endl;
-    rt.openfile();
-    enreg = vector<enregC>(nenr);
-    for (int p = 0; p < nenr; p++)
-    {
-      enreg[p].stat = vector<float>(header.nstat);
-      //cout<<"enreg.param = new float["<<header.nparamtot+3*header.ngroupes <<"]\n";
-      enreg[p].param = vector<float>(header.nparamtot + 3 * header.ngroupes);
-      enreg[p].numscen = 1;
-    }
-    cout << "nparammax=" << header.nparamtot + 3 * header.ngroupes << "\n";
-    firsttime = true;
-    stoprun = false;
-    debutr = clock();
-    if (not header.drawuntil)
-    {
-      neOK = new int[header.nscenarios];
-      netot = new int[header.nscenarios];
-      for (int p = 0; p < header.nscenarios; p++)
-      {
-        neOK[p] = 0;
-        netot[p] = 0;
-      }
-      scsufilename = path + "scenariosuccess.txt";
-    }
-    while ((not stoprun) and (nrecneeded > rt.nrec))
-    {
-      //cout<<"avant dosimultabref rt.nrec="<<rt.nrec<<"    nenr="<<nenr<<"   nscenarios="<<scenario.size()<<"\n";
-      ps.dosimultabref(nenr, false, multithread, firsttime, 0, seed, 0);
-      //cout<<"retour de dosimultabref header.drawuntil="<<header.drawuntil<<"\n";
-
-      if (header.drawuntil)
-      {
-        simOK = true;
-        for (int i = 0; i < nenr; i++)
-          if (enreg[i].message != "OK")
-          {
-            simOK = false;
-            message = enreg[i].message;
-          }
-        //cout <<"simOK="<<simOK<<"\n";
-        if (simOK)
-        {
-          //cout<<"simOK=true   nenr="<<nenr<<"\n";
-          //debutf=walltime(&clock_zero);
-          rt.writerecords(nenr, enreg);
-          saveRNG(mtss, countRNG, RNG_filename); // Ajout Pierre le 30/11/2012
-          //dureef=walltime(&debutf);time_file += dureef;
-          rt.nrec += nenr;
-          cout << rt.nrec;
-          //if (firsttime) writecourant();
-          //cout<<"à la place de writecourant\n";
-          ofstream f1(reftablelogfilename.c_str(), ios::out);
-          f1 << "OK\n"
-             << rt.nrec << "\n"
-             << TimeToStr(remtime) << "\n";
-          f1.close();
-          if (((rt.nrec % 1000) == 0) and (rt.nrec < nrecneeded))
-            cout << "   (" << TimeToStr(remtime) << ")"
-                                                    "\n";
-          else
-            cout << "\n";
-          stoprun = (stat(stopfilename.c_str(), &stFileInfo) == 0);
-          if (stoprun)
-            remove(stopfilename.c_str());
-        }
-        else
-        {
-          fprog.open(progressfilename.c_str());
-          fprog << message << "\n";
-          fprog.close();
-          cout << "\n\n\n"
-               << message << "\n";
-          stoprun = true;
-          erreur_scenario = true;
-        }
-      }
-      else
-      {
-        nenrOK = 0;
-        for (int i = 0; i < nenr; i++)
-        {
-          if (enreg[i].message == "OK")
-          {
-            nenrOK++;
-            neOK[enreg[i].numscen - 1]++;
-          }
-          netot[enreg[i].numscen - 1]++;
-        }
-        fd.open(scsufilename.c_str());
-        fd << "Numbers of parameter combinations complying with all conditions\n";
-        fd << "scenario      tested      successful\n";
-        for (int p = 0; p < header.nscenarios; p++)
-          fd << setiosflags(ios::fixed) << setw(5) << p + 1 << setw(15) << netot[p] << setw(15) << neOK[p] << "\n";
-        fd.close();
-        cout << "nenrOK=" << nenrOK << "\n";
-        if (nenrOK > 0)
-        {
-          enregOK = vector<enregC>(nenrOK);
-          for (int p = 0; p < nenrOK; p++)
-          {
-            enregOK[p].stat = vector<float>(header.nstat);
-            enregOK[p].param = vector<float>(header.nparamtot + 3 * header.ngroupes);
-            enregOK[p].numscen = 1;
-          }
-          nenrOK = 0;
-          for (int i = 0; i < nenr; i++)
-          {
-            if (enreg[i].message == "OK")
-            {
-              for (int p = 0; p < header.nstat; p++)
-                enregOK[nenrOK].stat[p] = enreg[i].stat[p];
-              for (int p = 0; p < header.nparamtot + 3 * header.ngroupes; p++)
-                enregOK[nenrOK].param[p] = enreg[i].param[p];
-              enregOK[nenrOK].numscen = enreg[i].numscen;
-              enregOK[nenrOK].message = "OK";
-              nenrOK++;
-            }
-          }
-          rt.writerecords(nenrOK, enregOK);
-          cout << "apres rt.writerecords\n";
-          saveRNG(mtss, countRNG, RNG_filename); // Ajout Pierre le 30/11/2012
-          rt.nrec += nenrOK;
-          ofstream f1(reftablelogfilename.c_str(), ios::out);
-          f1 << "OK\n"
-             << rt.nrec << "\n"
-             << TimeToStr(remtime) << "\n";
-          f1.close();
-          if (((rt.nrec % 1000) == 0) and (rt.nrec < nrecneeded))
-            cout << "   (" << TimeToStr(remtime) << ")"
-                                                    "\n";
-          else
-            cout << "\n";
-          stoprun = (stat(stopfilename.c_str(), &stFileInfo) == 0);
-          if (stoprun)
-            remove(stopfilename.c_str());
-          enregOK.clear();
-        }
-      }
-      if (firsttime)
-        firsttime = false;
-      //if (stoprun) cout<<"STOPRUN=TRUE\n";
-    }
-    cout << "Nombre de simu avant mrc : " << numloop << endl;
-		cout << "Nombre de rejets par mrc : " << rejectedbymrc << endl;
-    //cout<<"fin du while\n";
-    //cout<<"avant delete [] enreg\n";
-    enreg.clear();
-    //cout<<"apres delete [] enreg\n";
-    //ps.libere(nenr);
-    rt.closefile();
-    //cout<<"apres rt.closefile\n";
-    if (nrecneeded == rt.nrec)
-    {
-      ofstream f1(reftablelogfilename.c_str(), ios::out);
-      f1 << "END\n"
-         << rt.nrec << "\n";
-      f1.close();
-    }
-  }
   vector<float> f3reichpool_vals = {0.58700000,
                                     0.62800000,
                                     0.59500000,
@@ -501,18 +284,6 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
                                     0.08870048,
                                     0.08446593,
                                     0.08215811,
-                                    0.28200000,
-                                    0.25100000,
-                                    0.60300000,
-                                    0.22319429,
-                                    0.20970107,
-                                    0.04614485,
-                                    0.07134203,
-                                    0.06915003,
-                                    0.00386333,
-                                    0.16025350,
-                                    0.15706610,
-                                    0.01831950,
                                     0.23700000,
                                     0.20400000,
                                     0.48900000,
@@ -525,6 +296,18 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
                                     0.09972148,
                                     0.09668138,
                                     0.00769763,
+                                    0.28200000,
+                                    0.25100000,
+                                    0.60300000,
+                                    0.22226560,
+                                    0.20858712,
+                                    0.04579876,
+                                    0.07125147,
+                                    0.06901488,
+                                    0.00385017,
+                                    0.16025350,
+                                    0.15706610,
+                                    0.01831950,
                                     0.42386831,
                                     0.59692308,
                                     0.61295419,
@@ -542,17 +325,19 @@ BOOST_AUTO_TEST_CASE(f3reich_pool_test)
                                     0.80900000,
                                     0.14325643,
                                     0.03442794,
-                                    0.02646005,
+                                    0.02659858,
                                     0.06093279,
                                     0.00368489,
-                                    0.00263723,
+                                    0.00264741,
                                     0.08504927,
                                     0.00322839,
-                                    0.00093312};
+                                    0.00093312
+
+  };
 
   double ecart = 0.0;
-  for(int i = 0; i < rt.nstat; i++) ecart += abs(header.stat_obs[i] - f3reichpool_vals[i])/(header.stat_obs[i] + f3reichpool_vals[i])/(double) 2;
-  ecart /= (double) rt.nstat;
+  for(int i = 0; i < header.nstat; i++) ecart += abs(header.stat_obs[i] - f3reichpool_vals[i])/(header.stat_obs[i] + f3reichpool_vals[i])/(double) 2;
+  ecart /= (double) header.nstat;
   cout << "ecart moyen " << std::setprecision(std::numeric_limits<double>::digits10 + 1) << ecart << endl;
   BOOST_TEST( ecart < 0.01 );
 }
