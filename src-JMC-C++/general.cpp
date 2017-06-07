@@ -687,7 +687,7 @@ int main(int argc, char* argv[]) {
 					//cout<<"avant delete [] enreg\n";
 					cout << "Total number of simulated loci : " << numloop << endl;
 					cout << "Number of rejected loci : " << rejectedbymrc << endl;
-					cout << "Number of valid loci " << numloop - rejectedbymrc << 
+					cout << "Number of valid loci " << numloop - rejectedbymrc << endl;
 					enreg.clear();
 					//cout<<"apres delete [] enreg\n";
 					//ps.libere(nenr);

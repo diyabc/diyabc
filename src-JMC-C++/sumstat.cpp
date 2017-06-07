@@ -389,38 +389,47 @@ void ParticleC::cal_snaml(int gr, int numsnp) {
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
-void ParticleC::cal_snf3r(int gr, int numsnp) {
+void ParticleC::cal_snf3r(int gr, int numsnp)
+{
 	long double f1, f2, f3;
 	int iloc, loc;
-	auto sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
-	auto sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
-	auto sample2 = this->grouplist[gr].sumstatsnp[numsnp].samp2 - 1;
+	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
+	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
+	int sample2 = this->grouplist[gr].sumstatsnp[numsnp].samp2 - 1;
 	this->grouplist[gr].sumstatsnp[numsnp].sw = 0.0;
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
-	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
+	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++)
+	{
 		loc = this->grouplist[gr].loc[iloc];
 		this->grouplist[gr].sumstatsnp[numsnp].w[iloc] = this->locuslist[loc].weight;
-		if (this->locuslist[loc].weight > 0.0) {
-			if ((samplesize(loc, sample1) > 0) and (samplesize(loc, sample2) > 0)) {
-				auto np = samplesize(loc, sample);
-				if (dataobs.filetype == 2) { //Poolseq
-					auto a1p = this->locuslist[loc].nreads1[sample];
-					auto c1p = this->locuslist[loc].nreads[sample];
-					auto a2p = this->locuslist[loc].nreads1[sample1];
-					auto c2p = this->locuslist[loc].nreads[sample1];
-					auto a3p = this->locuslist[loc].nreads1[sample2];
-					auto c3p = this->locuslist[loc].nreads[sample2];
-					auto alpha = (a1p * (np * (a1p - 1) - (c1p - 1))) / static_cast<long double>((np - 1) * c1p * (c1p - 1));
-					auto betaBC = (a2p * a3p) / static_cast<long double>(c2p * c3p);
-					auto betaAB = (a1p * a2p) / static_cast<long double>(c1p * c2p);
-					auto betaAC = (a1p * a3p) / static_cast<long double>(c1p * c3p);
+		if (this->locuslist[loc].weight > 0.0)
+		{
+			if ((samplesize(loc, sample1) > 0) and (samplesize(loc, sample2) > 0))
+			{
+				int np = samplesize(loc, sample);
+				if (dataobs.filetype == 2)
+				{ //Poolseq
+					double a1p = this->locuslist[loc].nreads1[sample];
+					double c1p = this->locuslist[loc].nreads[sample];
+					double a2p = this->locuslist[loc].nreads1[sample1];
+					double c2p = this->locuslist[loc].nreads[sample1];
+					double a3p = this->locuslist[loc].nreads1[sample2];
+					double c3p = this->locuslist[loc].nreads[sample2];
+					//						double alpha = np * a1p * ( a1p - c1p ) / ( np - 1 ) / c1p / (c1p - 1);
+					double alpha = ((np * a1p * (a1p - 1)) / (c1p * (c1p - 1)) - (a1p / c1p)) / (np - 1);
+					double betaBC = (a2p * a3p) / (c2p * c3p);
+					double betaAB = (a1p * a2p) / (c1p * c2p);
+					double betaAC = (a1p * a3p) / (c1p * c3p);
 					this->grouplist[gr].sumstatsnp[numsnp].x[iloc] = alpha + betaBC - betaAB - betaAC;
 				}
-				else { // SNP
+				else
+				{ // Genepop/SNP
 					f1 = this->locuslist[loc].freq[sample][0];
 					f2 = this->locuslist[loc].freq[sample1][0];
 					f3 = this->locuslist[loc].freq[sample2][0];
-					auto alpha = f1 * (1 - f1) / (np - 1);
+					//double alpha = f1 * (1 - f1) * np / (np - 1);
+					// version JMC + MAT corrected
+					double alpha = f1 * (1 - f1) * 1 / (np - 1);
 					this->grouplist[gr].sumstatsnp[numsnp].x[iloc] = (f1 - f2) * (f1 - f3) - alpha;
 				}
 			}
@@ -429,7 +438,6 @@ void ParticleC::cal_snf3r(int gr, int numsnp) {
 	}
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
-
 
 long double ParticleC::cal_pid1p(int gr, int st) {
 	int iloc, kloc, nt = 0, ni = 0, cat;
