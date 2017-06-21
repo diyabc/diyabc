@@ -45,7 +45,46 @@ set(PROJECT_general_HEADERS
   reftable.hpp
   simfile.hpp
   )
+
+set(PROJECT_generaltest_SRCS
+  acploc.cpp
+  comparscen.cpp
+  estimparam.cpp
+  conf.cpp
+  bias.cpp
+  header.cpp
+  particleset.cpp
+  particuleC.cpp
+  reftable.cpp
+  sumstat.cpp
+  history.cpp
+  data.cpp
+  randomgenerator.cpp
+  mesutils.cpp
+  modchec.cpp
+  matrices.cpp
+  )
+
+set(PROJECT_generaltest_HEADERS
+  acploc.hpp
+  comparscen.hpp
+  estimparam.hpp
+  conf.hpp
+  bias.hpp
+  matrices.hpp
+  modchec.hpp
+  randomgenerator.hpp
+  mesutils.hpp
+  data.hpp
+  history.hpp
+  header.hpp
+  particleset.hpp
+  particuleC.hpp
+  reftable.hpp
+  )
+
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
+
 
 set (PROJECT_initRNGproject_SRCS
   initRNGproject.cpp
@@ -61,13 +100,13 @@ set (PROJECT_testRNGproject_SRCS
 
 
 add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
-add_executable(general-test general-test.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
+add_executable(general-test general-test.cpp ${PROJECT_generaltest_SRCS} ${PROJECT_generaltest_HEADERS})
 add_executable(initRNGproject ${PROJECT_initRNGproject_SRCS})
 add_executable(testRNGproject ${PROJECT_testRNGproject_SRCS})
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
-add_test(NAME f3reich WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/f3reich/pool COMMAND general-test)
+add_test(NAME f3reich WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/f3reich COMMAND general-test)
 add_test(NAME testRNG COMMAND testRNGproject)
 
 if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "Intel"))

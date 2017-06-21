@@ -1,69 +1,17 @@
-#define BOOST_TEST_MODULE f3reichPool
+#define BOOST_TEST_MODULE f3reich
 #include <boost/test/included/unit_test.hpp>
 #include <boost/filesystem.hpp>
 
 #include <string>
 #include <vector>
-#include <cstdlib>
-#include <stdexcept>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
 
-#include <string.h>
-#include <iso646.h>
-#include <sys/stat.h>
 
-#ifdef _MSC_VER
-#include "../wingetopt/src/getopt.h"
-#else
-#include <unistd.h>
-#endif
-
-#ifdef _OPENMP
-#include <omp.h>
-#else
-typedef int omp_int_t;
-
-inline omp_int_t omp_get_thread_num()
-{
-  return 0;
-}
-
-inline omp_int_t omp_get_max_threads()
-{
-  return 1;
-}
-
-inline omp_int_t omp_get_num_threads()
-{
-  return 1;
-}
-
-inline void omp_set_num_threads(int) {}
-#endif
-
-extern "C" {
-#include "../dcmt/include/dc.h"
-}
-
-#include "acploc.hpp"
+#include "reftable.hpp"
 #include "header.hpp"
 #include "particleset.hpp"
-#include "reftable.hpp"
-#include "estimparam.hpp"
-#include "comparscen.hpp"
-#include "bias.hpp"
-#include "conf.hpp"
-#include "simfile.hpp"
-#include "modchec.hpp"
-#include "randomgenerator.hpp"
-#include "data.hpp"
-#include "history.hpp"
-#include "randforest.hpp"
-#include "mesutils.hpp"
 
-extern "C" void __libc_freeres(void);
+
+#include "testvalues.hpp"
 
 #define NSTAT 47
 
@@ -75,7 +23,6 @@ string *stat_type;
 int *stat_num;
 
 ofstream fprog;
-ofstream fpar;
 
 namespace bf = boost::filesystem;
 
@@ -124,10 +71,8 @@ int countRNG;
 atomic<int> numloop {0};
 atomic<int> rejectedbymrc {0};
 
-void freeRNG(void)
-{
-  free_mt_struct_array(mtss, countRNG);
-}
+int debuglevel = 1;
+
 
 /* Fin: pour le nouveau générateur de nombre aléatoires */
 
@@ -139,11 +84,10 @@ vector<enregC> enreg, enregOK;
 
 //char *headerfilename, *reftablefilename,*datafilename,*statobsfilename, *reftablelogfilename,*path,*ident,*stopfilename, *progressfilename;
 //char *;
-string headerfilename, headersimfilename, reftablefilename, datafilename, statobsfilename, reftablelogfilename, path, ident, stopfilename, progressfilename, scsufilename;
+string headersimfilename, reftablefilename, datafilename, statobsfilename, reftablelogfilename, path, ident, stopfilename, progressfilename, scsufilename;
 string reftabscen, paramfilename, statfilename;
 bool multithread = false, randomforest = false;
 int nrecneeded, nenr = 100, nenrOK, *neOK, *netot;
-int debuglevel = 1;
 int num_threads = 0;
 string sremtime, scurfile;
 double duree, debutf, dureef, time_file = 0.0, time_reftable = 0.0, remtime;
@@ -155,6 +99,8 @@ bool RNG_must_be_saved;
 /**
  * lecture du fichier header.txt, calcul des stat_obs et lecture de l'entête de reftable.bin
  */
+
+string headerfilename = "header.txt";
 
 int readheaders()
 {
@@ -176,168 +122,42 @@ int readheaders()
   return k;
 }
 
-/**
- * 
- */
-void analyseRNG(string &modpar)
+float gap(float a, float b)
 {
-  string RNGfilename = modpar;
+  return abs(a - b)/(a + b)/2.0;
+}
 
-  ifstream fichier(RNGfilename.c_str(), ios::in | ios::binary);
-  if (!fichier.is_open())
-  {
-    stringstream erreur;
-    erreur << "File " << RNGfilename << " does not exist.\n"
-           << "I cannot analyse it.\n";
-    throw runtime_error(erreur.str());
-  }
-  fichier.seekg(0);
-  int sizeoffile;
-  fichier.read((char *)&sizeoffile, sizeof(int));
-  fichier.close();
-
-  string name = modpar.substr(0, modpar.find_last_of(".")) + "_cores.txt";
-  ofstream outfile(name.c_str());
-  outfile << sizeoffile << endl;
-  outfile.close();
+float gap_vec(vector<float> a, vector<float> b)
+{
+  int n = header.nstat;
+  float res = 0.0;
+  for (int i = 0; i < n; i++) res += gap(a[i],b[i]);
+  return res/(float) n;
 }
 
 BOOST_AUTO_TEST_CASE(f3reich_pool_test)
-/* Compare with void free_test_function() */
 {
-  headerfilename = "header.txt";
-  string RNG_filename;
-  bool exception_caught = false;
-  bool erreur_scenario = false;
-  cout << "debut\n";
   initstat_typenum();
-  RNG_must_be_saved = false;
-  bool firsttime;
-  int k, seed;
-  int optchar;
-  int computer_identity = 0; // should be 0 if diyabc runs on a single computer
-  char action = 'a';
-  bool flagp = false, flagi = false, flags = false, simOK, stoprun = false;
-  string message, soptarg, estpar, comppar, confpar, acplpar, biaspar, modpar, rngpar, randforpar;
-
-  // Copy the reference RNG 
-
-  debut = clock();
-  srand(time(NULL));
-  seed = rand() % 1000;
-
-  headerfilename = "header.txt";
-  headersimfilename = "headersim.txt";
-  reftablefilename = "reftable.bin";
-  reftablelogfilename = "reftable.log";
-  statobsfilename = "statobs.txt";
-  stopfilename = ".stop";
-  reftabscen = "reftabscen.txt";
-  path = "./";
-  nrecneeded = 100;
-  multithread = true;
-  if (num_threads > 0)
-    omp_set_num_threads(num_threads);
-
-  mtss = NULL;
-  RNG_filename = "../../RNG_state_0000.bin";
-  // RNG_filename = path + string("RNG_state_") + convertInt4(computer_identity) + string(".bin");
-  ifstream test_file(RNG_filename.c_str(), ios::in);
-  //cout<<"avant la lecture du ficher "<<RNG_filename<<"\n";
-  if (!test_file.is_open())
-  {
-    stringstream erreur;
-    erreur << "File " << RNG_filename << " does not exist.\n"
-           << "Use option -n to create it before doing anything else.\n";
-    throw runtime_error(erreur.str());
-  }
-
-  // lit le fichier RNG_state
-  mtss = loadRNG(countRNG, RNG_filename);
-  if (countRNG < num_threads)
-  {
-    stringstream erreur;
-    erreur << "I do not have enough states into " << RNG_filename;
-    erreur << " to run " << num_threads << " threads, but only " << countRNG << endl;
-    erreur << "Reduce the number of threads, or create new RNGs' states." << endl;
-    throw std::runtime_error(erreur.str());
-  }
-#pragma omp parallel
-  {
-    r = mtss[omp_get_thread_num()]; //cout<<omp_get_thread_num()<<"\n";
-  }
-  cout << "I have read RNGs' states from file " << RNG_filename << endl;
-  RNG_must_be_saved = true;
-
-  boost::filesystem::path full_path(boost::filesystem::current_path());
-  std::cout << "Current path is : " << full_path << std::endl;
+  chdir("pool");
+  cout << "debut poolseq\n";
   int res = readheaders();
-  vector<float> f3reichpool_vals = {0.58700000,
-                                    0.62800000,
-                                    0.59500000,
-                                    0.21477114,
-                                    0.22705896,
-                                    0.20285954,
-                                    0.02720213,
-                                    0.02759929,
-                                    0.02882971,
-                                    0.08870048,
-                                    0.08446593,
-                                    0.08215811,
-                                    0.23700000,
-                                    0.20400000,
-                                    0.48900000,
-                                    0.13069657,
-                                    0.12145902,
-                                    0.01506385,
-                                    0.06529012,
-                                    0.06152789,
-                                    0.00188179,
-                                    0.09972148,
-                                    0.09668138,
-                                    0.00769763,
-                                    0.28200000,
-                                    0.25100000,
-                                    0.60300000,
-                                    0.22226560,
-                                    0.20858712,
-                                    0.04579876,
-                                    0.07125147,
-                                    0.06901488,
-                                    0.00385017,
-                                    0.16025350,
-                                    0.15706610,
-                                    0.01831950,
-                                    0.42386831,
-                                    0.59692308,
-                                    0.61295419,
-                                    0.98545512,
-                                    0.70685981,
-                                    0.64222233,
-                                    0.00906400,
-                                    0.12304726,
-                                    0.13125621,
-                                    0.56775192,
-                                    0.28491888,
-                                    0.24856946,
-                                    0.40600000,
-                                    0.80900000,
-                                    0.80900000,
-                                    0.14325643,
-                                    0.03442794,
-                                    0.02659858,
-                                    0.06093279,
-                                    0.00368489,
-                                    0.00264741,
-                                    0.08504927,
-                                    0.00322839,
-                                    0.00093312
-
-  };
-
-  double ecart = 0.0;
-  for(int i = 0; i < header.nstat; i++) ecart += abs(header.stat_obs[i] - f3reichpool_vals[i])/(header.stat_obs[i] + f3reichpool_vals[i])/(double) 2;
-  ecart /= (double) header.nstat;
-  cout << "ecart moyen " << std::setprecision(std::numeric_limits<double>::digits10 + 1) << ecart << endl;
+  float ecart = gap_vec(header.stat_obs,f3reichpool_vals);
+  cout << "ecart moyen " << std::setprecision(std::numeric_limits<float>::digits10 + 1) << ecart << endl;
   BOOST_TEST( ecart < 0.01 );
+
+}
+
+BOOST_AUTO_TEST_CASE(f3reich_snp_test)
+{
+  initstat_typenum();
+  chdir("../snp");
+  bf::path full_path( bf::current_path() );
+  cout << "current directory " << full_path << endl;
+  cout << "debut snp\n";
+  header = HeaderC();
+  int res = readheaders();
+  float ecart = gap_vec(header.stat_obs,f3reichsnp_vals);
+  cout << "ecart moyen " << std::setprecision(std::numeric_limits<float>::digits10 + 1) << ecart << endl;
+  BOOST_TEST( ecart < 0.01 );
+
 }
