@@ -439,6 +439,36 @@ void ParticleC::cal_snf3r(int gr, int numsnp)
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
+void ParticleC::cal_snf4r(int gr, int numsnp)
+{
+	long double a,b,c,d;
+	int iloc, loc;
+	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
+	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
+	int sample2 = this->grouplist[gr].sumstatsnp[numsnp].samp2 - 1;
+	int sample3 = this->grouplist[gr].sumstatsnp[numsnp].samp3 - 1;
+	this->grouplist[gr].sumstatsnp[numsnp].sw = 0.0;
+	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
+	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++)
+	{
+		loc = this->grouplist[gr].loc[iloc];
+		this->grouplist[gr].sumstatsnp[numsnp].w[iloc] = this->locuslist[loc].weight;
+		if (this->locuslist[loc].weight > 0.0)
+		{
+			if ((samplesize(loc, sample1) > 0) and (samplesize(loc, sample2) > 0) and (samplesize(loc, sample3) > 0))
+			{
+				a = this->locuslist[loc].freq[sample][0];
+				b = this->locuslist[loc].freq[sample1][0];
+				c = this->locuslist[loc].freq[sample2][0];
+				d = this->locuslist[loc].freq[sample3][0];
+				this->grouplist[gr].sumstatsnp[numsnp].x[iloc] = (a - b) * (c - d);
+			}
+		}
+		this->grouplist[gr].sumstatsnp[numsnp].sw += this->grouplist[gr].sumstatsnp[numsnp].w[iloc];
+	}
+	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
+}
+
 long double ParticleC::cal_pid1p(int gr, int st) {
 	int iloc, kloc, nt = 0, ni = 0, cat;
 	int sample = this->grouplist[gr].sumstat[st].samp - 1;
@@ -2212,6 +2242,23 @@ void ParticleC::docalstat(int gr) {
 				break;
 			case 40: numsnp = this->grouplist[gr].sumstat[st].numsnp;
 				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_moyL(this->grouplist[gr].sumstatsnp[numsnp]);
+				break;
+
+			case 41: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_p0L(this->grouplist[gr].sumstatsnp[numsnp]);
+				break;
+			case 42: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(this->grouplist[gr].sumstatsnp[numsnp]);
+				break;
+			case 43: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_varL0(this->grouplist[gr].sumstatsnp[numsnp]);
+				break;
+			case 44: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(this->grouplist[gr].sumstatsnp[numsnp]);
 				break;
 

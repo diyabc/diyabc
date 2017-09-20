@@ -1,12 +1,472 @@
 {
   "variant": {
-    "label": "RelWithDebInfo",
+    "label": "Release",
     "keywordSettings": {
-      "buildType": "reldeb"
+      "buildType": "release"
     },
-    "description": "Perform optimizations AND include debugging information"
+    "description": "Enable optimizations, omit debug info"
   },
-  "activeEnvironments": [
-    "Visual C++ 14.0 - amd64"
-  ]
+  "activeEnvironments": [],
+  "codeModel": {
+    "configurations": [
+      {
+        "name": "Release",
+        "projects": [
+          {
+            "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+            "name": "dcmt",
+            "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup",
+            "targets": [
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/initRNGproject"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "initRNGproject.cpp",
+                      "mesutils.cpp",
+                      "matrices.cpp",
+                      "randomgenerator.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "initRNGproject",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "initRNGproject",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "testRNG.cpp",
+                      "mesutils.cpp",
+                      "matrices.cpp",
+                      "randomgenerator.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "testRNGproject",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a -lboost_filesystem -lboost_system",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "testRNGproject",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/libdcmt.a"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -O3 -DNDEBUG  ",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "C",
+                    "sources": [
+                      "dcmt/lib/init.c",
+                      "dcmt/lib/check32.c",
+                      "dcmt/lib/prescr.c",
+                      "dcmt/lib/mt19937.c",
+                      "dcmt/lib/eqdeg.c",
+                      "dcmt/lib/seive.c",
+                      "dcmt/lib/genmtrand.c"
+                    ]
+                  }
+                ],
+                "fullName": "libdcmt.a",
+                "linkerLanguage": "C",
+                "name": "dcmt",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup",
+                "type": "STATIC_LIBRARY"
+              },
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/general"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "isGenerated": false,
+                    "sources": [
+                      "acploc.hpp",
+                      "bias.hpp",
+                      "comparscen.hpp",
+                      "conf.hpp",
+                      "data.hpp",
+                      "estimparam.hpp",
+                      "header.hpp",
+                      "history.hpp",
+                      "matrices.hpp",
+                      "mesutils.hpp",
+                      "modchec.hpp",
+                      "particleset.hpp",
+                      "particuleC.hpp",
+                      "randforest.hpp",
+                      "randomgenerator.hpp",
+                      "reftable.hpp",
+                      "simfile.hpp"
+                    ]
+                  },
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "general.cpp",
+                      "acploc.cpp",
+                      "bias.cpp",
+                      "comparscen.cpp",
+                      "conf.cpp",
+                      "data.cpp",
+                      "estimparam.cpp",
+                      "header.cpp",
+                      "history.cpp",
+                      "matrices.cpp",
+                      "mesutils.cpp",
+                      "particleset.cpp",
+                      "particuleC.cpp",
+                      "randforest.cpp",
+                      "randomgenerator.cpp",
+                      "reftable.cpp",
+                      "simfile.cpp",
+                      "sumstat.cpp",
+                      "modchec.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "general",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "general",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/general-test"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "isGenerated": false,
+                    "sources": [
+                      "acploc.hpp",
+                      "comparscen.hpp",
+                      "estimparam.hpp",
+                      "conf.hpp",
+                      "bias.hpp",
+                      "matrices.hpp",
+                      "modchec.hpp",
+                      "randomgenerator.hpp",
+                      "mesutils.hpp",
+                      "data.hpp",
+                      "history.hpp",
+                      "header.hpp",
+                      "particleset.hpp",
+                      "particuleC.hpp",
+                      "reftable.hpp"
+                    ]
+                  },
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "general-test.cpp",
+                      "acploc.cpp",
+                      "comparscen.cpp",
+                      "estimparam.cpp",
+                      "conf.cpp",
+                      "bias.cpp",
+                      "header.cpp",
+                      "particleset.cpp",
+                      "particuleC.cpp",
+                      "reftable.cpp",
+                      "sumstat.cpp",
+                      "history.cpp",
+                      "data.cpp",
+                      "randomgenerator.cpp",
+                      "mesutils.cpp",
+                      "modchec.cpp",
+                      "matrices.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "general-test",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a -lboost_filesystem -lboost_system",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "general-test",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              }
+            ]
+          },
+          {
+            "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+            "name": "general",
+            "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+            "targets": [
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/initRNGproject"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "initRNGproject.cpp",
+                      "mesutils.cpp",
+                      "matrices.cpp",
+                      "randomgenerator.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "initRNGproject",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "initRNGproject",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "testRNG.cpp",
+                      "mesutils.cpp",
+                      "matrices.cpp",
+                      "randomgenerator.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "testRNGproject",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a -lboost_filesystem -lboost_system",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "testRNGproject",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/general"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "isGenerated": false,
+                    "sources": [
+                      "acploc.hpp",
+                      "bias.hpp",
+                      "comparscen.hpp",
+                      "conf.hpp",
+                      "data.hpp",
+                      "estimparam.hpp",
+                      "header.hpp",
+                      "history.hpp",
+                      "matrices.hpp",
+                      "mesutils.hpp",
+                      "modchec.hpp",
+                      "particleset.hpp",
+                      "particuleC.hpp",
+                      "randforest.hpp",
+                      "randomgenerator.hpp",
+                      "reftable.hpp",
+                      "simfile.hpp"
+                    ]
+                  },
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "general.cpp",
+                      "acploc.cpp",
+                      "bias.cpp",
+                      "comparscen.cpp",
+                      "conf.cpp",
+                      "data.cpp",
+                      "estimparam.cpp",
+                      "header.cpp",
+                      "history.cpp",
+                      "matrices.cpp",
+                      "mesutils.cpp",
+                      "particleset.cpp",
+                      "particuleC.cpp",
+                      "randforest.cpp",
+                      "randomgenerator.cpp",
+                      "reftable.cpp",
+                      "simfile.cpp",
+                      "sumstat.cpp",
+                      "modchec.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "general",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "general",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/general-test"
+                ],
+                "buildDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "isGenerated": false,
+                    "sources": [
+                      "acploc.hpp",
+                      "comparscen.hpp",
+                      "estimparam.hpp",
+                      "conf.hpp",
+                      "bias.hpp",
+                      "matrices.hpp",
+                      "modchec.hpp",
+                      "randomgenerator.hpp",
+                      "mesutils.hpp",
+                      "data.hpp",
+                      "history.hpp",
+                      "header.hpp",
+                      "particleset.hpp",
+                      "particuleC.hpp",
+                      "reftable.hpp"
+                    ]
+                  },
+                  {
+                    "compileFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/dcmt/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "general-test.cpp",
+                      "acploc.cpp",
+                      "comparscen.cpp",
+                      "estimparam.cpp",
+                      "conf.cpp",
+                      "bias.cpp",
+                      "header.cpp",
+                      "particleset.cpp",
+                      "particuleC.cpp",
+                      "reftable.cpp",
+                      "sumstat.cpp",
+                      "history.cpp",
+                      "data.cpp",
+                      "randomgenerator.cpp",
+                      "mesutils.cpp",
+                      "modchec.cpp",
+                      "matrices.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "general-test",
+                "linkFlags": "-L/home/collinfd/local/lib    -rdynamic",
+                "linkLanguageFlags": "-I/home/collinfd/local/include -fopenmp=libomp -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/home/collinfd/Documents/Dev/C++/diyabc/build-vscode ../libdcmt.a -lboost_filesystem -lboost_system",
+                "linkPath": "-L/home/collinfd/Documents/Dev/C++/diyabc/build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "general-test",
+                "sourceDirectory": "/home/collinfd/Documents/Dev/C++/diyabc/sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cookie": "0.6300292263890155",
+    "inReplyTo": "codemodel",
+    "type": "reply"
+  }
 }

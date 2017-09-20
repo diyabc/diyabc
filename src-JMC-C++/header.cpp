@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <utility>
 #include <stdexcept>
+#include <numeric>
 #include <algorithm>
 
 #include <cstdio>
@@ -1105,6 +1106,70 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 				}
 			}
 			//cout<<"fin des sumstat 37 à 40 statsnp.size ="<<statsnp.size()<<"\n";
+
+			if (nsamp > 3) {
+				for (int i = 41; i <= 44; i++) {
+					int r = 4;
+					catsnp = (i - 21) / 4;
+					j=25;do {j++;}while(i!=stat_num[j]);
+					fileRF <<stat_type[j];
+					std::vector<bool> selector(nsamp);
+					std::fill(selector.begin(), selector.begin() + 4, true);
+					std::vector<int> v(nsamp);
+					std::iota(v.begin(), v.end(), 1);
+					std::vector<int> s(r);
+					do
+					{
+						std::copy_if(v.begin(), v.end(), s.begin(), [&](const int &i) { return selector[i - 1]; });
+						do
+						{
+							if (s[1] > s[0] and s[3] > s[2] and s[2] > s[0])
+							{
+
+								groupe[gr].sumstat[k].cat = i;
+								groupe[gr].sumstat[k].samp = s[0];
+								groupe[gr].sumstat[k].samp1 = s[1];
+								groupe[gr].sumstat[k].samp2 = s[2];
+								groupe[gr].sumstat[k].samp3 = s[3];
+								s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(s[0]) + "&" + IntToString(s[1]) + "&" + IntToString(s[2]) + "&" + IntToString(s[3]);
+								this->entetestat += centre(s1, 14);
+								fileRF <<" "<<s[0]<<"&"<<s[1]<<"&"<<s[2]<<"&"<<s[3];
+								trouve = false;
+								if (statsnp.size() > 0) {
+									for (int jj = 0; jj < (int)statsnp.size(); jj++) {
+										trouve = ((statsnp[jj].cat == catsnp) and 
+												  (statsnp[jj].samp == groupe[gr].sumstat[k].samp) and
+												  (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1) and
+												  (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2) and
+												  (statsnp[jj].samp3 == groupe[gr].sumstat[k].samp3));
+										if (trouve) {
+											groupe[gr].sumstat[k].numsnp = jj;
+											break;
+										}
+									}
+								}
+								if (not trouve) {
+									stsnp.cat = catsnp;
+									stsnp.samp = groupe[gr].sumstat[k].samp;
+									stsnp.samp1 = groupe[gr].sumstat[k].samp1;
+									stsnp.samp2 = groupe[gr].sumstat[k].samp2;
+									stsnp.samp3 = groupe[gr].sumstat[k].samp3;
+									stsnp.defined = false;
+									groupe[gr].sumstat[k].numsnp = statsnp.size();
+									statsnp.push_back(stsnp);
+								}
+								k++;
+						
+							}
+
+						} while (std::next_permutation(s.begin(), s.end()));
+
+					} while (std::prev_permutation(selector.begin(), selector.end()));
+					fileRF<<"\n";
+					
+				}
+				
+			}
 		}
 		//cout<<this->entetestat<<"\n";
 		groupe[gr].nstatsnp = statsnp.size();
@@ -1116,6 +1181,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 				groupe[gr].sumstatsnp[i].samp = statsnp[i].samp;
 				groupe[gr].sumstatsnp[i].samp1 = statsnp[i].samp1;
 				groupe[gr].sumstatsnp[i].samp2 = statsnp[i].samp2;
+				groupe[gr].sumstatsnp[i].samp3 = statsnp[i].samp3;
 				groupe[gr].sumstatsnp[i].defined = statsnp[i].defined;
 				//cout<<"recopie de sumstatsnp["<<i<<"]\n";
 			}
@@ -1302,7 +1368,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if ((stat_num[j] > 32)and (stat_num[j] < 50)) {
+				else if ((stat_num[j] > 32)and (stat_num[j] < 41)) {
 					for (int i = 1; i < nss; i++) {
 						groupe[gr].sumstat[k].cat = stat_num[j];
 						splitwords(ss[i], "&", ss1);
@@ -1332,6 +1398,42 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
+				else if ((stat_num[j] > 40)and (stat_num[j] < 50)) {
+					for (int i = 1; i < nss; i++) {
+						groupe[gr].sumstat[k].cat = stat_num[j];
+						splitwords(ss[i], "&", ss1);
+						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
+						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
+						groupe[gr].sumstat[k].samp2 = atoi(ss1[2].c_str());
+						groupe[gr].sumstat[k].samp3 = atoi(ss1[3].c_str());
+						trouve = false;
+						if (statsnp.size() > 0) {
+							for (int jj = 0; jj < (int)statsnp.size(); jj++) {
+								trouve = ((statsnp[jj].cat == catsnp) and 
+										  (statsnp[jj].samp == groupe[gr].sumstat[k].samp) and 
+										  (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1) and
+										  (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2) and
+										  (statsnp[jj].samp3 == groupe[gr].sumstat[k].samp3));
+								if (trouve) {
+									groupe[gr].sumstat[k].numsnp = jj;
+									break;
+								}
+							}
+						}
+						if (not trouve) {
+							stsnp.cat = catsnp;
+							stsnp.samp = groupe[gr].sumstat[k].samp;
+							stsnp.samp1 = groupe[gr].sumstat[k].samp1;
+							stsnp.samp2 = groupe[gr].sumstat[k].samp2;
+							stsnp.samp3 = groupe[gr].sumstat[k].samp3;
+							stsnp.defined = false;
+							groupe[gr].sumstat[k].numsnp = statsnp.size();
+							statsnp.push_back(stsnp);
+						}
+						//cout<<"                      numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
+						k++;
+					}
+				}
 				else if (stat_num[j] == 50) {
 					groupe[gr].sumstat[k].cat = stat_num[j];
 					k++;
@@ -1350,16 +1452,19 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 					ssnp.samp = statsnp[i].samp;
 					ssnp.samp1 = statsnp[i].samp1;
 					ssnp.samp2 = statsnp[i].samp2;
+					ssnp.samp3 = statsnp[i].samp3;
 					ssnp.defined = statsnp[i].defined;
 					statsnp[i].cat = statsnp[j].cat;
 					statsnp[i].samp = statsnp[j].samp; 
 					statsnp[i].samp1 = statsnp[j].samp1; 
 					statsnp[i].samp2 = statsnp[j].samp2;
+					statsnp[i].samp3 = statsnp[j].samp3;
 					statsnp[i].defined = statsnp[j].defined;
 					statsnp[j].cat = ssnp.cat;
 					statsnp[j].samp = ssnp.samp; 
 					statsnp[j].samp1 = ssnp.samp1; 
 					statsnp[j].samp2 = ssnp.samp2;
+					statsnp[j].samp3 = ssnp.samp3;
 					statsnp[j].defined = ssnp.defined;
 				}
 			}
@@ -1372,6 +1477,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 				groupe[gr].sumstatsnp[i].samp = statsnp[i].samp;
 				groupe[gr].sumstatsnp[i].samp1 = statsnp[i].samp1;
 				groupe[gr].sumstatsnp[i].samp2 = statsnp[i].samp2;
+				groupe[gr].sumstatsnp[i].samp3 = statsnp[i].samp3;
 				groupe[gr].sumstatsnp[i].defined = statsnp[i].defined;
 			}
 			statsnp.clear();
@@ -2255,7 +2361,8 @@ string HeaderC::calstatobs(string statobsfilename) {
 				for (int j = 0; j < jmax; j++) {
 					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp) + "&";
 					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp1) + "&";
-					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp2) + "  ";
+					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp2) + "& ";
+					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp3) + "  ";
 				}
 			}
 		}

@@ -48,6 +48,7 @@ StatC& StatC::operator=(StatC const& source) {
 	this->samp = source.samp;
 	this->samp1 = source.samp1;
 	this->samp2 = source.samp2;
+	this->samp3 = source.samp3;
 	this->group = source.group;
 	this->val = source.val;
 	return *this;
@@ -66,6 +67,7 @@ StatsnpC& StatsnpC::operator=(StatsnpC const& source) {
 	this->samp = source.samp;
 	this->samp1 = source.samp1;
 	this->samp2 = source.samp2;
+	this->samp3 = source.samp3;
 	this->group = source.group;
 	this->n = source.n;
 	this->defined = source.defined;

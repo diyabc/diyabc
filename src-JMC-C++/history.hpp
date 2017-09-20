@@ -17,7 +17,7 @@
  * struct StatC :éléments de définition d'une summary statistic
  */
 struct StatC {
-	int cat, samp, samp1, samp2, group, numsnp;
+	int cat, samp, samp1, samp2, samp3, group, numsnp;
 	long double val;
 	//  StatC(StatC const & source);
 	StatC& operator=(StatC const& source);
@@ -28,7 +28,7 @@ struct StatC {
  */
 class StatsnpC {
 public:
-	int cat, samp, samp1, samp2, group, n;
+	int cat, samp, samp1, samp2, samp3, group, n;
 	std::vector<long double> x, w;
 	long double sw;
 	bool defined;

@@ -210,6 +210,7 @@ public:
 	void cal_snfst(int gr, int numsnp);
 	void cal_snaml(int gr, int numsnp);
 	void cal_snf3r(int gr, int numsnp);
+	void cal_snf4r(int gr, int numsnp);
 	// MICROSAT
 	long double cal_pid1p(int gr, int st);
 	long double cal_nal1p(int gr, int st);
