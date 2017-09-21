@@ -22,6 +22,16 @@
 #include "particuleC.hpp"
 #include "header.hpp"
 
+#include <iterator>
+template <typename T>
+std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
+  if ( !v.empty() ) {
+    out << '[';
+    std::copy (v.begin(), v.end() - 1, std::ostream_iterator<T>(out, ", "));
+    out << v[v.size()-1] << "]";
+  }
+  return out;
+}
 
 extern int debuglevel;
 
@@ -802,6 +812,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			if (nsamp > 1) nstatgr += 8 * nsamp * (nsamp - 1) / 2;
 			//"NP0","NM1","NV1","NMO","FP0","FM1","FV1","FMO"
 			if (nsamp > 2) nstatgr += 8 * nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"AP0","AM1","AV1","AMO","RP0","RM1","RV1","RMO"
+			if (nsamp > 3) nstatgr += 8 * nsamp * (nsamp - 1) * (nsamp - 2) * (nsamp - 3) * (nsamp - 4) / 8; // "ZP0", "ZM1", "ZV1", "ZM0"
 		}
 		this->nstat += nstatgr;
 		groupe[gr].nstat = nstatgr;//cout<<"gr="<<gr<<"   nstat="<<nstatgr<<"\n";
@@ -1114,7 +1125,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 					j=25;do {j++;}while(i!=stat_num[j]);
 					fileRF <<stat_type[j];
 					std::vector<bool> selector(nsamp);
-					std::fill(selector.begin(), selector.begin() + 4, true);
+					std::fill(selector.begin(), selector.begin() + r, true);
 					std::vector<int> v(nsamp);
 					std::iota(v.begin(), v.end(), 1);
 					std::vector<int> s(r);
