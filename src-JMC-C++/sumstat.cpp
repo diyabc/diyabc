@@ -457,10 +457,30 @@ void ParticleC::cal_snf4r(int gr, int numsnp)
 		{
 			if ((samplesize(loc, sample1) > 0) and (samplesize(loc, sample2) > 0) and (samplesize(loc, sample3) > 0))
 			{
-				a = this->locuslist[loc].freq[sample][0];
-				b = this->locuslist[loc].freq[sample1][0];
-				c = this->locuslist[loc].freq[sample2][0];
-				d = this->locuslist[loc].freq[sample3][0];
+				int np = samplesize(loc, sample);
+				if (dataobs.filetype == 2)
+				{ //Poolseq
+					double a1p = this->locuslist[loc].nreads1[sample];
+					double c1p = this->locuslist[loc].nreads[sample];
+					double a2p = this->locuslist[loc].nreads1[sample1];
+					double c2p = this->locuslist[loc].nreads[sample1];
+					double a3p = this->locuslist[loc].nreads1[sample2];
+					double c3p = this->locuslist[loc].nreads[sample2];
+					double a4p = this->locuslist[loc].nreads1[sample3];
+					double c4p = this->locuslist[loc].nreads[sample3];
+					a = (a1p / c1p);
+					b = (a2p / c2p);
+					c = (a3p / c3p);
+					d = (a4p / c4p);
+				}
+				else
+				{
+					a = this->locuslist[loc].freq[sample][0];
+					b = this->locuslist[loc].freq[sample1][0];
+					c = this->locuslist[loc].freq[sample2][0];
+					d = this->locuslist[loc].freq[sample3][0];
+				}
+				double resps = (a - b) * (c - d);
 				this->grouplist[gr].sumstatsnp[numsnp].x[iloc] = (a - b) * (c - d);
 			}
 		}

@@ -812,7 +812,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			if (nsamp > 1) nstatgr += 8 * nsamp * (nsamp - 1) / 2;
 			//"NP0","NM1","NV1","NMO","FP0","FM1","FV1","FMO"
 			if (nsamp > 2) nstatgr += 8 * nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"AP0","AM1","AV1","AMO","RP0","RM1","RV1","RMO"
-			if (nsamp > 3) nstatgr += 8 * nsamp * (nsamp - 1) * (nsamp - 2) * (nsamp - 3) * (nsamp - 4) / 8; // "ZP0", "ZM1", "ZV1", "ZM0"
+			if (nsamp > 3) nstatgr += 4 * nsamp * (nsamp - 1) * (nsamp - 2) * (nsamp - 3) / 8; // "ZP0", "ZM1", "ZV1", "ZM0"
 		}
 		this->nstat += nstatgr;
 		groupe[gr].nstat = nstatgr;//cout<<"gr="<<gr<<"   nstat="<<nstatgr<<"\n";
