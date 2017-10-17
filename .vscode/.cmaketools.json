@@ -1,10 +1,10 @@
 {
   "variant": {
-    "label": "Release",
+    "label": "RelWithDebInfo",
     "keywordSettings": {
-      "buildType": "release"
+      "buildType": "reldeb"
     },
-    "description": "Enable optimizations, omit debug info"
+    "description": "Perform optimizations AND include debugging information"
   },
   "activeEnvironments": [
     "Visual Studio Community�2017 - amd64"
@@ -12,7 +12,7 @@
   "codeModel": {
     "configurations": [
       {
-        "name": "Release",
+        "name": "RelWithDebInfo",
         "projects": [
           {
             "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode",
@@ -28,7 +28,7 @@
                 "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode",
                 "fileGroups": [
                   {
-                    "compileFlags": "-O3 -DNDEBUG  ",
+                    "compileFlags": "-O2 -g -DNDEBUG  ",
                     "includePath": [
                       {
                         "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
@@ -62,7 +62,7 @@
                 "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
                 "fileGroups": [
                   {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
                     "includePath": [
                       {
                         "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
@@ -82,7 +82,7 @@
                   }
                 ],
                 "fullName": "initRNGproject.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
                 "linkLibraries": "..\\libdcmt.a -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
                 "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
                 "linkerLanguage": "CXX",
@@ -121,7 +121,7 @@
                     ]
                   },
                   {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
                     "includePath": [
                       {
                         "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
@@ -156,48 +156,11 @@
                   }
                 ],
                 "fullName": "general.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
                 "linkLibraries": "..\\libdcmt.a -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
                 "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
                 "linkerLanguage": "CXX",
                 "name": "general",
-                "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
-                "type": "EXECUTABLE"
-              },
-              {
-                "artifacts": [
-                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.exe",
-                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/libtestRNGproject.dll.a",
-                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.pdb"
-                ],
-                "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
-                "fileGroups": [
-                  {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
-                    "includePath": [
-                      {
-                        "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
-                      },
-                      {
-                        "path": "C:/msys64/mingw64/include"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "testRNG.cpp",
-                      "mesutils.cpp",
-                      "matrices.cpp",
-                      "randomgenerator.cpp"
-                    ]
-                  }
-                ],
-                "fullName": "testRNGproject.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
-                "linkLibraries": "..\\libdcmt.a -lboost_filesystem-mt -lboost_system-mt -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
-                "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
-                "linkerLanguage": "CXX",
-                "name": "testRNGproject",
                 "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
                 "type": "EXECUTABLE"
               },
@@ -230,7 +193,7 @@
                     ]
                   },
                   {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
                     "includePath": [
                       {
                         "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
@@ -263,11 +226,48 @@
                   }
                 ],
                 "fullName": "general-test.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
                 "linkLibraries": "..\\libdcmt.a -lboost_filesystem-mt -lboost_system-mt -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
                 "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
                 "linkerLanguage": "CXX",
                 "name": "general-test",
+                "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.exe",
+                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/libtestRNGproject.dll.a",
+                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.pdb"
+                ],
+                "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
+                      },
+                      {
+                        "path": "C:/msys64/mingw64/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "testRNG.cpp",
+                      "mesutils.cpp",
+                      "matrices.cpp",
+                      "randomgenerator.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "testRNGproject.exe",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
+                "linkLibraries": "..\\libdcmt.a -lboost_filesystem-mt -lboost_system-mt -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+                "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "testRNGproject",
                 "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
                 "type": "EXECUTABLE"
               }
@@ -287,7 +287,7 @@
                 "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
                 "fileGroups": [
                   {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
                     "includePath": [
                       {
                         "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
@@ -307,7 +307,7 @@
                   }
                 ],
                 "fullName": "initRNGproject.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
                 "linkLibraries": "..\\libdcmt.a -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
                 "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
                 "linkerLanguage": "CXX",
@@ -346,7 +346,7 @@
                     ]
                   },
                   {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
                     "includePath": [
                       {
                         "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
@@ -381,48 +381,11 @@
                   }
                 ],
                 "fullName": "general.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
                 "linkLibraries": "..\\libdcmt.a -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
                 "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
                 "linkerLanguage": "CXX",
                 "name": "general",
-                "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
-                "type": "EXECUTABLE"
-              },
-              {
-                "artifacts": [
-                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.exe",
-                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/libtestRNGproject.dll.a",
-                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.pdb"
-                ],
-                "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
-                "fileGroups": [
-                  {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
-                    "includePath": [
-                      {
-                        "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
-                      },
-                      {
-                        "path": "C:/msys64/mingw64/include"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "testRNG.cpp",
-                      "mesutils.cpp",
-                      "matrices.cpp",
-                      "randomgenerator.cpp"
-                    ]
-                  }
-                ],
-                "fullName": "testRNGproject.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
-                "linkLibraries": "..\\libdcmt.a -lboost_filesystem-mt -lboost_system-mt -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
-                "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
-                "linkerLanguage": "CXX",
-                "name": "testRNGproject",
                 "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
                 "type": "EXECUTABLE"
               },
@@ -455,7 +418,7 @@
                     ]
                   },
                   {
-                    "compileFlags": " -fopenmp -O3 -DNDEBUG   -std=gnu++11",
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
                     "includePath": [
                       {
                         "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
@@ -488,11 +451,48 @@
                   }
                 ],
                 "fullName": "general-test.exe",
-                "linkLanguageFlags": "-fopenmp -O3 -DNDEBUG",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
                 "linkLibraries": "..\\libdcmt.a -lboost_filesystem-mt -lboost_system-mt -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
                 "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
                 "linkerLanguage": "CXX",
                 "name": "general-test",
+                "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.exe",
+                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/libtestRNGproject.dll.a",
+                  "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++/testRNGproject.pdb"
+                ],
+                "buildDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/build-vscode/src-JMC-C++",
+                "fileGroups": [
+                  {
+                    "compileFlags": " -fopenmp -O2 -g -DNDEBUG   -std=gnu++11",
+                    "includePath": [
+                      {
+                        "path": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/dcmt/include"
+                      },
+                      {
+                        "path": "C:/msys64/mingw64/include"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "testRNG.cpp",
+                      "mesutils.cpp",
+                      "matrices.cpp",
+                      "randomgenerator.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "testRNGproject.exe",
+                "linkLanguageFlags": "-fopenmp -O2 -g -DNDEBUG",
+                "linkLibraries": "..\\libdcmt.a -lboost_filesystem-mt -lboost_system-mt -lgcc_eh -lgcc_eh -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+                "linkPath": "-LC:\\Users\\frada\\Documents\\Dev\\C++\\diyabc\\build-vscode",
+                "linkerLanguage": "CXX",
+                "name": "testRNGproject",
                 "sourceDirectory": "C:/Users/frada/Documents/Dev/C++/diyabc/diyabc-sourcesup/src-JMC-C++",
                 "type": "EXECUTABLE"
               }
@@ -501,7 +501,7 @@
         ]
       }
     ],
-    "cookie": "0.7251078640095006",
+    "cookie": "0.12634149143947448",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

@@ -481,7 +481,7 @@ void ParticleC::cal_snf4r(int gr, int numsnp)
 					d = this->locuslist[loc].freq[sample3][0];
 				}
 				double resps = (a - b) * (c - d);
-				this->grouplist[gr].sumstatsnp[numsnp].x[iloc] = (a - b) * (c - d);
+				this->grouplist[gr].sumstatsnp[numsnp].x[iloc] = resps;
 			}
 		}
 		this->grouplist[gr].sumstatsnp[numsnp].sw += this->grouplist[gr].sumstatsnp[numsnp].w[iloc];
