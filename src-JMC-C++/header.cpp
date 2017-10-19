@@ -2190,13 +2190,13 @@ string HeaderC::calstatobs(string statobsfilename) {
 		particuleobs.grouplist[0].loc  = vector<int>(groupe[0].nloc);
 		for (int i=0;i<groupe[0].nloc;i++) particuleobs.grouplist[0].loc[i] = groupe[0].loc[i];
 	}*/
-	for (int gr = 1; gr < ngr; gr++) {
-		//particuleobs.grouplist[gr] = groupe[gr];
-		for (int i = 0; i < groupe[gr].nstatsnp; i++) {
-			particuleobs.grouplist[gr].sumstatsnp[i].x = vector<long double>(groupe[gr].nloc);
-			particuleobs.grouplist[gr].sumstatsnp[i].w = vector<long double>(groupe[gr].nloc);
-		}
-	}
+	// for (int gr = 1; gr < ngr; gr++) {
+	// 	//particuleobs.grouplist[gr] = groupe[gr];
+	// 	for (int i = 0; i < groupe[gr].nstatsnp; i++) {
+	// 		particuleobs.grouplist[gr].sumstatsnp[i].x = vector<long double>(groupe[gr].nloc);
+	// 		particuleobs.grouplist[gr].sumstatsnp[i].w = vector<long double>(groupe[gr].nloc);
+	// 	}
+	// }
 	//for (int i=0;i<particuleobs.grouplist[1].nstat;i++) cout<<"particuleobs.grouplist[1].sumstat["<<i<<"].numsnp = "<<particuleobs.grouplist[1].sumstat[i].numsnp<<"\n";
 	/*	//////////////////////////////////////////////
 		for (int gr=1;gr<=ngr;gr++) {

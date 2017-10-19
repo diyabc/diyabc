@@ -251,14 +251,16 @@ public:
 	void cal_freq(int gr, int st); // FIXME: différence avec calfreq ????
 	long double cal_aml3p(int gr, int st);
 	void cal_numvar(int gr);
-	long double cal_p0L(StatsnpC stsnp);
 	long double mQ(int n0, int n1, long double* x);
 	long double cal_medL(int n, long double* x);
 	long double cal_qu1L(int n, long double* x);
 	long double cal_qu3L(int n, long double* x);
-	long double cal_moyL0(StatsnpC stsnp);
-	long double cal_moyL(StatsnpC stsnp);
-	long double cal_varL0(StatsnpC stsnp);
+	void cal_snpstatRedinit(int gr, int numsnp);	
+	void cal_snpstatRedacc(int gr, int numsnp, long double x , long double w);
+	long double cal_p0L(int gr, int numsnp);
+	long double cal_moyL0(int gr, int numsnp);
+	long double cal_moyL(int gr, int numsnp);
+	long double cal_varL0(int gr, int numsnp);
 	void docalstat(int gr);
 
 };

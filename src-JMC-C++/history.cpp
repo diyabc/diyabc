@@ -72,18 +72,6 @@ StatsnpC& StatsnpC::operator=(StatsnpC const& source) {
 	this->n = source.n;
 	this->defined = source.defined;
 	this->sw = source.sw;
-	if (not this->x.empty()) this->x.clear();
-	if (not source.x.empty()) {
-		this->x = vector<long double>(source.x.size());
-		int imax = (int)source.x.size();
-		for (int i = 0; i < imax; i++) this->x[i] = source.x[i];
-	}
-	if (not this->w.empty()) this->w.clear();
-	if (not source.w.empty()) {
-		this->w = vector<long double>(source.w.size());
-		int imax = (int)source.w.size();
-		for (int i = 0; i < imax; i++) this->w[i] = source.w[i];
-	}
 	return *this;
 }
 

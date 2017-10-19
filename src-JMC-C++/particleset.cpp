@@ -52,13 +52,13 @@ void ParticleSetC::setgroup(int p) {
 	//cout<<"Dans Particleset setgroup("<<p<<") groupe[1].mutmoy="<<groupe[1].mutmoy<<"  "<<this->particule[p].grouplist[1].mutmoy <<"\n";
 	//cout<<"Dans Particleset setgroup("<<p<<") groupe[1].Pmoy="<<groupe[1].Pmoy<<"  "<<this->particule[p].grouplist[1].Pmoy<<"\n";
 	//cout<<"Dans Particleset setgroup("<<p<<") groupe[1].snimoy="<<groupe[1].snimoy<<"  "<<this->particule[p].grouplist[1].snimoy<<"\n";
-	for (int gr = 1; gr < ngr; gr++) {
-		//particuleobs.grouplist[gr] = groupe[gr];
-		for (int i = 0; i < groupe[gr].nstatsnp; i++) {
-			this->particule[p].grouplist[gr].sumstatsnp[i].x = vector<long double>(groupe[gr].nloc);
-			this->particule[p].grouplist[gr].sumstatsnp[i].w = vector<long double>(groupe[gr].nloc);
-		}
-	}
+	// for (int gr = 1; gr < ngr; gr++) {
+	// 	//particuleobs.grouplist[gr] = groupe[gr];
+	// 	for (int i = 0; i < groupe[gr].nstatsnp; i++) {
+	// 		this->particule[p].grouplist[gr].sumstatsnp[i].x = vector<long double>(groupe[gr].nloc);
+	// 		this->particule[p].grouplist[gr].sumstatsnp[i].w = vector<long double>(groupe[gr].nloc);
+	// 	}
+	// }
 }
 
 /**
@@ -253,10 +253,10 @@ void ParticleSetC::free_particule(int npart) {
 		int grmax = (int)groupe.size();
 		for (int gr = 1; gr < grmax; gr++) {
 			//particuleobs.grouplist[gr] = groupe[gr];
-			for (int i = 0; i < groupe[gr].nstatsnp; i++) {
-				this->particule[p].grouplist[gr].sumstatsnp[i].x.clear();
-				this->particule[p].grouplist[gr].sumstatsnp[i].w.clear();
-			}
+			// for (int i = 0; i < groupe[gr].nstatsnp; i++) {
+			// 	this->particule[p].grouplist[gr].sumstatsnp[i].x.clear();
+			// 	this->particule[p].grouplist[gr].sumstatsnp[i].w.clear();
+			// }
 			if (not this->particule[p].grouplist[gr].sumstatsnp.empty()) this->particule[p].grouplist[gr].sumstatsnp.clear();
 			if (not this->particule[p].grouplist[gr].sumstat.empty()) this->particule[p].grouplist[gr].sumstat.clear();
 			if (not this->particule[p].grouplist[gr].loc.empty()) this->particule[p].grouplist[gr].loc.clear();

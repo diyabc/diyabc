@@ -29,15 +29,9 @@ struct StatC {
 class StatsnpC {
 public:
 	int cat, samp, samp1, samp2, samp3, group, n;
-	std::vector<long double> x, w;
-	long double sw;
+	long double sw, sw0, sw1, sw12, mx, mx1, mx12;
 	bool defined;
 	StatsnpC& operator=(StatsnpC const& source);
-
-	~StatsnpC() {
-		if (not x.empty()) x.clear();
-		if (not w.empty()) w.clear();
-	};
 };
 
 
