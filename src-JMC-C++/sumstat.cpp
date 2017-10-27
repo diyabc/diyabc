@@ -255,10 +255,9 @@ void ParticleC::cal_snhet(int gr, int numsnp) {
 				x = het;
 				//cout<<"het["<<iloc<<"] = "<<het<<"\n";
 				//f10<<het<<"\n";
+				this->cal_snpstatRedacc(gr, numsnp, x, w);
 			}
-			else w = 0.0;
 		}
-		this->cal_snpstatRedacc(gr, numsnp, x, w);
 	}
 	//f10.close();
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
@@ -290,10 +289,9 @@ void ParticleC::cal_snnei(int gr, int numsnp) {
 				nei = 1.0 - (fi * fj + gi * gj) / sqrt(fi * fi + gi * gi) / sqrt(fj * fj + gj * gj);
 				x = nei;
 					//if (iloc<10) cout<<"numsnp="<<numsnp <<"    nei["<<iloc<<"]="<<nei<<"\n";
-			}
-			else w = 0.0;
+				this->cal_snpstatRedacc(gr, numsnp, x, w);		
+				}
 		}
-		this->cal_snpstatRedacc(gr, numsnp, x, w);		
 	}
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
@@ -337,10 +335,9 @@ void ParticleC::cal_snfst(int gr, int numsnp) {
 				if (fst < 0.0) fst = 0.0;
 				x = fst;
 				//printf("s1l=%10.5Lf   s3l=%10.5Lf   fst[%3d] = %10.5Lf\n", s1l,s3l,nl,fst);
+				this->cal_snpstatRedacc(gr, numsnp, x, w);
 			}
-			else w = 0.0;
 		}
-		this->cal_snpstatRedacc(gr, numsnp, x, w);
 	}
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
@@ -371,19 +368,11 @@ void ParticleC::cal_snaml(int gr, int numsnp) {
 						else x = 1.0;
 					}
 					else x = aml;
+					this->cal_snpstatRedacc(gr, numsnp, x, w);
 				}
-				else {
-					w = 0.0;
-					x = 0.5;
-				}
-			}
-			else {
-				w = 0.0;
-				x = 0.5;
 			}
 		}
 		//if (this->grouplist[gr].sumstatsnp[numsnp].w[iloc]>0.0) cout<<this->grouplist[gr].sumstatsnp[numsnp].x[iloc]<<"\n";
-		this->cal_snpstatRedacc(gr, numsnp, x, w);
 	}
 	//cout<<"cal_snaml  sw="<<this->grouplist[gr].sumstatsnp[numsnp].sw<<"\n";
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
@@ -432,9 +421,9 @@ void ParticleC::cal_snf3r(int gr, int numsnp)
 					double alpha = f1 * (1 - f1) * 1 / (np - 1);
 					x = (f1 - f2) * (f1 - f3) - alpha;
 				}
+				this->cal_snpstatRedacc(gr, numsnp, x, w);			
 			}
 		}
-		this->cal_snpstatRedacc(gr, numsnp, x, w);
 	}
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
@@ -483,8 +472,8 @@ void ParticleC::cal_snf4r(int gr, int numsnp)
 				double resps = (a - b) * (c - d);
 				x = resps;
 			}
+			this->cal_snpstatRedacc(gr, numsnp, x, w);			
 		}
-		this->cal_snpstatRedacc(gr, numsnp, x, w);
 	}
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
