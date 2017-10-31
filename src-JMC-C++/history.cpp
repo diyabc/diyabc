@@ -72,6 +72,12 @@ StatsnpC& StatsnpC::operator=(StatsnpC const& source) {
 	this->n = source.n;
 	this->defined = source.defined;
 	this->sw = source.sw;
+	this->sw0 = source.sw0;
+	this->sw1 = source.sw1;
+	this->sw12 = source.sw12;
+	this->mx = source.mx;
+	this->mx1 = source.mx1;
+	this->mx12 = source.mx12;
 	return *this;
 }
 
