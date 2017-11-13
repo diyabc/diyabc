@@ -4,3 +4,6 @@
 [submodule "dcmt"]
 	path = dcmt
 	url = https://github.com/MersenneTwister-Lab/dcmt.git
+[submodule "ranger"]
+	path = ranger
+	url = https://github.com/imbs-hl/ranger.git

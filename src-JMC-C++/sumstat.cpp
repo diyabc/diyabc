@@ -365,12 +365,12 @@ void ParticleC::cal_snaml(int gr, int numsnp) {
 				if (f1 != f2) {
 					aml = (f3 - f2) / (f1 - f2);
 					if ((aml < 0.0)or (aml > 1.0)) {
-						w = 0.0;
+//						w = 0.0;
 						if (aml < 0) x = 0.0;
 						else x = 1.0;
 					}
 					else x = aml;
-				}
+				} else { x = 0.5; w = 0.0; }
 			}
 			this->cal_snpstatRedacc(gr, numsnp, x, w);			
 		}
@@ -2339,8 +2339,11 @@ void ParticleC::docalstat(int gr) {
 				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
 				break;
-
+			
 		}
+		StatsnpC& stsnp = this->grouplist[gr].sumstatsnp[numsnp];
+		if (stsnp.sw != this->grouplist[gr].nloc) { cout << "categ " << categ << " numsnp " << numsnp << " stsnp.sw " << stsnp.sw  << " nloc : " << this->grouplist[gr].nloc << endl; }
+	
 		//cout << "      stat["<<st<<"]="<<this->grouplist[gr].sumstat[st].val<<"\n";fflush(stdin);
 	}
 	if (this->grouplist[gr].type == 1) liberednavar(gr);
