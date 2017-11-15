@@ -641,7 +641,7 @@ bool ParticleC::setHistParamValue() {
 			if (debuglevel == 30) cout << "event " << ievent << "   action=" << this->scen.event[ievent].action << "   time=" << this->scen.event[ievent].time << "   " << this->scen.event[ievent].stime << "\n";
 		}
 		//cout<<"TRI SUR LES TEMPS DES EVENEMENTS\n";
-		sort(&this->scen.event[0], &this->scen.event[this->scen.nevent]);
+		sort(this->scen.event.begin(), this->scen.event.end());
 		// compevent inutile: operator< est surchargé correctement (PP)
 		checkorder();
 

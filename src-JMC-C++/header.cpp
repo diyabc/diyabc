@@ -1315,11 +1315,11 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 			}
 			else if ((groupe[gr].type == 2)or (groupe[gr].type == 3)) { //SNP
 				//cout<<"statnum="<<stat_num[j]<<"\n";
-				if (stat_num[j] < 50) {
+				if (stat_num[j] < 53) {
 					catsnp = (stat_num[j] - 21) / 4;
 					if (debuglevel == 2) cout << "stat_num[" << j << "]=" << stat_num[j] << "   catsnp=" << catsnp << "\n";
 				}
-				if (stat_num[j] < 25) {
+				if ((stat_num[j] < 25) or ((stat_num[j] > 44) and (stat_num[j] < 49))) {
 					if (debuglevel == 2) cout << "nss=" << nss << "\n";
 					for (int i = 1; i < nss; i++) {
 						if (debuglevel == 2) cout << "i=" << i << "\n";
@@ -1350,7 +1350,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if ((stat_num[j] > 24)and (stat_num[j] < 33)) {
+				else if ((stat_num[j] > 24)and (stat_num[j] < 33) or ((stat_num[j] > 48) and (stat_num[j] < 53))) {
 					for (int i = 1; i < nss; i++) {
 						groupe[gr].sumstat[k].cat = stat_num[j];
 						splitwords(ss[i], "&", ss1);
@@ -1409,7 +1409,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if ((stat_num[j] > 40)and (stat_num[j] < 50)) {
+				else if ((stat_num[j] > 40)and (stat_num[j] < 45)) {
 					for (int i = 1; i < nss; i++) {
 						groupe[gr].sumstat[k].cat = stat_num[j];
 						splitwords(ss[i], "&", ss1);
@@ -1445,11 +1445,11 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if (stat_num[j] == 50) {
-					groupe[gr].sumstat[k].cat = stat_num[j];
-					k++;
-					cout << "k=" << k << "\n";
-				}
+				//else if (stat_num[j] == 50) {
+				//	groupe[gr].sumstat[k].cat = stat_num[j];
+				//	k++;
+				//	cout << "k=" << k << "\n";
+				//}
 			}
 			if (debuglevel == 2) cout << "fin de la stat " << k << "\n";
 		}
