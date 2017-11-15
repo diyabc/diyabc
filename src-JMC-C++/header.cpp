@@ -1350,7 +1350,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if ((stat_num[j] > 24)and (stat_num[j] < 33) or ((stat_num[j] > 48) and (stat_num[j] < 53))) {
+				else if (((stat_num[j] > 24) and (stat_num[j] < 33)) or ((stat_num[j] > 48) and (stat_num[j] < 53))) {
 					for (int i = 1; i < nss; i++) {
 						groupe[gr].sumstat[k].cat = stat_num[j];
 						splitwords(ss[i], "&", ss1);
