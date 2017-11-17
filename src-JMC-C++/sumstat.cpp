@@ -9,6 +9,8 @@
 #include <vector>
 #include <iostream>
 #include <utility>
+#include <algorithm>
+#include <numeric>
 #include <cmath>
 #include <cstdlib>
 #include <math.h>
@@ -297,6 +299,36 @@ void ParticleC::cal_snnei(int gr, int numsnp) {
 	}
 	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
+
+void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
+	long double x = 0, w;
+	int iloc,loc;
+	int npopr = min(npop,this->nsample);
+	auto& statC = this->grouplist[gr].sumstatsnp[numsnp];
+	vector<int> samples;
+	if (npopr >= this->nsample) {
+		samples.resize(npopr);
+		iota(samples.begin(),samples.end(),0);
+	} else {
+		samples = { statC.samp -1, statC.samp1 - 1, statC.samp2 - 1, statC.samp3 - 1};
+		samples.resize(npopr);
+	}
+	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
+	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
+		loc = this->grouplist[gr].loc[iloc];
+		w = this->locuslist[loc].weight;
+		if (w > 0.0) {
+			vector<long double> n(npopr);
+			transform(samples.begin(),samples.end(),n.begin(),
+						[&](const int& i){ return samplesize(loc,i); });
+			//int S_1 = reduce(n.begin(),n.end());
+			
+		}
+	}
+	// transform(samples.begin(),samples.end(),n.begin(),
+	// 		  [&](const int& i){ return (long double)samplesize(loc,samples[i])});
+}
+
 
 void ParticleC::cal_snfst(int gr, int numsnp) {
 	//cout<<"debut de cal_snfst\n";
