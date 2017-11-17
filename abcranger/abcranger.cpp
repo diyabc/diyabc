@@ -7,6 +7,8 @@
 #include <map>
 #include <unordered_set>
 
+#include "DataFloat.h"
+
 using namespace std;
 
 template <typename InputIt>
@@ -21,6 +23,21 @@ void print(InputIt it, InputIt end_it)
     }
 }
 int N = 0;
+
+uint32_t ntohl(uint32_t netlong)
+{
+    union {
+        uint16_t num;
+        uint8_t bytes[2];
+    } static endian_test = { .bytes = { 0x01, 0x00 }};
+
+    if (endian_test.num == 0x0001) {
+        netlong = (netlong << 24) | ((netlong & 0xFF00ul) << 8) |
+            ((netlong & 0xFF0000ul) >> 8) | (netlong >> 24);
+    }
+
+    return netlong;
+}
 
 int main() {
     ifstream headerStream("headerRF.txt",ios::in);
@@ -102,13 +119,34 @@ int main() {
     int nscen;
     reftableStream.read(reinterpret_cast<char *>(&nscen),sizeof(nscen));    
     vector<int> nrecscen(nscen);
-    for(int& r : nrecscen) reftableStream.read(reinterpret_cast<char *>(&r),sizeof(r));
+    for(auto& r : nrecscen) reftableStream.read(reinterpret_cast<char *>(&r),sizeof(r));
     vector<int> nparam(nscen);
-    for(int& r : nparam) reftableStream.read(reinterpret_cast<char *>(&r),sizeof(r));
+    for(auto& r : nparam) reftableStream.read(reinterpret_cast<char *>(&r),sizeof(r));
     int nstat;
     reftableStream.read(reinterpret_cast<char *>(&nstat),sizeof(nstat));    
     vector<string> paramsname { allcolspre.begin(), allcolspre.begin() + (allcolspre.size() - nstat) };
+    vector<string> statsname  { allcolspre.begin()+ (allcolspre.size() - nstat),  allcolspre.end() };
     int nmutparams = paramsname.size() - realparamtot;
-    for(auto r : paramsname) cout << r << endl;
+    vector<float> params(nrec * paramsname.size(),NAN);
+    // for(auto r : statsname) cout << r << endl;
+    vector<float> stats(nrec * nstat,NAN);
+    vector<int> scenarios(nrec);
+    for(auto i = 0; i < nrec; i++) {
+        int scen;
+        reftableStream.read(reinterpret_cast<char *>(&scen),4);
+        scenarios[i] = scen;
+        scen--;
+        vector<float> lparam(nparam[scen]);
+        for(auto& r: lparam) {
+            reftableStream.read(reinterpret_cast<char *>(&r),sizeof(r));
+        }
+        for(auto j = 0; j < parambyscenh[scen].size(); j++)
+            params[i * paramsname.size() + parambyscenh[scen][j] - 1] = lparam[j];
+        for(auto j = 0; j < nmutparams; j++)
+            params[i * paramsname.size() + realparamtot + j - 1] = lparam[nparam[scen] - nmutparams + j - 1];
+        for_each(stats.begin() + (i * nstat), stats.begin() + (i + 1) * nstat, 
+                 [&](float& r) { reftableStream.read(reinterpret_cast<char *>(&r),4);});        
+    }
+    cout << endl;
     cout.flush();
 }
