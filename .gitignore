@@ -46,6 +46,6 @@ Notice-DIYABC-v2/Notice_DIYABC_principal.pdf
 Notice-DIYABC-v2/Notice_DIYABC_principal.synctex.gz
 
 Notice-DIYABC-v2/Notice_DIYABC_principal.toc
-.vs/
-.vscode/
-.vscode/.cmaketools.json
+.vs
+.vscode
+node_modules

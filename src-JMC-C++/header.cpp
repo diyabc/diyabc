@@ -783,7 +783,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 	string headerRFfilename;
 	headerRFfilename = headerfilename.substr(0,headerfilename.find(".txt"))+"RF.txt";
 	cout<<headerRFfilename<<"\n";
-	ofstream fileRF(headerRFfilename.c_str(), std::ofstream::out);
+	ofstream fileRF(headerRFfilename.c_str(), std::ofstream::out|std::ofstream::binary);
 
 	this->nstat = 0;
 	//cout<<"Fin de la lecture bidon du header\n";
@@ -809,8 +809,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 		}
 		else if (groupe[gr].type >= 2) { //SNP
 			nstatgr += 8 * nsamp; //"HP0","HM1","HV1","HMO","QP0","QM1","QV1","QMO" 
-			if (nsamp > 1) nstatgr += 12 * nsamp * (nsamp - 1) / 2;
-			//"NP0","NM1","NV1","NMO","FP0","FM1","FV1","FMO","LP0","LM1","LV1","LMO"
+			if (nsamp > 1) nstatgr += 12 * nsamp * (nsamp - 1) / 2; //"NP0","NM1","NV1","NMO","FP0","FM1","FV1","FMO","LP0","LM1","LV1","LMO"
 			if (nsamp > 2) nstatgr += 8 * nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"AP0","AM1","AV1","AMO","RP0","RM1","RV1","RMO"
 			if (nsamp > 3) nstatgr += 4 * nsamp * (nsamp - 1) * (nsamp - 2) * (nsamp - 3) / 8; // "ZP0", "ZM1", "ZV1", "ZMO"
 		}
@@ -955,40 +954,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 		}
 		if ((groupe[gr].type == 2)or (groupe[gr].type == 3)) { //SNP
 			//cout<<"debut de la recherche des stat snp\n";
-			for (int i = 21; i <= 24; i++) { // HET
-				catsnp = (i - 21) / 4;
-				//cout<<"i="<<i<<"   catsnp="<<catsnp<<"\n";
-				j=25;do {j++;}while(i!=stat_num[j]);
-				fileRF <<stat_type[j];
-				for (int sa = 1; sa <= nsamp; sa++) {
-					groupe[gr].sumstat[k].cat = i;
-					groupe[gr].sumstat[k].samp = sa;
-					s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa);
-					this->entetestat += centre(s1, 14);
-					fileRF <<" "<<sa;
-					//cout<<this->entetestat<<"\n";
-					trouve = false;
-					if (statsnp.size() > 0) {
-						for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-							trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp));
-							if (trouve) {
-								groupe[gr].sumstat[k].numsnp = jj;
-								break;
-							}
-						}
-					}
-					if (not trouve) {
-						stsnp.cat = catsnp;
-						stsnp.samp = groupe[gr].sumstat[k].samp;
-						stsnp.defined = false;
-						groupe[gr].sumstat[k].numsnp = statsnp.size();
-						statsnp.push_back(stsnp);
-					}
-					k++;
-				}
-				fileRF <<"\n";
-			}
-			for (int i = 45; i <= 48; i++) { // Q1
+			for (int i = 21; i <= 28; i++) { // HET + Q1
 				catsnp = (i - 21) / 4;
 				//cout<<"i="<<i<<"   catsnp="<<catsnp<<"\n";
 				j=25;do {j++;}while(i!=stat_num[j]);
@@ -1023,42 +989,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			}
 			//cout<<"fin des sumstat 21 à 24 statsnp.size ="<<statsnp.size()<<"\n";
 			if (nsamp > 1) {
-				for (int i = 25; i <= 32; i++) { //NEI 
-					catsnp = (i - 21) / 4;
-				    j=25;do {j++;}while(i!=stat_num[j]);
-				    fileRF <<stat_type[j];		
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
-							groupe[gr].sumstat[k].cat = i;
-							groupe[gr].sumstat[k].samp = sa;
-							groupe[gr].sumstat[k].samp1 = sa1;
-							s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
-							this->entetestat += centre(s1, 14);
-							fileRF <<" "<<sa<<"&"<<sa1;
-							trouve = false;
-							if (statsnp.size() > 0) {
-								for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-									trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1));
-									if (trouve) {
-										groupe[gr].sumstat[k].numsnp = jj;
-										break;
-									}
-								}
-							}
-							if (not trouve) {
-								stsnp.cat = catsnp;
-								stsnp.samp = groupe[gr].sumstat[k].samp;
-								stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-								stsnp.defined = false;
-								groupe[gr].sumstat[k].numsnp = statsnp.size();
-								statsnp.push_back(stsnp);
-							}
-							k++;
-						}
-					}
-					fileRF <<"\n";
-				}
-				for (int i = 49; i <= 52; i++) { //Q2 
+				for (int i = 29; i <= 40; i++) { //NEI + FST + Q2
 					catsnp = (i - 21) / 4;
 				    j=25;do {j++;}while(i!=stat_num[j]);
 				    fileRF <<stat_type[j];		
@@ -1096,7 +1027,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 				//cout<<"fin des sumstat 25 à 32 statsnp.size ="<<statsnp.size()<<"\n";
 			}
 			if (nsamp > 2) {
-				for (int i = 33; i <= 36; i++) {
+				for (int i = 41; i <= 48; i++) { // AML + F3
 					catsnp = (i - 21) / 4;
 					j=25;do {j++;}while(i!=stat_num[j]);
 					fileRF <<stat_type[j];
@@ -1139,55 +1070,9 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 					fileRF <<"\n";
 				}
 			}
-			//cout<<"fin des sumstat 33 à 36 statsnp.size ="<<statsnp.size()<<"\n";
-			if (nsamp > 2) {
-				for (int i = 37; i <= 40; i++) {
-					catsnp = (i - 21) / 4;
-					j=25;do {j++;}while(i!=stat_num[j]);
-					fileRF <<stat_type[j];
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
-							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
-								if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
-									groupe[gr].sumstat[k].cat = i;
-									groupe[gr].sumstat[k].samp = sa;
-									groupe[gr].sumstat[k].samp1 = sa1;
-									groupe[gr].sumstat[k].samp2 = sa2;
-									s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
-									this->entetestat += centre(s1, 14);
-									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
-									//cout<<"samples "<<sa<<", "<<sa1<<" et "<<sa2<<"\n";
-									trouve = false;
-									if (statsnp.size() > 0) {
-										for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-											trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1)and (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2));
-											if (trouve) {
-												groupe[gr].sumstat[k].numsnp = jj;
-												break;
-											}
-										}
-									}
-									if (not trouve) {
-										stsnp.cat = catsnp;
-										stsnp.samp = groupe[gr].sumstat[k].samp;
-										stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-										stsnp.samp2 = groupe[gr].sumstat[k].samp2;
-										stsnp.defined = false;
-										groupe[gr].sumstat[k].numsnp = statsnp.size();
-										statsnp.push_back(stsnp);
-									}
-									k++;
-								}
-							}
-						}
-					}
-					fileRF<<"\n";
-				}
-			}
 			//cout<<"fin des sumstat 37 à 40 statsnp.size ="<<statsnp.size()<<"\n";
-
 			if (nsamp > 3) {
-				for (int i = 41; i <= 44; i++) {
+				for (int i = 49; i <= 52; i++) { // F4
 					int r = 4;
 					catsnp = (i - 21) / 4;
 					j=25;do {j++;}while(i!=stat_num[j]);
@@ -1387,7 +1272,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 					catsnp = (stat_num[j] - 21) / 4;
 					if (debuglevel == 2) cout << "stat_num[" << j << "]=" << stat_num[j] << "   catsnp=" << catsnp << "\n";
 				}
-				if ((stat_num[j] < 25) or ((stat_num[j] > 44) and (stat_num[j] < 49))) {
+				if (stat_num[j] < 29) { // HET + Q1
 					if (debuglevel == 2) cout << "nss=" << nss << "\n";
 					for (int i = 1; i < nss; i++) {
 						if (debuglevel == 2) cout << "i=" << i << "\n";
@@ -1418,7 +1303,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if (((stat_num[j] > 24) and (stat_num[j] < 33)) or ((stat_num[j] > 48) and (stat_num[j] < 53))) {
+				else if ((stat_num[j] > 32) and (stat_num[j] < 41)) { // NEI + FST + Q2
 					for (int i = 1; i < nss; i++) {
 						groupe[gr].sumstat[k].cat = stat_num[j];
 						splitwords(ss[i], "&", ss1);
@@ -1447,7 +1332,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if ((stat_num[j] > 32)and (stat_num[j] < 41)) {
+				else if ((stat_num[j] > 40)and (stat_num[j] < 49)) { // AML + F3
 					for (int i = 1; i < nss; i++) {
 						groupe[gr].sumstat[k].cat = stat_num[j];
 						splitwords(ss[i], "&", ss1);
@@ -1477,7 +1362,7 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 						k++;
 					}
 				}
-				else if ((stat_num[j] > 40)and (stat_num[j] < 45)) {
+				else if ((stat_num[j] > 48)and (stat_num[j] < 53)) { // F4
 					for (int i = 1; i < nss; i++) {
 						groupe[gr].sumstat[k].cat = stat_num[j];
 						splitwords(ss[i], "&", ss1);

@@ -62,7 +62,7 @@ extern bool multithread;
 pardensC *pardens, *pardenscompo, *pardensscaled;
 long double *var_stat, *parmin, *parmax, *parmincompo, *parmaxcompo, *parminscaled, *parmaxscaled, *diff, *diffcompo, *diffscaled;
 long double *parmin0, *parmax0, *parmincompo0, *parmaxcompo0, *parminscaled0, *parmaxscaled0;
-long double **beta, **simpar, **simparcompo, **simparscaled;
+long double **betan, **simpar, **simparcompo, **simparscaled;
 int nparamcom, nparcompo, nparscaled, **numpar, numtransf = 3, npar, npar0;
 long double borne = 10.0, xborne, xbornecompo, xbornescaled;
 bool composite = false, scaled = false, original = true;
@@ -829,8 +829,8 @@ long double** cal_matC(int n) {
 }
 
 void local_regression(int n, int npa, long double** matC) {
-	beta = new long double*[nstatOKsel + 1];
-	for (int j = 0; j < nstatOKsel + 1; j++) beta[j] = new long double[npa];
+	betan = new long double*[nstatOKsel + 1];
+	for (int j = 0; j < nstatOKsel + 1; j++) betan[j] = new long double[npa];
 	for (int i = 0; i < nstatOKsel + 1; i++) {
 		for (int j = 0; j < nstatOKsel + 1; j++)
 			if (matC[i][j] != matC[i][j]) {
@@ -838,10 +838,10 @@ void local_regression(int n, int npa, long double** matC) {
 				exit(1);
 			}
 	}
-	beta = prodML(nstatOKsel + 1, n, npa, matC, parsim);
+	betan = prodML(nstatOKsel + 1, n, npa, matC, parsim);
 	/*cout<<"regression locale\n";
 	for (int j=0;j<nstatOKsel+1;j++) {
-		for (int k=0;k<npa;k++) cout<<"beta["<<j<<"]["<<k<<"] = "<<beta[j][k]<<"  ";
+		for (int k=0;k<npa;k++) cout<<"betan["<<j<<"]["<<k<<"] = "<<betan[j][k]<<"  ";
 		cout<<"\n";
 	}
 	cout<<"\n";*/
@@ -866,8 +866,8 @@ void local_regression(int n, int npa, long double** matC) {
         for (int j=0;j<nstatOKsel+1;j++) matB[j] = new long double[nstatOKsel+1];
         matBB = new long double*[nstatOKsel+1];
         for (int j=0;j<nstatOKsel+1;j++) matBB[j] = new long double[nstatOKsel+1];
-        beta = new long double*[nstatOKsel+1];
-        for (int j=0;j<nstatOKsel+1;j++) beta[j] = new long double[npa];
+        betan = new long double*[nstatOKsel+1];
+        for (int j=0;j<nstatOKsel+1;j++) betan[j] = new long double[npa];
         //ecrimatL("matX0",10,nstatOKsel,matX0);
         //ecrimat("matX",10,10,matX);
 
@@ -891,7 +891,7 @@ void local_regression(int n, int npa, long double** matC) {
 		
 		
 		do {
-			for (int i=0;i<nstatOKsel+1;i++) {for (int j=0;j<npa;j++) beta[i][j] = bet[i][j];}
+			for (int i=0;i<nstatOKsel+1;i++) {for (int j=0;j<npa;j++) betan[i][j] = bet[i][j];}
 			coeff *=sqrt(10.0);
 			err = inverse_Tik2(nstatOKsel+1,matAA,matB,coeff);
 //		cout<<"\n\n err="<<err<<"\n";
@@ -900,14 +900,14 @@ void local_regression(int n, int npa, long double** matC) {
 //		cout<<"apres matC\n";
 			bet = prodML(nstatOKsel+1,n,npa,matC,parsim);
 			mdiff = 0.0;
-			for (int i=0;i<nstatOKsel+1;i++) {for (int j=0;j<npa;j++) mdiff += fabs(beta[i][j] - bet[i][j])/fabs(beta[i][j] + bet[i][j]);}
+			for (int i=0;i<nstatOKsel+1;i++) {for (int j=0;j<npa;j++) mdiff += fabs(betan[i][j] - bet[i][j])/fabs(betan[i][j] + bet[i][j]);}
 			mdiff /=(nstatOKsel+1)*(nstatOKsel+1);
 			//cout<<"coeff = 1E"<<log10(coeff)<<"    mdiff = "<<mdiff<<"\n";
 			//printf("coeff = %8Le   mdiff = %8.5Lf\n",coeff,mdiff);
 		} while ((mdiff>0.0002)and(coeff<0.01));
 		
-		//for (int i=0;i<nstatOKsel+1;i++) {for (int j=0;j<npa;j++) beta[i][j] = bet[i][j];}
-        //ecrimatL("beta",nstatOKsel+1,npa,beta);
+		//for (int i=0;i<nstatOKsel+1;i++) {for (int j=0;j<npa;j++) betan[i][j] = bet[i][j];}
+        //ecrimatL("betan",nstatOKsel+1,npa,betan);
         libereL(nstatOKsel+1,matA);
         libereL(n,matX);
 		libereL(nstatOKsel+1,matXT);
@@ -930,7 +930,7 @@ void calphistarO(int n, long double** phistar) {
 		for (int j = 0; j < nparamcom; j++) {
 			phistar[i][j] = alpsimrat[i][j];
 			//if ((i<100)and(j==0)) cout<< phistar[i][j]<<"   ";
-			for (int k = 0; k < nstatOKsel; k++) phistar[i][j] -= matX0[i][k] * beta[k + 1][j];
+			for (int k = 0; k < nstatOKsel; k++) phistar[i][j] -= matX0[i][k] * betan[k + 1][j];
 			//if((i<100)and(j==0)) cout<< phistar[i][j]<<"\n";
 			switch (numtransf) {
 				case 1: break;
@@ -963,8 +963,8 @@ void calphistarO(int n, long double** phistar) {
 	for (int i = 0; i < n; i++) delete []alpsimrat[i];
 	delete []alpsimrat;
 	//for (int i=0;i<n;i++) delete []matX0[i]; delete []matX0;
-	for (int i = 0; i < nstatOKsel + 1; i++) delete []beta[i];
-	delete []beta;
+	for (int i = 0; i < nstatOKsel + 1; i++) delete []betan[i];
+	delete []betan;
 }
 
 
@@ -987,9 +987,9 @@ void calphistarC(int n, long double** phistarcompo) {
 		for (int j = 0; j < nparcompo; j++) {
 			phistarcompo[i][j] = alpsimrat[i][j];
 			//if (i<100) cout<< phistarcompo[i][j]<<"   ";
-			for (int k = 0; k < nstatOKsel; k++) phistarcompo[i][j] -= matX0[i][k] * beta[k + 1][j];
+			for (int k = 0; k < nstatOKsel; k++) phistarcompo[i][j] -= matX0[i][k] * betan[k + 1][j];
 			//ppp=phistarcompo[i][j];
-			//for (int k=0;k<nstatOKsel;k++) if (beta[k+1][j]!=beta[k+1][j])cout<<"beta=nan  k="<<k<<"   j="<<j<<"    "<<beta[k+1][j]<<"\n";
+			//for (int k=0;k<nstatOKsel;k++) if (betan[k+1][j]!=betan[k+1][j])cout<<"betan=nan  k="<<k<<"   j="<<j<<"    "<<betan[k+1][j]<<"\n";
 			//if(i<100) cout<< phistarcompo[i][j]<<"   ";
 			switch (numtransf) {
 				case 1: break;
@@ -1023,8 +1023,8 @@ void calphistarC(int n, long double** phistarcompo) {
 	for (int i = 0; i < n; i++) delete []alpsimrat[i];
 	delete []alpsimrat;
 	//for (int i=0;i<n;i++) delete []matX0[i]; delete []matX0;
-	for (int i = 0; i < nstatOKsel + 1; i++) delete []beta[i];
-	delete []beta;
+	for (int i = 0; i < nstatOKsel + 1; i++) delete []betan[i];
+	delete []betan;
 }
 
 /**
@@ -1039,7 +1039,7 @@ void calphistarS(int n, long double** phistarscaled) {
 		for (int j = 0; j < nparscaled; j++) {
 			phistarscaled[i][j] = alpsimrat[i][j];
 			//if ((i<10)and(j==0)) cout<< phistarscaled[i][j]<<"   ";
-			for (int k = 0; k < nstatOKsel; k++) phistarscaled[i][j] -= matX0[i][k] * beta[k + 1][j];
+			for (int k = 0; k < nstatOKsel; k++) phistarscaled[i][j] -= matX0[i][k] * betan[k + 1][j];
 			//if ((i<10)and(j==0)) cout<< phistarscaled[i][j]<<"\n";
 			switch (numtransf) {
 				case 1: break;
@@ -1074,8 +1074,8 @@ void calphistarS(int n, long double** phistarscaled) {
 	for (int i = 0; i < n; i++) delete []alpsimrat[i];
 	delete []alpsimrat;
 	//for (int i=0;i<n;i++) delete []matX0[i]; delete []matX0;
-	for (int i = 0; i < nstatOKsel + 1; i++) delete []beta[i];
-	delete []beta;
+	for (int i = 0; i < nstatOKsel + 1; i++) delete []betan[i];
+	delete []betan;
 }
 
 void det_nomparam() {

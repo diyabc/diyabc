@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <iomanip>
 #include <map>
-#include <unordered_set>
 
 #include "DataFloat.h"
 
@@ -24,20 +23,20 @@ void print(InputIt it, InputIt end_it)
 }
 int N = 0;
 
-uint32_t ntohl(uint32_t netlong)
-{
-    union {
-        uint16_t num;
-        uint8_t bytes[2];
-    } static endian_test = { .bytes = { 0x01, 0x00 }};
+// uint32_t ntohl(uint32_t netlong)
+// {
+//     union {
+//         uint16_t num;
+//         uint8_t bytes[2];
+//     } static endian_test = { .bytes = { 0x01, 0x00 }};
 
-    if (endian_test.num == 0x0001) {
-        netlong = (netlong << 24) | ((netlong & 0xFF00ul) << 8) |
-            ((netlong & 0xFF0000ul) >> 8) | (netlong >> 24);
-    }
+//     if (endian_test.num == 0x0001) {
+//         netlong = (netlong << 24) | ((netlong & 0xFF00ul) << 8) |
+//             ((netlong & 0xFF0000ul) >> 8) | (netlong >> 24);
+//     }
 
-    return netlong;
-}
+//     return netlong;
+// }
 
 int main() {
     ifstream headerStream("headerRF.txt",ios::in);
@@ -144,9 +143,11 @@ int main() {
             params[i * paramsname.size() + parambyscenh[scen][j] - 1] = lparam[j];
         for(auto j = 0; j < nmutparams; j++)
             params[i * paramsname.size() + realparamtot + j - 1] = lparam[nparam[scen] - nmutparams + j - 1];
-        for_each(stats.begin() + (i * nstat), stats.begin() + (i + 1) * nstat, 
-                 [&](float& r) { reftableStream.read(reinterpret_cast<char *>(&r),4);});        
+        cout << "On en est là :" << reftableStream.tellg() << endl;
+        for(auto j = i * nstat; j < (i + 1) * nstat; j++)
+            reftableStream.read(reinterpret_cast<char *>(&stats[j]),4);
     }
+    for(auto i = 0; i < 10; i++) cout << stats[i] << " ";
     cout << endl;
     cout.flush();
 }

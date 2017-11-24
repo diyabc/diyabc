@@ -318,11 +318,41 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 		loc = this->grouplist[gr].loc[iloc];
 		w = this->locuslist[loc].weight;
 		if (w > 0.0) {
-			vector<long double> n(npopr);
-			transform(samples.begin(),samples.end(),n.begin(),
-						[&](const int& i){ return samplesize(loc,i); });
-			//int S_1 = reduce(n.begin(),n.end());
-			
+			if (dataobs.filetype == 2) { //SNP
+				int S_1 = 0, S_2 = 0;
+				long double pi1 = 0.0, pi2 = 0.0, SSI = 0.0, SSP = 0.0, nc, MSI, MSP, num, den;
+				for (auto r : samples)
+				{
+					long double n = (long double)this->samplesize(loc, r);
+					if (n > 0.0)
+					{
+						S_1 += r;
+						S_2 += r * r;
+						double x = this->locuslist[loc].freq[r][0] * n;
+						pi1 += x;
+						pi2 += 1 - x;
+						SSI += x - (x * x) / n + (1 - x) - (1 - x) * (1 - x) / n;
+					}
+				}
+				pi1 /= S_1;
+				pi2 /= S_1;
+				for (auto r : samples)
+				{
+					long double n = (long double)this->samplesize(loc, r);
+					if (n > 0.0)
+					{
+						double x = this->locuslist[loc].freq[r][0] * n;
+						SSP += n * (pow(x / n - pi1, 2) + pow((1 - x) / n - pi2, 2));
+					}
+				}
+				nc = (S_1 - S_2 / S_1) / ((long double)npopr - 1.0);
+				MSI = SSI / (S_1 - (long double)npopr);
+				MSP = SSP / ((long double)npopr - 1.0);
+				num = (MSP - MSI);
+				den = (MSP + (nc - 1.0) * MSI);
+			} else {
+				
+			}
 		}
 	}
 	// transform(samples.begin(),samples.end(),n.begin(),
@@ -2338,149 +2368,144 @@ void ParticleC::docalstat(int gr) {
 				break;
 			case -14: this->grouplist[gr].sumstat[st].val = cal_aml3p(gr, st);
 				break;
+
+			// HET
 			case 21: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				//cout<<"21 numsnp="<<numsnp<<"   defined="<<this->grouplist[gr].sumstatsnp[numsnp].defined<<"\n";
 				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
 				break;
 			case 22: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				//cout<<"22 numsnp="<<numsnp<<"   defined="<<this->grouplist[gr].sumstatsnp[numsnp].defined<<"\n";
 				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
-				/*if (not this->grouplist[gr].sumstatsnp[numsnp].sorted) {
-				sort(&this->grouplist[gr].sumstatsnp[numsnp].x[0],&this->grouplist[gr].sumstatsnp[numsnp].x[this->grouplist[gr].sumstatsnp[numsnp].n]);
-				this->grouplist[gr].sumstatsnp[numsnp].sorted=true;
-				}*/
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
 				break;
 			case 23: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				//cout<<"23 numsnp="<<numsnp<<"   defined="<<this->grouplist[gr].sumstatsnp[numsnp].defined<<"\n";
 				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
 				break;
 			case 24: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				//cout<<"25 numsnp="<<numsnp<<"   defined="<<this->grouplist[gr].sumstatsnp[numsnp].defined<<"\n";
 				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
 				break;
-
+			// Q1
 			case 25: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
 				break;
 			case 26: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
 				break;
 			case 27: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
 				break;
 			case 28: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
 				break;
-
+			// FST
 			case 29: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
 				break;
 			case 30: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
 				break;
 			case 31: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
 				break;
 			case 32: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
 				break;
-
+			// NEI
 			case 33: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
 				break;
 			case 34: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
 				break;
 			case 35: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
 				break;
 			case 36: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
 				break;
-
+			// Q2
 			case 37: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
 				break;
 			case 38: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
 				break;
 			case 39: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
 				break;
 			case 40: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
 				break;
-
+			// AML
 			case 41: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
 				break;
 			case 42: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
 				break;
 			case 43: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
 				break;
 			case 44: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
+				break;
+			// F3
+			case 45: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
+				break;
+			case 46: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
+				break;
+			case 47: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
+				break;
+			case 48: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
+				break;
+			// F4
+			case 49: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
+				break;
+			case 50: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
+				break;
+			case 51: numsnp = this->grouplist[gr].sumstat[st].numsnp;
+				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
+				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
+				break;
+			case 52: numsnp = this->grouplist[gr].sumstat[st].numsnp;
 				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
 				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
 				break;
 
-			case 45: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 46: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 47: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 48: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-
-			case 49: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 50: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 51: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 52: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
 
 		}
 //		StatsnpC& stsnp = this->grouplist[gr].sumstatsnp[numsnp];
