@@ -6,7 +6,9 @@
 #include <iomanip>
 #include <map>
 
-#include "DataFloat.h"
+#include "DataDouble.h"
+#include "ForestClassification.h"
+#include "ForestRegression.h"
 
 using namespace std;
 
@@ -125,15 +127,17 @@ int main() {
     reftableStream.read(reinterpret_cast<char *>(&nstat),sizeof(nstat));    
     vector<string> paramsname { allcolspre.begin(), allcolspre.begin() + (allcolspre.size() - nstat) };
     vector<string> statsname  { allcolspre.begin()+ (allcolspre.size() - nstat),  allcolspre.end() };
+    statsname.push_back("Y");
     int nmutparams = paramsname.size() - realparamtot;
     vector<float> params(nrec * paramsname.size(),NAN);
     // for(auto r : statsname) cout << r << endl;
-    vector<float> stats(nrec * nstat,NAN);
-    vector<int> scenarios(nrec);
+    vector<double> stats(nrec * (nstat + 1),NAN);
+    DataDouble data(stats.data(),statsname,nrec,nstat + 1);
+    bool hasError;
     for(auto i = 0; i < nrec; i++) {
         int scen;
         reftableStream.read(reinterpret_cast<char *>(&scen),4);
-        scenarios[i] = scen;
+        data.set(nstat,i,scen,hasError);
         scen--;
         vector<float> lparam(nparam[scen]);
         for(auto& r: lparam) {
@@ -143,11 +147,41 @@ int main() {
             params[i * paramsname.size() + parambyscenh[scen][j] - 1] = lparam[j];
         for(auto j = 0; j < nmutparams; j++)
             params[i * paramsname.size() + realparamtot + j - 1] = lparam[nparam[scen] - nmutparams + j - 1];
-        cout << "On en est là :" << reftableStream.tellg() << endl;
-        for(auto j = i * nstat; j < (i + 1) * nstat; j++)
-            reftableStream.read(reinterpret_cast<char *>(&stats[j]),4);
+        for(auto j = 0; j < nstat; j++) {
+            float r;
+            reftableStream.read(reinterpret_cast<char *>(&r),4);
+            data.set(j,i,r,hasError);
+        }
     }
-    for(auto i = 0; i < 10; i++) cout << stats[i] << " ";
+    ForestClassification forestclass;
+    vector<string> catvars;
+    forestclass.init("Y", 
+                     MemoryMode::MEM_DOUBLE,
+                     &data,
+                     0,
+                     "ranger_out",
+                     500,123456,
+                     0,
+                     ImportanceMode::IMP_GINI,
+                     0,
+                     "",
+                     false,
+                     true,
+                     catvars,
+                     false,
+                     SplitRule::LOGRANK,
+                     false,
+                     1,
+                     DEFAULT_ALPHA,
+                     DEFAULT_MINPROP,
+                     false,
+                     DEFAULT_PREDICTIONTYPE,
+                     DEFAULT_NUM_RANDOM_SPLITS);
+    forestclass.setverboseOutput(&cout);
+    forestclass.run(true);
+    forestclass.writeOutput();
+    forestclass.saveToFile();
+//    forestclass.writeOutput();
     cout << endl;
     cout.flush();
 }

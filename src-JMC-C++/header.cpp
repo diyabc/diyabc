@@ -808,7 +808,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			if (nsamp > 2) nstatgr += nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"SML"
 		}
 		else if (groupe[gr].type >= 2) { //SNP
-			nstatgr += 8 * nsamp; //"HP0","HM1","HV1","HMO","QP0","QM1","QV1","QMO" 
+			nstatgr += 6 * nsamp; //"QV1","QMO","HP0","HM1","HV1","HMO",
 			if (nsamp > 1) nstatgr += 12 * nsamp * (nsamp - 1) / 2; //"NP0","NM1","NV1","NMO","FP0","FM1","FV1","FMO","LP0","LM1","LV1","LMO"
 			if (nsamp > 2) nstatgr += 8 * nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"AP0","AM1","AV1","AMO","RP0","RM1","RV1","RMO"
 			if (nsamp > 3) nstatgr += 4 * nsamp * (nsamp - 1) * (nsamp - 2) * (nsamp - 3) / 8; // "ZP0", "ZM1", "ZV1", "ZMO"
@@ -954,8 +954,8 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 		}
 		if ((groupe[gr].type == 2)or (groupe[gr].type == 3)) { //SNP
 			//cout<<"debut de la recherche des stat snp\n";
-			for (int i = 21; i <= 28; i++) { // HET + Q1
-				catsnp = (i - 21) / 4;
+			for (int i = 21; i <= 26; i++) { // Q1 + HET
+				catsnp = (i <= 22) ? ((i - 21) / 4  + 2) : (i - 23) / 4;
 				//cout<<"i="<<i<<"   catsnp="<<catsnp<<"\n";
 				j=25;do {j++;}while(i!=stat_num[j]);
 				fileRF <<stat_type[j];
@@ -989,8 +989,8 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			}
 			//cout<<"fin des sumstat 21 à 24 statsnp.size ="<<statsnp.size()<<"\n";
 			if (nsamp > 1) {
-				for (int i = 29; i <= 40; i++) { //NEI + FST + Q2
-					catsnp = (i - 21) / 4;
+				for (int i = 27; i <= 38; i++) { //NEI + FST + Q2
+					catsnp = (i - 23) / 4;
 				    j=25;do {j++;}while(i!=stat_num[j]);
 				    fileRF <<stat_type[j];		
 					for (int sa = 1; sa <= nsamp; sa++) {
@@ -1027,8 +1027,8 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 				//cout<<"fin des sumstat 25 à 32 statsnp.size ="<<statsnp.size()<<"\n";
 			}
 			if (nsamp > 2) {
-				for (int i = 41; i <= 48; i++) { // AML + F3
-					catsnp = (i - 21) / 4;
+				for (int i = 39; i <= 46; i++) { // AML + F3
+					catsnp = (i - 23) / 4;
 					j=25;do {j++;}while(i!=stat_num[j]);
 					fileRF <<stat_type[j];
 					for (int sa = 1; sa <= nsamp; sa++) {
@@ -1072,9 +1072,9 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			}
 			//cout<<"fin des sumstat 37 à 40 statsnp.size ="<<statsnp.size()<<"\n";
 			if (nsamp > 3) {
-				for (int i = 49; i <= 52; i++) { // F4
+				for (int i = 47; i <= 50; i++) { // F4
 					int r = 4;
-					catsnp = (i - 21) / 4;
+					catsnp = (i - 23) / 4;
 					j=25;do {j++;}while(i!=stat_num[j]);
 					fileRF <<stat_type[j];
 					std::vector<bool> selector(nsamp);

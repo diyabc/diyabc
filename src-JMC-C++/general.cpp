@@ -60,7 +60,7 @@ extern "C" {
 
 extern "C" void __libc_freeres(void);
 
-#define NSTAT 59
+#define NSTAT 57
 
 DataC dataobs, datasim;
 vector<LocusGroupC> groupe;
@@ -74,41 +74,39 @@ ofstream fprog;
 ofstream fpar;
 
 void initstat_typenum() {
-	string stat_type0[NSTAT] = {"PID","NAL","HET","VAR","MGW","N2P","H2P","V2P","FST","LIK","DAS","DM2","AML","NHA","NSS","MPD","VPD","DTA","PSS","MNS","VNS","NH2","NS2","MP2","MPB","HST","SML","HP0","HM1","HV1","HMO","QP0","QM1","QV1","QMO","FP0","FM1","FV1","FMO","NP0","NM1","NV1","NMO","LP0","LM1","LV1","LMO","AP0","AM1","AV1","AMO","RP0","RM1","RV1","RMO", "ZP0","ZM1","ZV1","ZMO" };
-	int stat_num0[NSTAT] = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , -1 , -2 , -3 , -4 , -5 , -6 , -7 , -8 , -9 , -10 , -11 , -12 , -13 , -14 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40, 41, 42, 43, 44, 45, 46, 47,48,49, 50,51,52 };
+	string stat_type0[NSTAT] = {"PID","NAL","HET","VAR","MGW","N2P","H2P","V2P","FST","LIK","DAS","DM2","AML","NHA","NSS","MPD","VPD","DTA","PSS","MNS","VNS","NH2","NS2","MP2","MPB","HST","SML","QV1","QMO","HP0","HM1","HV1","HMO","FP0","FM1","FV1","FMO","NP0","NM1","NV1","NMO","LP0","LM1","LV1","LMO","AP0","AM1","AV1","AMO","RP0","RM1","RV1","RMO", "ZP0","ZM1","ZV1","ZMO" };
+	int stat_num0[NSTAT] = { 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , -1 , -2 , -3 , -4 , -5 , -6 , -7 , -8 , -9 , -10 , -11 , -12 , -13 , -14 , 21 , 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 , 40, 41, 42, 43, 44, 45, 46, 47,48,49, 50 };
 	/*  Numérotation des stat
-	 * 	1 : nal			-1 : nha			 21 : moyenne des genic diversities
-	 *  2 : het			-2 : nss             22 : variance des genic diversities
-	 *  3 : var			-3 : mpd			 23 : premier quartile des genic diversities
-	 *  4 : MGW			-4 : vpd			 24 : troisième quartile des genic diversities
-	 *										 25 : moyenne des estimations de Q1
-	 *										 26 : variance des estimations de Q1
-	 *										 27 : premier quartile des estimations de Q1
-	 *										 28 : dernier quartile des estimations de Q1 	 
-	 *  5 : Fst			-5 : dta			 29 : moyenne des distances de Fst
-	 *  6 : lik			-6 : pss			 30 : variance des distances de Fst
-	 *  7 : dm2			-7 : mns			 31 : premier quartile des distances de Fst
-	 *  8 : n2P			-8 : vns			 32 : troisième quartile des distances de Fst
-	 *  9 : h2P			-9 : nh2			 33 : moyenne des distances Nei
-	 * 10 : v2P		   -10 : ns2			 34 : variance des distances Nei
-	 * 11 : das        -11 : mp2			 35 : premier quartile des distances Nei
-	 * 12 : Aml        -12 : mpb			 36 : troisième quartile des distances Nei
-	 *										 37 : moyenne des estimations de Q2
-	 *										 38 : variance des estimations de Q2
-	 *										 39 : premier quartile des estimations de Q2
-	 *										 40 : dernier quartile des estimations de Q2 
-	 *      		   -13 : fst			 41 : moyenne des estimations d'admixture
-	 * 				   -14 : aml			 42 : variance des estimations d'admixture
-	 * 				            			 43 : premier quartile des estimations d'admixture
-	 * 										 44 : troisième quartile des estimations d'admixture
-	 *										 45 : moyenne des estimations de F3
-	 *										 46 : variance des estimations de F3
-	 *										 47 : premier quartile des estimations de F3
-	 *										 48 : dernier quartile des estimations de F3 
-	 *										 49 : moyenne des estimations de F4
-	 *										 50 : variance des estimations de F4
-	 *										 51 : premier quartile des estimations de F4
-	 *										 52 : dernier quartile des estimations de F4 
+	 *										 21 : premier quartile des estimations de Q1
+	 *										 22 : dernier quartile des estimations de Q1 	 
+	 * 	1 : nal			-1 : nha			 23 : moyenne des genic diversities
+	 *  2 : het			-2 : nss             24 : variance des genic diversities
+	 *  3 : var			-3 : mpd			 25 : premier quartile des genic diversities
+	 *  4 : MGW			-4 : vpd			 26 : troisième quartile des genic diversities
+	 *  5 : Fst			-5 : dta			 27 : moyenne des distances de Fst
+	 *  6 : lik			-6 : pss			 28 : variance des distances de Fst
+	 *  7 : dm2			-7 : mns			 29 : premier quartile des distances de Fst
+	 *  8 : n2P			-8 : vns			 30 : troisième quartile des distances de Fst
+	 *  9 : h2P			-9 : nh2			 31 : moyenne des distances Nei
+	 * 10 : v2P		   -10 : ns2			 32 : variance des distances Nei
+	 * 11 : das        -11 : mp2			 33 : premier quartile des distances Nei
+	 * 12 : Aml        -12 : mpb			 34 : troisième quartile des distances Nei
+	 *										 35 : moyenne des estimations de Q2
+	 *										 36 : variance des estimations de Q2
+	 *										 37 : premier quartile des estimations de Q2
+	 *										 38 : dernier quartile des estimations de Q2 
+	 *      		   -13 : fst			 39 : moyenne des estimations d'admixture
+	 * 				   -14 : aml			 40 : variance des estimations d'admixture
+	 * 				            			 41 : premier quartile des estimations d'admixture
+	 * 										 42 : troisième quartile des estimations d'admixture
+	 *										 43 : moyenne des estimations de F3
+	 *										 44 : variance des estimations de F3
+	 *										 45 : premier quartile des estimations de F3
+	 *										 46 : dernier quartile des estimations de F3 
+	 *										 47 : moyenne des estimations de F4
+	 *										 48 : variance des estimations de F4
+	 *										 49 : premier quartile des estimations de F4
+	 *										 50 : dernier quartile des estimations de F4 
 	 * 
 	 */
 	stat_type = new string[NSTAT];
