@@ -301,7 +301,7 @@ void ParticleC::cal_snnei(int gr, int numsnp) {
 }
 
 void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
-	long double x = 0, w;
+	long double num = 0, den = 0, w;
 	int iloc,loc;
 	int npopr = min(npop,this->nsample);
 	auto& statC = this->grouplist[gr].sumstatsnp[numsnp];
@@ -320,10 +320,12 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 		if (w > 0.0) {
 			if (dataobs.filetype == 2) { //SNP
 				int S_1 = 0, S_2 = 0;
-				long double pi1 = 0.0, pi2 = 0.0, SSI = 0.0, SSP = 0.0, nc, MSI, MSP, num, den;
+				long double pi1 = 0.0, pi2 = 0.0;
+				long double nc, MSI, MSP;
+				long double SSI = 0.0, SSP = 0.0; 
 				for (auto r : samples)
 				{
-					long double n = (long double)this->samplesize(loc, r);
+					long double n = static_cast<long double>(this->samplesize(loc, r));
 					if (n > 0.0)
 					{
 						S_1 += r;
@@ -338,21 +340,62 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 				pi2 /= S_1;
 				for (auto r : samples)
 				{
-					long double n = (long double)this->samplesize(loc, r);
+					long double n = static_cast<long double>(this->samplesize(loc, r));
 					if (n > 0.0)
 					{
-						double x = this->locuslist[loc].freq[r][0] * n;
+						long double x = this->locuslist[loc].freq[r][0] * n;
 						SSP += n * (pow(x / n - pi1, 2) + pow((1 - x) / n - pi2, 2));
 					}
 				}
-				nc = (S_1 - S_2 / S_1) / ((long double)npopr - 1.0);
-				MSI = SSI / (S_1 - (long double)npopr);
-				MSP = SSP / ((long double)npopr - 1.0);
+				nc = (S_1 - S_2 / S_1) / (static_cast<long double>(npopr) - 1.0);
+				MSI = SSI / (S_1 - static_cast<long double>(npopr));
+				MSP = SSP / (static_cast<long double>(npopr) - 1.0);
 				num = (MSP - MSI);
 				den = (MSP + (nc - 1.0) * MSI);
-			} else {
-				
+			} else { // POOLSEQ
+				long double R_1 = 0.0, R_2 = 0.0;
+				long double C_1 = 0.0, C_1_star = 0.0, nc;
+				long double MSI, MSP;
+				long double pi1 = 0.0, pi2 = 0.0;
+				long double SSI = 0.0, SSP = 0.0;
+				for (auto r: samples)
+				{	
+					long double c = static_cast<long double>(this->samplesize(loc, r));
+					long double n = static_cast<long double>(this->locuslist[loc].nreads[r]);
+					if (c > 0.0) {
+						C_1 += n/c + (c -1)/c;
+						C_1_star += n * ( n/c + (c-1)/c);
+						R_1 += n;
+						R_2 += n * n;
+						if (n > 0.0)
+						{
+							long double x = static_cast<long double>(this->locuslist[loc].nreads1[r]);
+							pi1 += x;
+							pi2 += n - x;
+							SSI += (x - (x*x)/n) + ((n - x) - (n - x)*(n-x)/n);
+						}
+					}
+				}
+				pi1 /= static_cast<long double>(R_1);
+				pi2 /= static_cast<long double>(R_2);
+				C_1_star /= static_cast<long double>(R_1);
+				for (auto r: samples)
+				{
+					long double n = static_cast<long double>(this->locuslist[loc].nreads[r]);
+					if (n > 0.0) {
+						long double x = static_cast<long double>(this->locuslist[loc].nreads1[r]);
+						long double r1 = x/n - pi1;
+						long double r2 = (n -x)/n - pi2;
+						SSP += n * (r1*r1 + r2*r2);
+					}
+				}
+				nc = (R_1 - R_2/R_1)/(C_1 - C_1_star);
+				MSI = SSI /(R_1 - C_1);
+				MSP = SSP /(C_1 - C_1_star);
+				num = (MSP - MSI);
+				den = (MSP + (nc - 1.0)*MSI);
 			}
+			this->cal_snpstatFstacc(gr, numsnp, num, den, w);
 		}
 	}
 	// transform(samples.begin(),samples.end(),n.begin(),
@@ -2104,6 +2147,15 @@ void ParticleC::cal_snpstatRedinit(int gr, int numsnp)
 	stsnp.sw12 = 0.0;
 	stsnp.mx1 = 0.0;
 	stsnp.mx12 = 0.0;
+	stsnp.num = 0.0;
+	stsnp.den = 0.0;
+}
+
+void ParticleC::cal_snpstatFstacc(int gr, int numsnp, long double num, long double den, long double w)  {
+	StatsnpC& stsnp = this->grouplist[gr].sumstatsnp[numsnp];
+	stsnp.num += num;
+	stsnp.den += den;
+	this->cal_snpstatRedacc(gr, numsnp, num/den, w);
 }
 
 void ParticleC::cal_snpstatRedacc(int gr, int numsnp, long double x , long double w) {

@@ -9,6 +9,7 @@
 #include "DataDouble.h"
 #include "ForestClassification.h"
 #include "ForestRegression.h"
+#include "abcranger.hpp"
 
 using namespace std;
 
@@ -23,8 +24,6 @@ void print(InputIt it, InputIt end_it)
              << " : " << scendesc << endl;
     }
 }
-int N = 0;
-
 // uint32_t ntohl(uint32_t netlong)
 // {
 //     union {
@@ -40,8 +39,15 @@ int N = 0;
 //     return netlong;
 // }
 
-int main() {
-    ifstream headerStream("headerRF.txt",ios::in);
+std::random_device rd;
+
+float abcranger(string headerpath, string reftablepath, string statobspath, int ntree, int N, int nthreadsp) {
+
+
+    ///////////////////////////////////////// read headers
+    cout << "///////////////////////////////////////// read headers" << endl;
+
+    ifstream headerStream(headerpath,ios::in);
     headerStream >> noskipws;
     const std::string hS(istream_iterator<char>{headerStream}, {});
     
@@ -84,9 +90,7 @@ int main() {
                 reali++;
             }
         }
-//        cout << "blah : " << (*it++) << " blih : " << (*it++) << " blouh: " << (*it++) << endl;
     }
-//    cout << paramdesc["BD4"] << endl;
     int realparamtot = reali - 1;
     vector<vector<int>> parambyscenh(nscenh);
     const regex splitre("\\W");
@@ -113,7 +117,12 @@ int main() {
     for(sregex_token_iterator it(allstatsname.begin(),allstatsname.end(),splitre2,-1); it != endregexp; it++)
         allcolspre.push_back(*it);
 
-    ifstream reftableStream("reftableRF.bin",ios::in|ios::binary);
+    cout << "read headers done." << endl;
+
+     ///////////////////////////////////////// read reftable
+    cout << "///////////////////////////////////////// read reftable" << endl;
+
+    ifstream reftableStream(reftablepath,ios::in|ios::binary);
     int realnrec;
     reftableStream.read(reinterpret_cast<char *>(&realnrec),sizeof(realnrec));
     int nrec = N > 0 ? min(realnrec,N) : realnrec;
@@ -153,15 +162,123 @@ int main() {
             data.set(j,i,r,hasError);
         }
     }
-    ForestClassification forestclass;
+    cout << "read reftable done." << endl;
+
+    ///////////////////////////////////////// read statobs
+    cout << "///////////////////////////////////////// read statobs" << endl;
+
+    ifstream statobsStream(statobspath,ios::in);
+    statobsStream >> noskipws;
+    const std::string sS(istream_iterator<char>{statobsStream}, {});
+    const regex stat_re("\\n?(-?\\d+\\.\\d+\\s+)");
+    sregex_token_iterator itstat(begin(sS), end(sS), stat_re, {1});
+    vector<double> statobs(nstat);
+    it = itstat;
+    int i = 0;
+    while (it != endregexp) {
+        const string st(*it++);
+        statobs[i++] = stod(st);
+    }
+
+    cout << "read statobs done." << endl;
+
+
+    DataDouble datastatobs(statobs.data(),statsname,1,nstat);
     vector<string> catvars;
+    int nthreads = nthreadsp > 0 ? nthreadsp : 0;
+    ///////////////////////////////////////// training classifier
+    cout << endl << "///////////////////////////////////////// training classifier" << endl;
+
+    ForestClassification forestclass;
     forestclass.init("Y", 
                      MemoryMode::MEM_DOUBLE,
                      &data,
                      0,
                      "ranger_out",
-                     500,123456,
+                     ntree,
+                     rd(),
+                     nthreads,
+                     ImportanceMode::IMP_GINI,
                      0,
+                     "",
+                     false,
+                     true,
+                     catvars,
+                     false,
+                     DEFAULT_SPLITRULE,
+                     false,
+                     1,
+                     DEFAULT_ALPHA,
+                     DEFAULT_MINPROP,
+                     false,
+                     DEFAULT_PREDICTIONTYPE,
+                     DEFAULT_NUM_RANDOM_SPLITS);
+    forestclass.setverboseOutput(&cout);
+    forestclass.run(true);
+    auto preds = forestclass.getPredictions();
+    for(int i = 0; i < nrec; i++) {
+        auto y = data.get(i,nstat);
+        data.set(nstat,i,static_cast<double>(y == preds[0][0][i]),hasError);
+    }
+    forestclass.writeOutput();
+    forestclass.saveToFile();
+
+    cout << "Training classifier done." << endl;
+
+    ///////////////////////////////////////// predicting scenarii
+    cout << endl << "///////////////////////////////////////// predicting scenarii" << endl;
+
+    ForestClassification forestpredstat;
+    forestpredstat.init("Y", 
+                     MemoryMode::MEM_DOUBLE,
+                     &datastatobs,
+                     0,
+                     "ranger_predall",
+                     ntree,
+                     rd(),
+                     nthreads,
+                     ImportanceMode::IMP_GINI,
+                     0,
+                     "",
+                     true,
+                     true,
+                     catvars,
+                     false,
+                     DEFAULT_SPLITRULE,
+                     true,
+                     1,
+                     DEFAULT_ALPHA,
+                     DEFAULT_MINPROP,
+                     false,
+                     DEFAULT_PREDICTIONTYPE,
+                     DEFAULT_NUM_RANDOM_SPLITS);
+    forestpredstat.setverboseOutput(&cout);
+    forestpredstat.loadFromFile("ranger_out.forest");
+    forestpredstat.run(true);
+    forestpredstat.writeOutput();
+    auto predallstatobs = forestpredstat.getPredictions();
+    vector<float> votes(nscen,0.0);
+    for(int i = 0; i < ntree; i++) {
+        votes[predallstatobs[0][0][i]-1] += 1.0;
+    }
+    for(auto &vote : votes) vote /= static_cast<float>(ntree);
+    cout << "votes :" << endl;
+    for(auto i = 1; i <= nscen; i++) cout << " [" << i << "]: " << votes[i-1];
+    cout << endl; 
+    cout << "predicting scenarii done." << endl;
+
+    ///////////////////////////////////////// training error predictor
+    cout << endl << "///////////////////////////////////////// training error predictor" << endl;
+
+    ForestRegression foresterror;
+    foresterror.init("Y", 
+                     MemoryMode::MEM_DOUBLE,
+                     &data,
+                     0,
+                     "ranger_error",
+                     ntree,
+                     rd(),
+                     nthreads,
                      ImportanceMode::IMP_GINI,
                      0,
                      "",
@@ -177,11 +294,50 @@ int main() {
                      false,
                      DEFAULT_PREDICTIONTYPE,
                      DEFAULT_NUM_RANDOM_SPLITS);
-    forestclass.setverboseOutput(&cout);
-    forestclass.run(true);
-    forestclass.writeOutput();
-    forestclass.saveToFile();
-//    forestclass.writeOutput();
-    cout << endl;
+    foresterror.setverboseOutput(&cout);
+    foresterror.run(true);
+    foresterror.writeOutput();
+    foresterror.saveToFile();
+
+    cout << "training error predictor done." << endl;
+
+    ///////////////////////////////////////// predicting posterior error rate
+    cout << endl << "///////////////////////////////////////// predicting posterior error rate" << endl;
+
+    ForestRegression foresterrorstatobs;
+    foresterrorstatobs.init("Y",
+                            MemoryMode::MEM_DOUBLE,
+                            &datastatobs,
+                            0,
+                            "ranger_error",
+                            ntree,
+                            rd(),
+                            nthreads,
+                            ImportanceMode::IMP_GINI,
+                            0,
+                            "",
+                            true,
+                            true,
+                            catvars,
+                            false,
+                            SplitRule::LOGRANK,
+                            false,
+                            1,
+                            DEFAULT_ALPHA,
+                            DEFAULT_MINPROP,
+                            false,
+                            DEFAULT_PREDICTIONTYPE,
+                            DEFAULT_NUM_RANDOM_SPLITS);
+    foresterrorstatobs.setverboseOutput(&cout);
+    foresterrorstatobs.loadFromFile("ranger_error.forest");
+    foresterrorstatobs.run(true);
+    foresterrorstatobs.writeOutput();
+    auto predsposterior = foresterrorstatobs.getPredictions();
+    cout << "Posterior error rate : " << predsposterior[0][0][0] << endl;
+
+
+    cout << "predicting posterior error rate done." << endl;
     cout.flush();
+
+    return predsposterior[0][0][0];
 }

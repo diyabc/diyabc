@@ -29,7 +29,7 @@ struct StatC {
 class StatsnpC {
 public:
 	int cat, samp, samp1, samp2, samp3, group, n;
-	long double sw, sw0, sw1, sw12, mx, mx1, mx12;
+	long double sw, sw0, sw1, sw12, mx, mx1, mx12,num,den;
 	bool defined;
 	StatsnpC& operator=(StatsnpC const& source);
 };

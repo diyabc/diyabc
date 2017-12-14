@@ -260,6 +260,7 @@ public:
 	long double cal_qu3L(int n, long double* x);
 	void cal_snpstatRedinit(int gr, int numsnp);	
 	void cal_snpstatRedacc(int gr, int numsnp, long double x , long double w);
+	void cal_snpstatFstacc(int gr, int numsnp, long double num, long double den, long double w);
 	long double cal_p0L(int gr, int numsnp);
 	long double cal_moyL0(int gr, int numsnp);
 	long double cal_moyL(int gr, int numsnp);
