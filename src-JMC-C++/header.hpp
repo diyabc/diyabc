@@ -14,9 +14,11 @@
 
 #include "history.hpp"
 
+using namespace std;
+
 class MutParameterC {
 public:
-	std::string name;
+	string name;
 	int groupe;
 	int category; //0 pour mutmoy, 1 pour Pmoy, 2 pour snimoy, 3 pour musmoy, 4 pour k1moy et 5 pour k2moy
 	double value;
@@ -30,44 +32,44 @@ public:
 
 class HeaderC {
 public:
-	std::string message, datafilename, entete, entetehist, entetemut, entetemut0, entetestat;
-	std::string pathbase;
+	string message, datafilename, entete, entetehist, entetemut, entetemut0, entetestat;
+	string pathbase;
 	int nparamtot, nstat, nstatsnp, nscenarios, nconditions, ngroupes, nparamut, nsimfile;
-	std::vector<std::string> statname;
+	vector<string> statname;
 	ScenarioC scen;
-	std::vector<HistParameterC> histparam;
-	std::vector<ConditionC> condition;
+	vector<HistParameterC> histparam;
+	vector<ConditionC> condition;
 	bool drawuntil, reference;
-	std::vector<MutParameterC> mutparam;
-	std::vector<float> stat_obs;
+	vector<MutParameterC> mutparam;
+	vector<float> stat_obs;
 	float reffreqmin;
 	float threshold;
 
 	void libere();
 	void assignloc(bool sim, int gr);
 
-	int readHeaderDebut(std::ifstream& file);
-	int readHeaderScenarios(std::ifstream& file);
-	int readHeaderHistParam(std::ifstream& file);
-	int readHeaderLoci(std::ifstream& file);
-	int readHeaderGroupPrior(std::ifstream& file);
-	int readHeaderAllStat(std::ifstream& file, std::string headerfilename);
-	int readHeaderGroupStat(std::ifstream& file);
-	int readHeaderEntete(std::ifstream& file);
+	int readHeaderDebut(ifstream& file);
+	int readHeaderScenarios(ifstream& file);
+	int readHeaderHistParam(ifstream& file);
+	int readHeaderLoci(ifstream& file);
+	int readHeaderGroupPrior(ifstream& file);
+	int readHeaderAllStat(ifstream& file, string headerfilename);
+	int readHeaderGroupStat(ifstream& file);
+	int readHeaderEntete(ifstream& file);
 	int buildSuperScen();
 	int buildMutParam();
-	int readHeader(std::string headerfilename);
+	int readHeader(string headerfilename);
 
-	int readHeadersimDebut(std::ifstream& file);
-	int readHeadersimScenario(std::ifstream& file);
-	int readHeadersimHistParam(std::ifstream& file);
-	int readHeadersimLoci(std::ifstream& file);
-	int readHeadersimGroupPrior(std::ifstream& file);
+	int readHeadersimDebut(ifstream& file);
+	int readHeadersimScenario(ifstream& file);
+	int readHeadersimHistParam(ifstream& file);
+	int readHeadersimLoci(ifstream& file);
+	int readHeadersimGroupPrior(ifstream& file);
 	int readHeadersimGroupSNP();
 	int readHeadersimFin();
-	int readHeadersim(std::string headersimfilename);
+	int readHeadersim(string headersimfilename);
 
-	string calstatobs(std::string statobsfilename);
+	string calstatobs(string statobsfilename);
 private:
 	//HeaderC(const HeaderC & source) {};
 	//HeaderC & operator=(const HeaderC & source) { return *this;} ;

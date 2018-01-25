@@ -201,7 +201,7 @@ float abcranger(string headerpath, string reftablepath, string statobspath, int 
                      ImportanceMode::IMP_GINI,
                      0,
                      "",
-                     false,
+                     true,
                      true,
                      catvars,
                      false,
