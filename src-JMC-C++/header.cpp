@@ -21,8 +21,12 @@
 #include "history.hpp"
 #include "particuleC.hpp"
 #include "header.hpp"
+#include "statdefs.hpp"
 
 #include <iterator>
+#include <set>
+#include <map>
+
 template <typename T>
 std::ostream& operator<< (std::ostream& out, const std::vector<T>& v) {
   if ( !v.empty() ) {
@@ -45,6 +49,11 @@ extern vector<ScenarioC> scenario;
 
 ParticleC particuleobs;
 
+set<vector<int>> poplist;
+extern vector<statn> stats;
+extern map<sortArr, combAlgFun> sortAlgos;
+extern vector<snpstatn> snp_statns;
+extern const vector<int> nullvec;
 /**
  * Copie du contenu d'une classe MutParameterC
  */
@@ -68,125 +77,6 @@ MutParameterC& MutParameterC::operator=(MutParameterC const& source) {
 	this->prior = source.prior;
 	return *this;
 }
-
-
-/**
- * Copie du contenu d'une classe HeaderC
- */
-/* HeaderC::HeaderC (HeaderC const & source) {
-   this->message = source.message;
-   this->datafilename = source.datafilename;
-   this->entete = source.entete;
-   this->entetehist = source.entetehist;
-   this->entetemut = source.entetemut;
-   this->entetemut0 = source.entetemut0;
-   this->entetestat = source.entetestat;
-   this->pathbase = source.pathbase;
-   this->nparamtot = source.nparamtot;
-   this->nstat = source.nstat;
-   this->nscenarios = source.nscenarios;
-   this->nconditions = source.nconditions;
-   this->ngroupes = source.ngroupes;
-   this->nparamut = source.nparamut;
-   this->nsimfile = source.nsimfile;
-   this->drawuntil = source.drawuntil;
-   this->reference = source.reference;
-   this->message = source.message;
- this->threshold = source.threshold;
- this->reffreqmin = source.reffreqmin;
-   this->drawuntil = source.drawuntil;
- this->reference = source.reference;
-//
- this->scen = source.scen;
- this->dataobs = source.dataobs;
-///// Tableaux à dimmensionner	
- this->stat_obs = new float[this->nstat];
- for (int i=0;i<this->nstat;i++) this->stat_obs[i]=source.stat_obs[i];
- this->mutparam = new MutParameterC[this->nparamut];
- for (int i=0;i<this->nparamut;i++) this->mutparam[i]=source.mutparam[i];
- this->statname = new string[this->nstat];
- for (int i=0;i<this->nstat;i++) this->statname[i]=source.statname[i];
- this->histparam = new HistParameterC[this->nparamtot];
- for (int i=0;i<this->nparamtot;i++) this->histparam[i] = source.histparam[i];
- this->condition = new ConditionC[this->nconditions];
- for (int i=0;i<this->nconditions;i++) this->condition[i] = source.condition[i];
- scenario = new ScenarioC[this->nscenarios];
- for (int i=0;i<this->nscenarios;i++) scenario[i] = source.scenario[i];
- this->groupe = new LocusGroupC[this->ngroupes];
- for (int i=0;i<this->ngroupes;i++) this->groupe[i] = source.groupe[i];
-}
-*/
-/**
- * Definition de l'operateur = pour une instance de la classe HeaderC
- */
-/*HeaderC & HeaderC::operator= (HeaderC const & source) {
-  if (this == &source)  return *this;
-// Suppression des tableaux non nuls
-  if (this->stat_obs != NULL) delete [] this->stat_obs;
-  if (this->mutparam != NULL) delete [] this->mutparam;
-  if (this->statname != NULL) delete [] this->statname;
-  if (this->histparam != NULL) delete [] this->histparam;
-  if (this->condition != NULL) delete [] this->condition;
-  if (scenario != NULL) delete [] scenario;
-  if (this->groupe != NULL) delete [] this->groupe;
-// recopie des constituants	
-  this->message = source.message;
-  this->datafilename = source.datafilename;
-  this->entete = source.entete;
-  this->entetehist = source.entetehist;
-  this->entetemut = source.entetemut;
-  this->entetemut0 = source.entetemut0;
-  this->entetestat = source.entetestat;
-  this->pathbase = source.pathbase;
-  this->nparamtot = source.nparamtot;
-  this->nstat = source.nstat;
-  this->nstatsnp = source.nstatsnp;
-  this->nscenarios = source.nscenarios;
-  this->nconditions = source.nconditions;
-  this->ngroupes = source.ngroupes;
-  this->nparamut = source.nparamut;
-  this->nsimfile = source.nsimfile;
-  this->drawuntil = source.drawuntil;
-  this->reference = source.reference;
-  this->message = source.message;
-  this->threshold = source.threshold;
-  this->reffreqmin = source.reffreqmin;
-  this->drawuntil = source.drawuntil;
-  this->reference = source.reference;
-
-  this->scen = source.scen;
-  this->dataobs = source.dataobs;
-  if (source.stat_obs != NULL){
-	  this->stat_obs = new float[this->nstat];
-	  for (int i=0;i<this->nstat;i++) this->stat_obs[i]=source.stat_obs[i];
-  }
-  if (source.stat_obs != NULL){
-	  this->mutparam = new MutParameterC[this->nparamut];
-	  for (int i=0;i<this->nparamut;i++) this->mutparam[i]=source.mutparam[i];
-  }
-  if (source.statname != NULL){
-	  this->statname = new string[this->nstat];
-	  for (int i=0;i<this->nstat;i++) this->statname[i]=source.statname[i];
-  }
-  if (source.histparam != NULL){
-	  this->histparam = new HistParameterC[this->nparamtot];
-	  for (int i=0;i<this->nparamtot;i++) this->histparam[i] = source.histparam[i];
-  }
-  if (source.condition != NULL){
-	  this->condition = new ConditionC[this->nconditions];
-	  for (int i=0;i<this->nconditions;i++) this->condition[i] = source.condition[i];
-  }
-  if (source.scenario != NULL){
-	  scenario = new ScenarioC[this->nscenarios];
-	  for (int i=0;i<this->nscenarios;i++) scenario[i] = source.scenario[i];
-  }
-  if (source.groupe != NULL){
-	  this->groupe = new LocusGroupC[this->ngroupes+1];
-	  for (int i=0;i<this->ngroupes+1;i++) this->groupe[i] = source.groupe[i];
-  }
-  return *this;
-}	
-  */
 
 
 void MutParameterC::ecris() {
@@ -229,25 +119,6 @@ void HeaderC::assignloc(bool sim, int gr) {
 	}
 }
 
-/*ScenarioC superscen() {
-                int neventm,nn0m,nsampm,nparamm,nparamvarm,nconditionm;
-                neventm=0;    for (int i=0;i<this->nscenarios;i++) {if (neventm<scenario[i].nevent)          neventm=scenario[i].nevent;}
-                nn0m=0;       for (int i=0;i<this->nscenarios;i++) {if (nn0m<scenario[i].nn0)                nn0m=scenario[i].nn0;}
-                nsampm=0;     for (int i=0;i<this->nscenarios;i++) {if (nsampm<scenario[i].nsamp)            nsampm=scenario[i].nsamp;}
-                nparamm=0;    for (int i=0;i<this->nscenarios;i++) {if (nparamm<scenario[i].nparam)         nparamm=scenario[i].nparam;}
-                nparamvarm=0; for (int i=0;i<this->nscenarios;i++) {if (nparamvarm<scenario[i].nparamvar)    nparamvarm=scenario[i].nparamvar;}
-                nconditionm=0;for (int i=0;i<this->nscenarios;i++) {if (nconditionm<scenario[i].nconditions) nconditionm=scenario[i].nconditions;}
-                cout<<"neventm="<<neventm<<"   nn0m="<<nn0m<<"   nsampm="<<nsampm<<"   nparamm="<<nparamm<<"nparamvarm="<<nparamvarm<<"   ncondm="<<nconditionm<<"\n";
-                this->scen.event = new EventC[neventm];
-                this->scen.ne0   = new Ne0C[nn0m];
-
-                for (int i=0;i<nn0m;i++) this->scen.ne0[i].name="blabla";
-                this->scen.time_sample = new int[nsampm];
-                this->scen.histparam = new HistParameterC[nparamm];
-                this->scen.paramvar = new double[nparamvarm+3];
-                if (nconditionm>0) this->scen.condition = new ConditionC[nconditionm];
-
-        }*/
 
 int HeaderC::readHeaderDebut(ifstream& file) {
 	string s1;
@@ -759,6 +630,7 @@ int HeaderC::readHeaderGroupPrior(ifstream& file) {
 	return 0;
 }
 
+
 int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 	string s1;
 	int j, k, gr, nstatgr, nsamp = dataobs.nsample;
@@ -773,6 +645,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 	getline(file, this->entete); //ligne entete
 	//cout<<"this->entete.length()="<<this->entete.length()<<"\n";
 
+/// TODO remove the 14 chars hardcoded limit
 	this->entetehist = this->entete.substr(0, this->entete.length() - 14 * (nparamut + nstat));
 	//cout<<this->entetehist<<"\n\n";
 	if (nparamut > 0) this->entetemut = this->entete.substr(this->entetehist.length(), 14 * nparamut);
@@ -787,374 +660,103 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 
 	this->nstat = 0;
 	//cout<<"Fin de la lecture bidon du header\n";
-	vector<StatsnpC> statsnp;
-	StatsnpC stsnp;
+//	StatsnpC stsnp;
 	//bool trouve;
-	statsnp.resize(0);
+//	statsnp.resize(0);
 	int catsnp;
 	k = 0;
+	stringstream grstringRF("");
 	for (gr = 1; gr <= this->ngroupes; gr++) {
 		// COMPTAGE DES STAT
 		//cout<<"groupe["<<gr<<"].type="<<groupe[gr].type<<"\n";
-		nstatgr = 0;
-		if (groupe[gr].type == 0) { //MICROSAT
-			nstatgr += 4 * nsamp; //"NAL","HET","VAR","MGW"
-			if (nsamp > 1) nstatgr += 8 * nsamp * (nsamp - 1) / 2; //"N2P","H2P","V2P","FST","LIK","DAS","DM2"
-			if (nsamp > 2) nstatgr += nsamp * (nsamp - 1) * (nsamp - 2) / 2; //AML
-		}
-		else if (groupe[gr].type == 1) { //DNA SEQUENCE
-			nstatgr += 8 * nsamp; //"NHA","NSS","MPD","VPD","DTA","PSS","MNS","VNS"
-			if (nsamp > 1) nstatgr += 5 * nsamp * (nsamp - 1) / 2; //"NH2","NS2","MP2","MPB","HST"
-			if (nsamp > 2) nstatgr += nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"SML"
-		}
-		else if (groupe[gr].type >= 2) { //SNP
-			nstatgr += 6 * nsamp; //"QV1","QMO","HP0","HM1","HV1","HMO",
-			if (nsamp > 1) nstatgr += 12 * nsamp * (nsamp - 1) / 2; //"NP0","NM1","NV1","NMO","FP0","FM1","FV1","FMO","LP0","LM1","LV1","LMO"
-			if (nsamp > 2) nstatgr += 8 * nsamp * (nsamp - 1) * (nsamp - 2) / 2; //"AP0","AM1","AV1","AMO","RP0","RM1","RV1","RMO"
-			if (nsamp > 3) nstatgr += 4 * nsamp * (nsamp - 1) * (nsamp - 2) * (nsamp - 3) / 8; // "ZP0", "ZM1", "ZV1", "ZMO"
-		}
-		this->nstat += nstatgr;
-		groupe[gr].nstat = nstatgr;//cout<<"gr="<<gr<<"   nstat="<<nstatgr<<"\n";
+		// nstatgr = 0;
+		// for(auto& s: stats) {
+		// 	if (s.t == groupe[gr].type) nstatgr++;
+		// }
+		// this->nstat += nstatgr;
+		// groupe[gr].nstat = nstatgr;//cout<<"gr="<<gr<<"   nstat="<<nstatgr<<"\n";
+//		groupe[gr].sumstat = vector<StatC>(nstatgr);//cout<<"dimensionnement\n";
+		groupe[gr].sumstat = vector<StatC>();//cout<<"dimensionnement\n";
+		groupe[gr].sumstatsnp = vector<StatsnpC>();//cout<<"dimensionnement\n";
 
-		getline(file,s1);fileRF <<s1<<"\n";
-		getline(file,s1);
-		s1 = s1.substr(0,s1.find("and "))+"and ";
-		fileRF <<s1<<this->nstat<<" summary statistics\n";
-		bool trouve=false;
-		while (!trouve) {
-			getline(file,s1);//cout <<s1<<"\n";
-			trouve=(s1.substr(0,24) == "group summary statistics");
-			if (!trouve) fileRF <<s1<<"\n";
+		stringstream stringRF("");
+		int numsnp = 0;
+		int k = 0;
+		for(int i = 0; i < stats.size(); i++) {
+			auto&& onestat = stats[i];
+			if (!checkStatType(groupe[gr].type,onestat.t) || 
+				(nsamp < onestat.npop) ||
+				((nsamp < 4) && (onestat.npop == 0))) continue;			
+			auto&& lpops = sortAlgos[onestat.comb](nsamp,onestat.npop);
+			stringRF << onestat.name;
+			for(auto&& p: lpops) {
+				auto&& popl = *(poplist.insert(p).first);
+				StatC statc { 
+					i,
+					gr,
+					0,
+					popl
+				};
+				string ststr;
+				if (popl.size() > 0) {
+					ststr = accumulate(next(popl.begin()),popl.end(),
+						to_string(popl[0]+1),
+						[] (string a, int b) {
+							return a + "&" + to_string(b+1);
+						});
+				} else {
+					ststr = "0";
+				}
+				stringRF << " " << ststr;
+				s1 = onestat.name + "_" + to_string(gr) + "_" + ststr;
+				this->entetestat += centre(s1, 14);
+				if (auto&& onestatsnp = onestat.snps) {
+					int k = 0;
+					auto&& lsns = (*onestatsnp).get();
+					auto&& statfound = find_if(groupe[gr].sumstat.begin(),groupe[gr].sumstat.end(),[&](StatC& sns) {
+						if (auto&& onestatsnp1 = stats[sns.cat].snps) {
+							auto&& lsns1 = (*onestatsnp1).get();
+							return 	(lsns1 == lsns) && (sns.samp.get() == popl);	
+						} else return false;
+					});
+					if (statfound != groupe[gr].sumstat.end()) {
+						statc.numsnp = statfound->numsnp;
+					} else {
+						statc.numsnp = numsnp++;
+						groupe[gr].sumstatsnp.push_back(StatsnpC { popl });
+					}
+				}
+				groupe[gr].sumstat.push_back(statc);
+			}
+			stringRF <<"\n";				
 		}
-		fileRF <<"group summary statistics ("<<groupe[gr].nstat<<")\n";
-		fileRF <<"group G1 ("<<groupe[gr].nstat<<")\n";
+		groupe[gr].nstatsnp = groupe[gr].sumstatsnp.size();
+		groupe[gr].nstat = groupe[gr].sumstat.size();
+		this->nstat += groupe[gr].nstat;
+		file.seekg (0, file.beg); //remise à zéro de file	
+
+		grstringRF <<"group summary statistics ("<<groupe[gr].nstat<<")\n";
+		grstringRF <<"group G" << gr << " ("<<groupe[gr].nstat<<")\n";
+		grstringRF << stringRF.rdbuf() << "\n";
 		//DEFINITION DES STAT
-		groupe[gr].sumstat = vector<StatC>(nstatgr);//cout<<"dimensionnement\n";
+
 		//cout<<"type du groupe : "<<groupe[gr].type<<"\n";
-		if (groupe[gr].type == 0) { //MICROSAT 
-			for (int i = 1; i <= 4; i++) {
-				fileRF <<stat_type[i];				
-				for (int sa = 1; sa <= nsamp; sa++) {
-					fileRF <<" "<<sa;
-					groupe[gr].sumstat[k].cat = i;
-					groupe[gr].sumstat[k].samp = sa;
-					s1 = stat_type[i] + "_" + IntToString(gr) + "_" + IntToString(sa);
-					this->entetestat += centre(s1, 14);
-					//cout<<"k="<<k<<"  "<<this->entetestat<<"\n";
-					k++;
-				}
-				fileRF <<"\n";				
-			}
-			if (nsamp > 1) {
-				for (int i = 5; i <= 11; i++) {
-					fileRF <<stat_type[i];
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
-							fileRF <<" "<<sa<<"&"<<sa1;
-							groupe[gr].sumstat[k].cat = i;
-							groupe[gr].sumstat[k].samp = sa;
-							groupe[gr].sumstat[k].samp1 = sa1;
-							s1 = stat_type[i] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
-							this->entetestat += centre(s1, 14);
-							//cout<<"k="<<k<<"  "<<this->entetestat<<"\n";
-							k++;
-							if (i == 9) {
-								fileRF <<" "<<sa<<"&"<<sa1;
-								groupe[gr].sumstat[k].cat = i;
-								groupe[gr].sumstat[k].samp = sa1;
-								groupe[gr].sumstat[k].samp1 = sa;
-								s1 = stat_type[i] + "_" + IntToString(gr) + "_" + IntToString(sa1) + "&" + IntToString(sa);
-								this->entetestat += centre(s1, 14);
-								k++;
-							}
-						}
-					}
-					fileRF <<"\n";
-				}
-			}
-			if (nsamp > 2) {
-				for (int i = 12; i <= 12; i++) {
-					fileRF <<stat_type[i];
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
-							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
-								if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
-									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
-									groupe[gr].sumstat[k].cat = i;
-									groupe[gr].sumstat[k].samp = sa;
-									groupe[gr].sumstat[k].samp1 = sa1;
-									groupe[gr].sumstat[k].samp2 = sa2;
-									s1 = stat_type[i] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
-									this->entetestat += centre(s1, 14);
-									k++;
-								}
-							}
-						}
-					}
-					fileRF<<"\n";
-				}
-			}
-		}
-		if (groupe[gr].type == 1) { //DNA SEQUENCE
-			for (int i = -1; i >= -8; i--) {
-				j=12;do {j++;}while(i!=stat_num[j]);
-				fileRF <<stat_type[j];
-				for (int sa = 1; sa <= nsamp; sa++) {
-					groupe[gr].sumstat[k].cat = i;
-					groupe[gr].sumstat[k].samp = sa;
-					s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa);
-					this->entetestat += centre(s1, 14);
-
-					fileRF <<" "<<sa;
-					k++;
-				}
-				fileRF<<"\n";
-			}
-			if (nsamp > 1) {
-				for (int i = -9; i >= -13; i--) {
-					j=12;do {j++;}while(i!=stat_num[j]);
-					fileRF <<stat_type[j];
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
-							groupe[gr].sumstat[k].cat = i;
-							groupe[gr].sumstat[k].samp = sa;
-							groupe[gr].sumstat[k].samp1 = sa1;
-							s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
-							this->entetestat += centre(s1, 14);
-							fileRF <<" "<<sa<<"&"<<sa1;
-							k++;
-						}
-					}
-					fileRF <<"\n";
-				}
-			}
-			if (nsamp > 2) {
-				for (int i = -14; i >= -14; i--) {
-					j=12;do {j++;}while(i!=stat_num[j]);
-					fileRF <<stat_type[j];
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
-							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
-								if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
-									groupe[gr].sumstat[k].cat = i;
-									groupe[gr].sumstat[k].samp = sa;
-									groupe[gr].sumstat[k].samp1 = sa1;
-									groupe[gr].sumstat[k].samp2 = sa2;
-									s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
-									this->entetestat += centre(s1, 14);
-									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
-									k++;
-								}
-							}
-						}
-					}
-					fileRF <<"\n";
-				}
-			}
-		}
-		if ((groupe[gr].type == 2)or (groupe[gr].type == 3)) { //SNP
-			//cout<<"debut de la recherche des stat snp\n";
-			for (int i = 21; i <= 26; i++) { // Q1 + HET
-				catsnp = (i <= 22) ? ((i - 21) / 4  + 2) : (i - 23) / 4;
-				//cout<<"i="<<i<<"   catsnp="<<catsnp<<"\n";
-				j=25;do {j++;}while(i!=stat_num[j]);
-				fileRF <<stat_type[j];
-				for (int sa = 1; sa <= nsamp; sa++) {
-					groupe[gr].sumstat[k].cat = i;
-					groupe[gr].sumstat[k].samp = sa;
-					s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa);
-					this->entetestat += centre(s1, 14);
-					fileRF <<" "<<sa;
-					//cout<<this->entetestat<<"\n";
-					trouve = false;
-					if (statsnp.size() > 0) {
-						for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-							trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp));
-							if (trouve) {
-								groupe[gr].sumstat[k].numsnp = jj;
-								break;
-							}
-						}
-					}
-					if (not trouve) {
-						stsnp.cat = catsnp;
-						stsnp.samp = groupe[gr].sumstat[k].samp;
-						stsnp.defined = false;
-						groupe[gr].sumstat[k].numsnp = statsnp.size();
-						statsnp.push_back(stsnp);
-					}
-					k++;
-				}
-				fileRF <<"\n";
-			}
-			//cout<<"fin des sumstat 21 à 24 statsnp.size ="<<statsnp.size()<<"\n";
-			if (nsamp > 1) {
-				for (int i = 27; i <= 38; i++) { //NEI + FST + Q2
-					catsnp = (i - 23) / 4;
-				    j=25;do {j++;}while(i!=stat_num[j]);
-				    fileRF <<stat_type[j];		
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = sa + 1; sa1 <= nsamp; sa1++) {
-							groupe[gr].sumstat[k].cat = i;
-							groupe[gr].sumstat[k].samp = sa;
-							groupe[gr].sumstat[k].samp1 = sa1;
-							s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1);
-							this->entetestat += centre(s1, 14);
-							fileRF <<" "<<sa<<"&"<<sa1;
-							trouve = false;
-							if (statsnp.size() > 0) {
-								for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-									trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1));
-									if (trouve) {
-										groupe[gr].sumstat[k].numsnp = jj;
-										break;
-									}
-								}
-							}
-							if (not trouve) {
-								stsnp.cat = catsnp;
-								stsnp.samp = groupe[gr].sumstat[k].samp;
-								stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-								stsnp.defined = false;
-								groupe[gr].sumstat[k].numsnp = statsnp.size();
-								statsnp.push_back(stsnp);
-							}
-							k++;
-						}
-					}
-					fileRF <<"\n";
-				}
-				//cout<<"fin des sumstat 25 à 32 statsnp.size ="<<statsnp.size()<<"\n";
-			}
-			if (nsamp > 2) {
-				for (int i = 39; i <= 46; i++) { // AML + F3
-					catsnp = (i - 23) / 4;
-					j=25;do {j++;}while(i!=stat_num[j]);
-					fileRF <<stat_type[j];
-					for (int sa = 1; sa <= nsamp; sa++) {
-						for (int sa1 = 1; sa1 <= nsamp; sa1++) {
-							for (int sa2 = 1; sa2 <= nsamp; sa2++) {
-								if ((sa1 != sa)and (sa2 != sa)and (sa2 > sa1)) {
-									groupe[gr].sumstat[k].cat = i;
-									groupe[gr].sumstat[k].samp = sa;
-									groupe[gr].sumstat[k].samp1 = sa1;
-									groupe[gr].sumstat[k].samp2 = sa2;
-									s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(sa) + "&" + IntToString(sa1) + "&" + IntToString(sa2);
-									this->entetestat += centre(s1, 14);
-									fileRF <<" "<<sa<<"&"<<sa1<<"&"<<sa2;
-									//cout<<"samples "<<sa<<", "<<sa1<<" et "<<sa2<<"\n";
-									trouve = false;
-									if (statsnp.size() > 0) {
-										for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-											trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1)and (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2));
-											if (trouve) {
-												groupe[gr].sumstat[k].numsnp = jj;
-												break;
-											}
-										}
-									}
-									if (not trouve) {
-										stsnp.cat = catsnp;
-										stsnp.samp = groupe[gr].sumstat[k].samp;
-										stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-										stsnp.samp2 = groupe[gr].sumstat[k].samp2;
-										stsnp.defined = false;
-										groupe[gr].sumstat[k].numsnp = statsnp.size();
-										statsnp.push_back(stsnp);
-									}
-									k++;
-								}
-							}
-						}
-					}
-					fileRF <<"\n";
-				}
-			}
-			//cout<<"fin des sumstat 37 à 40 statsnp.size ="<<statsnp.size()<<"\n";
-			if (nsamp > 3) {
-				for (int i = 47; i <= 50; i++) { // F4
-					int r = 4;
-					catsnp = (i - 23) / 4;
-					j=25;do {j++;}while(i!=stat_num[j]);
-					fileRF <<stat_type[j];
-					std::vector<bool> selector(nsamp);
-					std::fill(selector.begin(), selector.begin() + r, true);
-					std::vector<int> v(nsamp);
-					std::iota(v.begin(), v.end(), 1);
-					std::vector<int> s(r);
-					do
-					{
-						std::copy_if(v.begin(), v.end(), s.begin(), [&](const int &i) { return selector[i - 1]; });
-						do
-						{
-							if (s[1] > s[0] and s[3] > s[2] and s[2] > s[0])
-							{
-
-								groupe[gr].sumstat[k].cat = i;
-								groupe[gr].sumstat[k].samp = s[0];
-								groupe[gr].sumstat[k].samp1 = s[1];
-								groupe[gr].sumstat[k].samp2 = s[2];
-								groupe[gr].sumstat[k].samp3 = s[3];
-								s1 = stat_type[j] + "_" + IntToString(gr) + "_" + IntToString(s[0]) + "&" + IntToString(s[1]) + "&" + IntToString(s[2]) + "&" + IntToString(s[3]);
-								this->entetestat += centre(s1, 14);
-								fileRF <<" "<<s[0]<<"&"<<s[1]<<"&"<<s[2]<<"&"<<s[3];
-								trouve = false;
-								if (statsnp.size() > 0) {
-									for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-										trouve = ((statsnp[jj].cat == catsnp) and 
-												  (statsnp[jj].samp == groupe[gr].sumstat[k].samp) and
-												  (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1) and
-												  (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2) and
-												  (statsnp[jj].samp3 == groupe[gr].sumstat[k].samp3));
-										if (trouve) {
-											groupe[gr].sumstat[k].numsnp = jj;
-											break;
-										}
-									}
-								}
-								if (not trouve) {
-									stsnp.cat = catsnp;
-									stsnp.samp = groupe[gr].sumstat[k].samp;
-									stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-									stsnp.samp2 = groupe[gr].sumstat[k].samp2;
-									stsnp.samp3 = groupe[gr].sumstat[k].samp3;
-									stsnp.defined = false;
-									groupe[gr].sumstat[k].numsnp = statsnp.size();
-									statsnp.push_back(stsnp);
-								}
-								k++;
-						
-							}
-
-						} while (std::next_permutation(s.begin(), s.end()));
-
-					} while (std::prev_permutation(selector.begin(), selector.end()));
-					fileRF<<"\n";
-					
-				}
-				
-			}
-		}
-		//cout<<this->entetestat<<"\n";
-		groupe[gr].nstatsnp = statsnp.size();
-		//cout<<"groupe[gr].nstatsnp="<<groupe[gr].nstatsnp<<"\n";
-		if (groupe[gr].nstatsnp > 0) {
-			groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
-			for (int i = 0; i < groupe[gr].nstatsnp; i++) {
-				groupe[gr].sumstatsnp[i].cat = statsnp[i].cat;
-				groupe[gr].sumstatsnp[i].samp = statsnp[i].samp;
-				groupe[gr].sumstatsnp[i].samp1 = statsnp[i].samp1;
-				groupe[gr].sumstatsnp[i].samp2 = statsnp[i].samp2;
-				groupe[gr].sumstatsnp[i].samp3 = statsnp[i].samp3;
-				groupe[gr].sumstatsnp[i].defined = statsnp[i].defined;
-				//cout<<"recopie de sumstatsnp["<<i<<"]\n";
-			}
-			//cout<<"fin de la boucle\n";
-			statsnp.clear();
-			//cout<<"apres statsnp.clear()\n";
-		}
 		//cout<<"fin du traitement du groupe "<<gr<<"\n";
 	}
+	file.seekg (0, file.beg); //remise à zéro de file	
+	getline(file,s1);fileRF <<s1<<"\n";
+	getline(file,s1);
+	s1 = s1.substr(0,s1.find("and "))+"and ";
+	fileRF <<s1<<this->nstat<<" summary statistics\n";
+	bool trouve = false;
+	while (!trouve) {
+		getline(file, s1); //cout <<s1<<"\n";
+		trouve = (s1.substr(0, 24) == "group summary statistics");
+		if (!trouve)
+			fileRF << s1 << "\n";
+	}
+	fileRF << grstringRF.rdbuf() << "\n";
+
 	splitwords(this->entetestat, " ", statname);
 	//for(int i=0;i<(int)statname.size();i++) cout<<this->statname[i]<<"  ";cout<<"\n";
 	cout << "nstat=" << this->nstat << "\n";
@@ -1173,7 +775,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 int HeaderC::readHeaderGroupStat(ifstream& file) {
 	string s1;
 	vector<string> ss, ss1;
-	int j, k, nss, gr;
+	int j, k, nss, gr,numsnp;
 	//Partie group statistics
 	if (debuglevel == 2) cout << "debut des group stat\n";
 	this->nstat = 0;
@@ -1189,263 +791,53 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 		//cout <<"s1="<<s1<<"   ss[3]="<< ss[3] <<"   atoi = "<< atoi(ss[3].c_str()) <<"\n";
 		groupe[gr].nstat = getwordint(ss[nss - 1], 0);
 		this->nstat += groupe[gr].nstat;
-		groupe[gr].sumstat = vector<StatC>(groupe[gr].nstat);
+//		groupe[gr].sumstat = vector<StatC>(groupe[gr].nstat);
 		k = 0;
-		vector<StatsnpC> statsnp;
-		StatsnpC stsnp;
-		bool trouve;
-		statsnp.resize(0);
-		int catsnp;
+		numsnp = 0;
+//		vector<StatsnpC> statsnp;
+//		StatsnpC stsnp;
 		if (debuglevel == 2) cout << "nstat=" << groupe[gr].nstat << "\n";
-		while (k < groupe[gr].nstat) {
+		while (k < groupe[gr].nstat)  {
 			if (debuglevel == 2) cout << "stat " << k << "    groupe " << gr << "\n";
 			getline(file, s1);
 			if (debuglevel == 2) cout << "s1=" << s1 << "\n";
 			splitwords(s1, " ", ss);
 			nss = ss.size();
 			if (debuglevel == 2) cout << ss[0] << "\n";
-			j = 0;
-			while (ss[0] != stat_type[j]) {
-				//if (debuglevel==2)	cout << ss[0] << " " << j << " "<< stat_type[j] << endl;
-				j++;
-			}
-			if (debuglevel == 2) cout << "j=" << j << "\n";
-			if (groupe[gr].type == 0) { //MICROSAT
-				if (stat_num[j] < 5) {
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						groupe[gr].sumstat[k].samp = atoi(ss[i].c_str());
-						k++;
+			auto&& onestati = find_if(stats.begin(),stats.end(),[&](statn& s){
+				return s.name == ss[0];
+			});
+			if (onestati != stats.end()) {
+				int i = &*(onestati)-&*(stats.begin());
+				vector<int> p;
+				transform(next(ss.begin()),ss.end(),back_inserter(p),[](string& s){ return stoi(s)-1;} );
+				auto&& popl = *(poplist.insert(p).first);
+				StatC statc { 
+					k++,
+					gr,
+					0,
+					((ss.size() == 1) && (stoi(ss[0]) == 0)) ? nullvec : popl
+				};
+				if (auto&& onestatsnp = onestati->snps) {
+					auto&& lsns = (*onestatsnp).get();
+					auto&& statfound = find_if(groupe[gr].sumstat.begin(),groupe[gr].sumstat.end(),[&](StatC& sns) {
+						if (auto&& onestatsnp1 = stats[sns.cat].snps) {
+							auto&& lsns1 = (*onestatsnp1).get();
+							return 	(lsns1 == lsns) && (sns.samp.get() == popl);	
+						} else return false;
+					});
+					if (statfound != groupe[gr].sumstat.end()) {
+						statc.numsnp = statfound->numsnp;
+					} else {
+						statc.numsnp = numsnp++;
+						groupe[gr].sumstatsnp.push_back(StatsnpC { popl });
 					}
 				}
-				else if (stat_num[j] < 12) {
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						splitwords(ss[i], "&", ss1);
-						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
-						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
-						k++;
-					}
-				}
-				else if (stat_num[j] == 12) {
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						splitwords(ss[i], "&", ss1);
-						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
-						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
-						groupe[gr].sumstat[k].samp2 = atoi(ss1[2].c_str());
-						k++;
-					}
-				}
-			}
-			else if (groupe[gr].type == 1) { //DNA SEQUENCE
-				if (stat_num[j] > -9) {
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						groupe[gr].sumstat[k].samp = atoi(ss[i].c_str());
-						k++;
-					}
-				}
-				else if (stat_num[j] > -14) {
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						splitwords(ss[i], "&", ss1);
-						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
-						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
-						k++;
-					}
-				}
-				else if (stat_num[j] == -14) {
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						splitwords(ss[i], "&", ss1);
-						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
-						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
-						groupe[gr].sumstat[k].samp2 = atoi(ss1[2].c_str());
-						k++;
-					}
-				}
-			}
-			else if ((groupe[gr].type == 2)or (groupe[gr].type == 3)) { //SNP
-				//cout<<"statnum="<<stat_num[j]<<"\n";
-				if (stat_num[j] < 53) {
-					catsnp = (stat_num[j] - 21) / 4;
-					if (debuglevel == 2) cout << "stat_num[" << j << "]=" << stat_num[j] << "   catsnp=" << catsnp << "\n";
-				}
-				if (stat_num[j] < 29) { // HET + Q1
-					if (debuglevel == 2) cout << "nss=" << nss << "\n";
-					for (int i = 1; i < nss; i++) {
-						if (debuglevel == 2) cout << "i=" << i << "\n";
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						groupe[gr].sumstat[k].samp = atoi(ss[i].c_str());
-						trouve = false;
-						if (debuglevel == 2) cout << "statsnp.size=" << statsnp.size() << "\n";
-						if (statsnp.size() > 0) {
-							for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-								trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp));
-								if (trouve) {
-									groupe[gr].sumstat[k].numsnp = jj;
-									break;
-								}
-							}
-						}
-						if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-						if (not trouve) {
-							stsnp.cat = catsnp;
-							stsnp.samp = groupe[gr].sumstat[k].samp;
-							stsnp.defined = false;
-							groupe[gr].sumstat[k].numsnp = statsnp.size();
-							//cout<<"avant le push_back\n";
-							statsnp.push_back(stsnp);
-							//cout<<"apres le push_back\n";
-						}
-						//cout<<"                          numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
-						k++;
-					}
-				}
-				else if ((stat_num[j] > 32) and (stat_num[j] < 41)) { // NEI + FST + Q2
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						splitwords(ss[i], "&", ss1);
-						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
-						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
-						trouve = false;
-						if (statsnp.size() > 0) {
-							for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-								trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1));
-								if (trouve) {
-									groupe[gr].sumstat[k].numsnp = jj;
-									break;
-								}
-							}
-						}
-						//cout<<"statsnp.size = "<<statsnp.size()<<"   trouve = "<<trouve<<"\n";
-						if (not trouve) {
-							stsnp.cat = catsnp;
-							stsnp.samp = groupe[gr].sumstat[k].samp;
-							stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-							stsnp.defined = false;
-							groupe[gr].sumstat[k].numsnp = statsnp.size();
-							statsnp.push_back(stsnp);
-						}
-						//cout<<"                      numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
-						k++;
-					}
-				}
-				else if ((stat_num[j] > 40)and (stat_num[j] < 49)) { // AML + F3
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						splitwords(ss[i], "&", ss1);
-						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
-						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
-						groupe[gr].sumstat[k].samp2 = atoi(ss1[2].c_str());
-						trouve = false;
-						if (statsnp.size() > 0) {
-							for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-								trouve = ((statsnp[jj].cat == catsnp)and (statsnp[jj].samp == groupe[gr].sumstat[k].samp)and (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1)and (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2));
-								if (trouve) {
-									groupe[gr].sumstat[k].numsnp = jj;
-									break;
-								}
-							}
-						}
-						if (not trouve) {
-							stsnp.cat = catsnp;
-							stsnp.samp = groupe[gr].sumstat[k].samp;
-							stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-							stsnp.samp2 = groupe[gr].sumstat[k].samp2;
-							stsnp.defined = false;
-							groupe[gr].sumstat[k].numsnp = statsnp.size();
-							statsnp.push_back(stsnp);
-						}
-						//cout<<"                      numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
-						k++;
-					}
-				}
-				else if ((stat_num[j] > 48)and (stat_num[j] < 53)) { // F4
-					for (int i = 1; i < nss; i++) {
-						groupe[gr].sumstat[k].cat = stat_num[j];
-						splitwords(ss[i], "&", ss1);
-						groupe[gr].sumstat[k].samp = atoi(ss1[0].c_str());
-						groupe[gr].sumstat[k].samp1 = atoi(ss1[1].c_str());
-						groupe[gr].sumstat[k].samp2 = atoi(ss1[2].c_str());
-						groupe[gr].sumstat[k].samp3 = atoi(ss1[3].c_str());
-						trouve = false;
-						if (statsnp.size() > 0) {
-							for (int jj = 0; jj < (int)statsnp.size(); jj++) {
-								trouve = ((statsnp[jj].cat == catsnp) and 
-										  (statsnp[jj].samp == groupe[gr].sumstat[k].samp) and 
-										  (statsnp[jj].samp1 == groupe[gr].sumstat[k].samp1) and
-										  (statsnp[jj].samp2 == groupe[gr].sumstat[k].samp2) and
-										  (statsnp[jj].samp3 == groupe[gr].sumstat[k].samp3));
-								if (trouve) {
-									groupe[gr].sumstat[k].numsnp = jj;
-									break;
-								}
-							}
-						}
-						if (not trouve) {
-							stsnp.cat = catsnp;
-							stsnp.samp = groupe[gr].sumstat[k].samp;
-							stsnp.samp1 = groupe[gr].sumstat[k].samp1;
-							stsnp.samp2 = groupe[gr].sumstat[k].samp2;
-							stsnp.samp3 = groupe[gr].sumstat[k].samp3;
-							stsnp.defined = false;
-							groupe[gr].sumstat[k].numsnp = statsnp.size();
-							statsnp.push_back(stsnp);
-						}
-						//cout<<"                      numsnp = "<<groupe[gr].sumstat[k].numsnp<<"\n";
-						k++;
-					}
-				}
-				//else if (stat_num[j] == 50) {
-				//	groupe[gr].sumstat[k].cat = stat_num[j];
-				//	k++;
-				//	cout << "k=" << k << "\n";
-				//}
+				groupe[gr].sumstat.push_back(statc);
 			}
 			if (debuglevel == 2) cout << "fin de la stat " << k << "\n";
 		}
-		groupe[gr].nstatsnp = statsnp.size();
-		// tri des stat dans l'ordre de général.cpp
-		StatsnpC ssnp;
-		for (int i=0;i<groupe[gr].nstatsnp-1;i++) {
-			for (int j=i+1;j<groupe[gr].nstatsnp;j++) {
-				if (statsnp[i].cat>statsnp[j].cat) {
-					ssnp.cat = statsnp[i].cat;
-					ssnp.samp = statsnp[i].samp;
-					ssnp.samp1 = statsnp[i].samp1;
-					ssnp.samp2 = statsnp[i].samp2;
-					ssnp.samp3 = statsnp[i].samp3;
-					ssnp.defined = statsnp[i].defined;
-					statsnp[i].cat = statsnp[j].cat;
-					statsnp[i].samp = statsnp[j].samp; 
-					statsnp[i].samp1 = statsnp[j].samp1; 
-					statsnp[i].samp2 = statsnp[j].samp2;
-					statsnp[i].samp3 = statsnp[j].samp3;
-					statsnp[i].defined = statsnp[j].defined;
-					statsnp[j].cat = ssnp.cat;
-					statsnp[j].samp = ssnp.samp; 
-					statsnp[j].samp1 = ssnp.samp1; 
-					statsnp[j].samp2 = ssnp.samp2;
-					statsnp[j].samp3 = ssnp.samp3;
-					statsnp[j].defined = ssnp.defined;
-				}
-			}
-		}
-		cout<<"groupe[gr].nstatsnp="<<groupe[gr].nstatsnp<<"\n";
-		if (groupe[gr].nstatsnp > 0) {
-			groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
-			for (int i = 0; i < groupe[gr].nstatsnp; i++) {
-				groupe[gr].sumstatsnp[i].cat=statsnp[i].cat;cout <<i<<"  "<<statsnp[i].cat<<"  "<<stat_type[4*statsnp[i].cat+21]<< "\n";
-				groupe[gr].sumstatsnp[i].samp = statsnp[i].samp;
-				groupe[gr].sumstatsnp[i].samp1 = statsnp[i].samp1;
-				groupe[gr].sumstatsnp[i].samp2 = statsnp[i].samp2;
-				groupe[gr].sumstatsnp[i].samp3 = statsnp[i].samp3;
-				groupe[gr].sumstatsnp[i].defined = statsnp[i].defined;
-			}
-			statsnp.clear();
-		}
+		groupe[gr].nstatsnp = groupe[gr].sumstatsnp.size();
 		//for (int i=0;i<groupe[gr].nstat;i++) cout<<groupe[gr].sumstat[i].cat<<"   "<<groupe[gr].sumstat[i].numsnp<<"\n";
 	}
 	if (debuglevel == 2) cout << "header.txt : fin de la lecture des summary stats\n";
@@ -2323,10 +1715,12 @@ string HeaderC::calstatobs(string statobsfilename) {
 				message = message + "\nGroup " + IntToString(gr) + " : ";
 				int jmax = (int)ast[gr].size();
 				for (int j = 0; j < jmax; j++) {
-					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp) + "&";
-					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp1) + "&";
-					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp2) + "& ";
-					message += IntToString(particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp3) + "  ";
+					auto&& popl = particuleobs.grouplist[gr].sumstat[ast[gr][j]].samp.get();
+					message += accumulate(next(popl.begin()),popl.end(),
+						to_string(popl[0]+1),
+						[] (string a, int b) {
+							return a + "&" + to_string(b+1);
+						});
 				}
 			}
 		}

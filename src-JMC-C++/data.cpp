@@ -12,8 +12,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <stdlib.h>
-#include <time.h>
 
 #include "mesutils.hpp"
 #include "randomgenerator.hpp"

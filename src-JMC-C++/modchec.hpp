@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-bool resetstats(std::string s);
+//bool resetstats(std::string s);
 std::string pseudoprior2(long double x);
 int detphistarOK(int nsel, long double** phistar);
 void call_loc(int npart, int nrec, int nsel, long double** ss, float* stat_obs);

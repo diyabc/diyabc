@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <functional> 
 #include <iso646.h> // necessary to have "and/or" keywoards in MSVC
 
 #include "randomgenerator.hpp"
@@ -16,22 +17,24 @@
 /**
  * struct StatC :éléments de définition d'une summary statistic
  */
+
+const vector<int> nullvec {};
 struct StatC {
-	int cat, samp, samp1, samp2, samp3, group, numsnp;
+	int cat, group, numsnp;
+	reference_wrapper<const vector<int>> samp = ref(nullvec);
 	long double val;
-	//  StatC(StatC const & source);
-	StatC& operator=(StatC const& source);
+//	StatC() : samp(ref(nullvec)) {}
 };
 
 /**
  * Classe StatsnpC :éléments de définition d'une summary statistic pour les snp
  */
-class StatsnpC {
-public:
-	int cat, samp, samp1, samp2, samp3, group, n;
+struct StatsnpC {
+	reference_wrapper<const vector<int>> samp = ref(nullvec);
+	int n;
+	bool defined = false;
 	long double sw, sw0, sw1, sw12, mx, mx1, mx12,num,den;
-	bool defined;
-	StatsnpC& operator=(StatsnpC const& source);
+//	StatsnpC() : samp(ref(nullvec)) {}
 };
 
 

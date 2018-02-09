@@ -20,10 +20,11 @@
 #include "data.hpp"
 #include "history.hpp"
 #include "particuleC.hpp"
+#include "statdefs.hpp"
 
 extern int debuglevel;
 extern DataC dataobs;
-
+extern vector<statn> stats;
 /***********************************************************************************************************************/
 
 int ParticleC::samplesize(int loc, int sample) {
@@ -241,7 +242,8 @@ void ParticleC::cal_snhet(int gr, int numsnp) {
 	long double het;
 	int iloc, kloc, sasize;
 	long double x = 0, w;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
 	//ofstream f10("/home/cornuet/workspace/diyabc/src-JMC-C++/hetero.txt",ios::out);
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
@@ -264,7 +266,6 @@ void ParticleC::cal_snhet(int gr, int numsnp) {
 		}
 	}
 	//f10.close();
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 	//cout<<"fin de cal_snhet\n";
 	//exit(3);
 }
@@ -275,8 +276,9 @@ void ParticleC::cal_snnei(int gr, int numsnp) {
 	long double x = 0, w;
 	long double nei, fi, fj, gi, gj;
 	int iloc, loc, n1, n2;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
-	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	//cout<<"numsnp="<<numsnp<<"sample = "<<sample<<"    sample1 = "<<sample1<<"\n";
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
@@ -297,20 +299,21 @@ void ParticleC::cal_snnei(int gr, int numsnp) {
 			this->cal_snpstatRedacc(gr, numsnp, x, w);						
 		}
 	}
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
 void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 	long double num = 0, den = 0, w;
-	int iloc,loc;
-	int npopr = min(npop,this->nsample);
+	int iloc,loc, npopr;
+	if (npop == 0) {
+		npopr = this->nsample;
+	} else npopr = min(npop,this->nsample);
 	auto& statC = this->grouplist[gr].sumstatsnp[numsnp];
 	vector<int> samples;
-	if (npopr >= this->nsample) {
+	if (npopr == this->nsample) {
 		samples.resize(npopr);
 		iota(samples.begin(),samples.end(),0);
 	} else {
-		samples = { statC.samp -1, statC.samp1 - 1, statC.samp2 - 1, statC.samp3 - 1};
+		samples = 	this->grouplist[gr].sumstatsnp[numsnp].samp.get();
 		samples.resize(npopr);
 	}
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
@@ -318,41 +321,7 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 		loc = this->grouplist[gr].loc[iloc];
 		w = this->locuslist[loc].weight;
 		if (w > 0.0) {
-			if (dataobs.filetype == 2) { //SNP
-				int S_1 = 0, S_2 = 0;
-				long double pi1 = 0.0, pi2 = 0.0;
-				long double nc, MSI, MSP;
-				long double SSI = 0.0, SSP = 0.0; 
-				for (auto r : samples)
-				{
-					long double n = static_cast<long double>(this->samplesize(loc, r));
-					if (n > 0.0)
-					{
-						S_1 += r;
-						S_2 += r * r;
-						double x = this->locuslist[loc].freq[r][0] * n;
-						pi1 += x;
-						pi2 += 1 - x;
-						SSI += x - (x * x) / n + (1 - x) - (1 - x) * (1 - x) / n;
-					}
-				}
-				pi1 /= S_1;
-				pi2 /= S_1;
-				for (auto r : samples)
-				{
-					long double n = static_cast<long double>(this->samplesize(loc, r));
-					if (n > 0.0)
-					{
-						long double x = this->locuslist[loc].freq[r][0] * n;
-						SSP += n * (pow(x / n - pi1, 2) + pow((1 - x) / n - pi2, 2));
-					}
-				}
-				nc = (S_1 - S_2 / S_1) / (static_cast<long double>(npopr) - 1.0);
-				MSI = SSI / (S_1 - static_cast<long double>(npopr));
-				MSP = SSP / (static_cast<long double>(npopr) - 1.0);
-				num = (MSP - MSI);
-				den = (MSP + (nc - 1.0) * MSI);
-			} else { // POOLSEQ
+			if (this->grouplist[gr].type == 3) {// POOLSEQ
 				long double R_1 = 0.0, R_2 = 0.0;
 				long double C_1 = 0.0, C_1_star = 0.0, nc;
 				long double MSI, MSP;
@@ -394,6 +363,40 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 				MSP = SSP /(C_1 - C_1_star);
 				num = (MSP - MSI);
 				den = (MSP + (nc - 1.0)*MSI);
+			} else {  //SNP
+				int S_1 = 0, S_2 = 0;
+				long double pi1 = 0.0, pi2 = 0.0;
+				long double nc, MSI, MSP;
+				long double SSI = 0.0, SSP = 0.0; 
+				for (auto r : samples)
+				{
+					long double n = static_cast<long double>(this->samplesize(loc, r));
+					if (n > 0.0)
+					{
+						S_1 += r;
+						S_2 += r * r;
+						double x = this->locuslist[loc].freq[r][0] * n;
+						pi1 += x;
+						pi2 += 1 - x;
+						SSI += x - (x * x) / n + (1 - x) - (1 - x) * (1 - x) / n;
+					}
+				}
+				pi1 /= S_1;
+				pi2 /= S_1;
+				for (auto r : samples)
+				{
+					long double n = static_cast<long double>(this->samplesize(loc, r));
+					if (n > 0.0)
+					{
+						long double x = this->locuslist[loc].freq[r][0] * n;
+						SSP += n * (pow(x / n - pi1, 2) + pow((1 - x) / n - pi2, 2));
+					}
+				}
+				nc = (S_1 - S_2 / S_1) / (static_cast<long double>(npopr) - 1.0);
+				MSI = SSI / (S_1 - static_cast<long double>(npopr));
+				MSP = SSP / (static_cast<long double>(npopr) - 1.0);
+				num = (MSP - MSI);
+				den = (MSP + (nc - 1.0) * MSI);
 			}
 			this->cal_snpstatFstacc(gr, numsnp, num, den, w);
 		}
@@ -402,6 +405,9 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 	// 		  [&](const int& i){ return (long double)samplesize(loc,samples[i])});
 }
 
+void ParticleC::cal_snfsti(int gr, int numsnp) {
+
+}
 
 void ParticleC::cal_snfst(int gr, int numsnp) {
 	//cout<<"debut de cal_snfst\n";
@@ -409,8 +415,9 @@ void ParticleC::cal_snfst(int gr, int numsnp) {
 	long double fst, fi, fj, n1, n2;
 	long double sniA, sniAA, sni, sni2, s2A, s1l, s3l, nc, MSI, MSP, s2I, s2P;
 	int iloc, loc;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
-	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
@@ -446,7 +453,6 @@ void ParticleC::cal_snfst(int gr, int numsnp) {
 			this->cal_snpstatRedacc(gr, numsnp, x, w);			
 		}
 	}
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
 
@@ -455,9 +461,10 @@ void ParticleC::cal_snaml(int gr, int numsnp) {
 	long double x = 0, w;
 	long double aml, f1, f2, f3;
 	int iloc, loc;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
-	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
-	int sample2 = this->grouplist[gr].sumstatsnp[numsnp].samp2 - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
+	int sample2 = samp[2];
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
@@ -482,7 +489,6 @@ void ParticleC::cal_snaml(int gr, int numsnp) {
 		//if (this->grouplist[gr].sumstatsnp[numsnp].w[iloc]>0.0) cout<<this->grouplist[gr].sumstatsnp[numsnp].x[iloc]<<"\n";
 	}
 	//cout<<"cal_snaml  sw="<<this->grouplist[gr].sumstatsnp[numsnp].sw<<"\n";
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
 void ParticleC::cal_snf3r(int gr, int numsnp)
@@ -490,9 +496,10 @@ void ParticleC::cal_snf3r(int gr, int numsnp)
 	long double x = 0, w;
 	long double f1, f2, f3;
 	int iloc, loc;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
-	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
-	int sample2 = this->grouplist[gr].sumstatsnp[numsnp].samp2 - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
+	int sample2 = samp[2];
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++)
 	{
@@ -503,7 +510,7 @@ void ParticleC::cal_snf3r(int gr, int numsnp)
 			if ((samplesize(loc, sample1) > 0) and (samplesize(loc, sample2) > 0))
 			{
 				int np = samplesize(loc, sample);
-				if (dataobs.filetype == 2)
+				if (this->grouplist[gr].type == 3)
 				{ //Poolseq
 					double a1p = this->locuslist[loc].nreads1[sample];
 					double c1p = this->locuslist[loc].nreads[sample];
@@ -532,7 +539,6 @@ void ParticleC::cal_snf3r(int gr, int numsnp)
 			this->cal_snpstatRedacc(gr, numsnp, x, w);						
 		}
 	}
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
 void ParticleC::cal_snf4r(int gr, int numsnp)
@@ -540,10 +546,11 @@ void ParticleC::cal_snf4r(int gr, int numsnp)
 	long double x = 0, w;
 	long double a,b,c,d;
 	int iloc, loc;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
-	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
-	int sample2 = this->grouplist[gr].sumstatsnp[numsnp].samp2 - 1;
-	int sample3 = this->grouplist[gr].sumstatsnp[numsnp].samp3 - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
+	int sample2 = samp[2];
+	int sample3 = samp[3];
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++)
 	{
@@ -554,7 +561,7 @@ void ParticleC::cal_snf4r(int gr, int numsnp)
 			if ((samplesize(loc, sample1) > 0) and (samplesize(loc, sample2) > 0) and (samplesize(loc, sample3) > 0))
 			{
 				int np = samplesize(loc, sample);
-				if (dataobs.filetype == 2)
+				if (this->grouplist[gr].type == 3)
 				{ //Poolseq
 					double a1p = this->locuslist[loc].nreads1[sample];
 					double c1p = this->locuslist[loc].nreads[sample];
@@ -582,14 +589,14 @@ void ParticleC::cal_snf4r(int gr, int numsnp)
 			this->cal_snpstatRedacc(gr, numsnp, x, w);			
 		}
 	}
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
 ////////////// Début Q1/Q2
 void ParticleC::cal_snq1(int gr, int numsnp) {
 	int iloc, loc;
 	long double x = 0, w;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
@@ -597,7 +604,7 @@ void ParticleC::cal_snq1(int gr, int numsnp) {
 		if (w > 0.0) {
 			int np = samplesize(loc, sample);
 			if (np > 1) {
-				if (dataobs.filetype == 2)
+				if (this->grouplist[gr].type == 3)
 				{ //Poolseq
 					double r1 = this->locuslist[loc].nreads1[sample];
 					double c1 = this->locuslist[loc].nreads[sample];
@@ -616,15 +623,15 @@ void ParticleC::cal_snq1(int gr, int numsnp) {
 			this->cal_snpstatRedacc(gr, numsnp, x, w);
 		}
 	}
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
 void ParticleC::cal_snq2(int gr, int numsnp)
 {
 	long double x = 0, w;
 	int iloc, loc, n1, n2;
-	int sample = this->grouplist[gr].sumstatsnp[numsnp].samp - 1;
-	int sample1 = this->grouplist[gr].sumstatsnp[numsnp].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstatsnp[numsnp].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	this->grouplist[gr].sumstatsnp[numsnp].n = this->grouplist[gr].nloc;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++)
 	{
@@ -636,7 +643,7 @@ void ParticleC::cal_snq2(int gr, int numsnp)
 			int n2 = samplesize(loc, sample1);
 			if ((n1 > 0) and (n2 > 0))
 			{
-				if (dataobs.filetype == 2)
+				if (this->grouplist[gr].type == 3)
 				{ //Poolseq
 					double r11 = this->locuslist[loc].nreads1[sample];
 					double c1 = this->locuslist[loc].nreads[sample];
@@ -658,14 +665,14 @@ void ParticleC::cal_snq2(int gr, int numsnp)
 			this->cal_snpstatRedacc(gr, numsnp, x, w);
 		}
 	}
-	this->grouplist[gr].sumstatsnp[numsnp].defined = true;
 }
 
 ////////////// Fin Stats SNP
 
 long double ParticleC::cal_pid1p(int gr, int st) {
 	int iloc, kloc, nt = 0, ni = 0, cat;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		cat = this->locuslist[kloc].type % 5;
@@ -690,7 +697,8 @@ long double ParticleC::cal_pid1p(int gr, int st) {
 long double ParticleC::cal_nal1p(int gr, int st) {
 	long double nal, nalm = 0.0;
 	int iloc, kloc, nl = 0;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	//cout <<"groupe "<<gr<<"  cat "<<this->grouplist[gr].sumstat[st].cat<<"   sample "<<this->grouplist[gr].sumstat[st].samp;//<<"\n";
 	//cout << "     nloc = " << this->grouplist[gr].nloc;// <<"\n";
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
@@ -716,8 +724,9 @@ long double ParticleC::cal_nal1p(int gr, int st) {
 long double ParticleC::cal_nal2p(int gr, int st) {
 	int k, iloc, kloc, nl = 0;
 	long double nalm = 0.0;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
-	int sample1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		if ((samplesize(kloc, sample) > 0)and (samplesize(kloc, sample1) > 0)) {
@@ -750,7 +759,8 @@ long double ParticleC::cal_nal2p(int gr, int st) {
 long double ParticleC::cal_het1p(int gr, int st) {
 	long double het, hetm = 0.0;
 	int iloc, kloc, nl = 0, sasize;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		sasize = samplesize(kloc, sample);
@@ -771,8 +781,9 @@ long double ParticleC::cal_het1p(int gr, int st) {
 long double ParticleC::cal_het2p(int gr, int st) {
 	long double het, hetm = 0.0;
 	int iloc, loc, n1, n2, nt, nl = 0;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
-	int sample1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
 		n1 = samplesize(loc, sample);
@@ -795,7 +806,8 @@ long double ParticleC::cal_het2p(int gr, int st) {
 long double ParticleC::cal_var1p(int gr, int st) {
 	long double s, v, vm = 0.0, m, ms;
 	int iloc, loc, n, nl = 0, cat;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
 		cat = this->locuslist[loc].type % 5;
@@ -825,8 +837,9 @@ long double ParticleC::cal_var1p(int gr, int st) {
 long double ParticleC::cal_var2p(int gr, int st) {
 	long double s, v, vm = 0.0, m, ms;
 	int iloc, loc, n, nl = 0, cat;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
-	int sample1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
 		cat = this->locuslist[loc].type % 5;
@@ -862,7 +875,8 @@ long double ParticleC::cal_mgw1p(int gr, int st) {
 	long double num = 0.0, den = 0.0, un = 1.0;
 	int min, max;
 	int iloc, loc;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
 		if (samplesize(loc, sample) > 0) {
@@ -885,8 +899,9 @@ long double ParticleC::cal_Fst2p(int gr, int st) {
 	int al, pop, kpop, i, ig1, ig2, nA, AA, ni;
 	long double s2A, MSG, MSI, MSP, s2G, s2I, s2P, nc;
 	int iloc, loc, nn, ind, cat;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
-	int sample1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	//cout << "cal_Fst2p\n";
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
@@ -972,8 +987,9 @@ long double ParticleC::cal_lik2p(int gr, int st) {
 	int pop, nal, k, i, ind, ig1, ig2;
 	long double frt, a, b, num_lik, den_lik, lik;
 	int iloc, loc, nn, nl = 0, cat, sasize, sasize1;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
-	int sample1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	lik = 0.0;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
@@ -1028,8 +1044,9 @@ long double ParticleC::cal_lik2p(int gr, int st) {
 long double ParticleC::cal_dmu2p(int gr, int st) {
 	long double *moy, dmu2 = 0.0, s;
 	int iloc, loc, pop, nl = 0, cat, sasize, sasize1;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
-	int sample1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	moy = new long double[2];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
@@ -1065,8 +1082,9 @@ long double ParticleC::cal_dmu2p(int gr, int st) {
 long double ParticleC::cal_das2p(int gr, int st) {
 	long double s = 0.0;
 	int iloc, loc, nl = 0, cat;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
-	int sample1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		loc = this->grouplist[gr].loc[iloc];
 		cat = this->locuslist[loc].type % 5;
@@ -1089,10 +1107,10 @@ pair<long double, long double> ParticleC::pente_lik(int gr, int st, int i0) {
 	long double a, freq1, freq2, li0, delta, *li;
 	int ig1, ig2, ind, loc, iloc, nn, cat;
 	li = new long double[2];
-	StatC stat = this->grouplist[gr].sumstat[st];
-	int sample = stat.samp - 1;
-	int sample1 = stat.samp1 - 1;
-	int sample2 = stat.samp2 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
+	int sample1 = samp[1];
+	int sample2 = samp[2];
 	//cout<<"sample ="<<sample<<"   sample1="<<sample1<<"   sample2="<<sample2<<"\n";
 	for (int rep = 0; rep < 2; rep++) {
 		a = 0.001 * (long double)(i0 + rep);
@@ -1216,7 +1234,8 @@ long double ParticleC::cal_nha1p(int gr, int st) {
 	int iloc, kloc, j, nhl = 0, nhm = 0, nl = 0, cat;
 	bool trouve;
 	long double res = 0.0;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		nhl = 0;
 		kloc = this->grouplist[gr].loc[iloc];
@@ -1313,7 +1332,8 @@ long double ParticleC::cal_nss1p(int gr, int st) {
 	int iloc, kloc = 0, nssl, nssm = 0, nl = 0, *ss, cat;
 	long double res = 0.0;
 	bool OK;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		cat = this->locuslist[kloc].type % 5;
@@ -1365,7 +1385,8 @@ long double ParticleC::cal_mpdpl(int kloc, int sample, int* nd) {
 long double ParticleC::cal_mpd1p(int gr, int st) {
 	int iloc, kloc, nd = 0, nl = 0;
 	long double npdm = 0.0, res = 0.0, mpdp;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		//npdl=0;
 		kloc = this->grouplist[gr].loc[iloc];
@@ -1383,7 +1404,8 @@ long double ParticleC::cal_mpd1p(int gr, int st) {
 long double ParticleC::cal_vpd1p(int gr, int st) {
 	int iloc, kloc, k, di, nl = 0, nd, cat;
 	long double res = 0.0, mpd, spd, vpd = 0.0;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		nd = 0;
 		mpd = 0.0;
@@ -1450,7 +1472,8 @@ long double ParticleC::cal_dta1p(int gr, int st) {
 	int iloc, kloc, nl = 0;
 	long double res = 0.0, tal;
 	bool OK;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		tal = this->cal_dta1pl(kloc, sample, &OK);
@@ -1468,7 +1491,8 @@ long double ParticleC::cal_pss1p(int gr, int st) {
 	int iloc, kloc, nl = 0, nps = 0, **ssa, *nssa;
 	bool trouve, OK;
 	long double res = 0.0;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		ssa = new int*[this->nsample];
@@ -1557,7 +1581,8 @@ void ParticleC::afs(int sample, int iloc, int kloc) {
 long double ParticleC::cal_mns1p(int gr, int st) {
 	int iloc, kloc, nl = 0;
 	long double res = 0.0;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		if (not this->afsdone[sample][iloc]) this->afs(sample, iloc, kloc);
@@ -1571,7 +1596,8 @@ long double ParticleC::cal_mns1p(int gr, int st) {
 long double ParticleC::cal_vns1p(int gr, int st) {
 	int iloc, kloc, nl = 0;
 	long double res = 0.0, sx, sx2, a, v;
-	int sample = this->grouplist[gr].sumstat[st].samp - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int sample = samp[0];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		//cout<<"Locus "<<kloc<<"\n";
@@ -1606,8 +1632,9 @@ long double ParticleC::cal_nha2p(int gr, int st) {
 	int iloc, kloc, j, nhl = 0, nhm = 0, nl = 0, sample, dmax, cat;
 	bool trouve;
 	long double res = 0.0;
-	int samp0 = this->grouplist[gr].sumstat[st].samp - 1;
-	int samp1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int samp0 = samp[0];
+	int samp1 = samp[1];
 	//cout <<"samples "<<samp0<<" & "<<samp1<<"\n";
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		nhl = 0;
@@ -1707,8 +1734,9 @@ long double ParticleC::cal_nss2p(int gr, int st) {
 	long double res = 0.0;
 	bool OK;
 	//cout<<"\n";
-	int samp0 = this->grouplist[gr].sumstat[st].samp - 1;
-	int samp1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int samp0 = samp[0];
+	int samp1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		if (ss != NULL) {
@@ -1771,8 +1799,9 @@ long double ParticleC::cal_mpw2p(int gr, int st) {
 	int iloc, kloc, nl = 0;
 	long double res = 0.0, md = 0.0, mdl;
 	bool OK;
-	int samp0 = this->grouplist[gr].sumstat[st].samp - 1;
-	int samp1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int samp0 = samp[0];
+	int samp1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		mdl = cal_mpw2pl(kloc, samp0, samp1, &OK);
@@ -1818,8 +1847,9 @@ long double ParticleC::cal_mpb2p(int gr, int st) {
 	int iloc, kloc, nl = 0;
 	long double res = 0.0, md = 0.0, mdl;
 	bool OK;
-	int samp0 = this->grouplist[gr].sumstat[st].samp - 1;
-	int samp1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int samp0 = samp[0];
+	int samp1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		mdl = cal_mpb2pl(kloc, samp0, samp1, &OK);
@@ -1837,8 +1867,9 @@ long double ParticleC::cal_fst2p(int gr, int st) {
 	int iloc, kloc, nl = 0;
 	long double res = 0.0, num = 0.0, den = 0.0, Hw, Hb;
 	bool OKw, OKb;
-	int samp0 = this->grouplist[gr].sumstat[st].samp - 1;
-	int samp1 = this->grouplist[gr].sumstat[st].samp1 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int samp0 = samp[0];
+	int samp1 = samp[1];
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
 		kloc = this->grouplist[gr].loc[iloc];
 		Hw = cal_mpw2pl(kloc, samp0, samp1, &OKw);
@@ -1857,9 +1888,10 @@ long double ParticleC::cal_fst2p(int gr, int st) {
 void ParticleC::cal_freq(int gr, int st) {
 	int iloc, kloc, nhaplo, isamp, sample, dmax, j, cat;
 	long double d;
-	int samp0 = this->grouplist[gr].sumstat[st].samp - 1;
-	int samp1 = this->grouplist[gr].sumstat[st].samp1 - 1;
-	int samp2 = this->grouplist[gr].sumstat[st].samp2 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int samp0 = samp[0];
+	int samp1 = samp[1];
+	int samp2 = samp[2];
 	string* haplo;
 	bool trouve;
 	for (iloc = 0; iloc < this->grouplist[gr].nloc; iloc++) {
@@ -1954,8 +1986,9 @@ long double ParticleC::cal_aml3p(int gr, int st) {
 	long double res = 0.0;
 	pair<long double, long double> c;
 	//cout<<"\ndebut de cal_aml3p\n";
-	int samp1 = this->grouplist[gr].sumstat[st].samp1 - 1;
-	int samp2 = this->grouplist[gr].sumstat[st].samp2 - 1;
+	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
+	int samp1 = samp[1];
+	int samp2 = samp[2];
 	//cout<<"DEBUT D AML3P\n";
 
 
@@ -2135,7 +2168,7 @@ void ParticleC::cal_numvar(int gr) {
  *
  */
 
- ////////////// Meta-stats (mean/variance)
+ ////////////// Sous-stats (mean/variance)
 
 void ParticleC::cal_snpstatRedinit(int gr, int numsnp)
 {
@@ -2155,7 +2188,7 @@ void ParticleC::cal_snpstatFstacc(int gr, int numsnp, long double num, long doub
 	StatsnpC& stsnp = this->grouplist[gr].sumstatsnp[numsnp];
 	stsnp.num += num;
 	stsnp.den += den;
-	this->cal_snpstatRedacc(gr, numsnp, num/den, w);
+	this->cal_snpstatRedacc(gr, numsnp, stsnp.num/stsnp.den, w);
 }
 
 void ParticleC::cal_snpstatRedacc(int gr, int numsnp, long double x , long double w) {
@@ -2360,198 +2393,10 @@ void ParticleC::docalstat(int gr) {
 		int categ;
 		categ = this->grouplist[gr].sumstat[st].cat;
 		//cout<<"categ = "<<categ<<"\n";
-
-		if (categ > 20) {
-			numsnp = this->grouplist[gr].sumstat[st].numsnp;
-			if (not this->grouplist[gr].sumstatsnp[numsnp].defined) this->cal_snpstatRedinit(gr, numsnp);
-		}
-		switch (categ) {
-			case 0: this->grouplist[gr].sumstat[st].val = cal_pid1p(gr, st);
-				break;
-			case 1: this->grouplist[gr].sumstat[st].val = cal_nal1p(gr, st);
-				break;
-			case 2: this->grouplist[gr].sumstat[st].val = cal_het1p(gr, st);
-				break;
-			case 3: this->grouplist[gr].sumstat[st].val = cal_var1p(gr, st);
-				break;
-			case 4: this->grouplist[gr].sumstat[st].val = cal_mgw1p(gr, st);
-				break;
-			case 5: this->grouplist[gr].sumstat[st].val = cal_nal2p(gr, st);
-				break;
-			case 6: this->grouplist[gr].sumstat[st].val = cal_het2p(gr, st);
-				break;
-			case 7: this->grouplist[gr].sumstat[st].val = cal_var2p(gr, st);
-				break;
-			case 8: this->grouplist[gr].sumstat[st].val = cal_Fst2p(gr, st);
-				break;
-			case 9: this->grouplist[gr].sumstat[st].val = cal_lik2p(gr, st);
-				break;
-			case 10: this->grouplist[gr].sumstat[st].val = cal_das2p(gr, st);
-				break;
-			case 11: this->grouplist[gr].sumstat[st].val = cal_dmu2p(gr, st);
-				break;
-			case 12: this->grouplist[gr].sumstat[st].val = cal_Aml3p(gr, st);
-				break;
-			case -1: this->grouplist[gr].sumstat[st].val = cal_nha1p(gr, st);
-				break;
-			case -2: this->grouplist[gr].sumstat[st].val = cal_nss1p(gr, st);
-				break;
-			case -3: this->grouplist[gr].sumstat[st].val = cal_mpd1p(gr, st);
-				break;
-			case -4: this->grouplist[gr].sumstat[st].val = cal_vpd1p(gr, st);
-				break;
-			case -5: this->grouplist[gr].sumstat[st].val = cal_dta1p(gr, st);
-				break;
-			case -6: this->grouplist[gr].sumstat[st].val = cal_pss1p(gr, st);
-				break;
-			case -7: this->grouplist[gr].sumstat[st].val = cal_mns1p(gr, st);
-				break;
-			case -8: this->grouplist[gr].sumstat[st].val = cal_vns1p(gr, st);
-				break;
-			case -9: this->grouplist[gr].sumstat[st].val = cal_nha2p(gr, st);
-				break;
-			case -10: this->grouplist[gr].sumstat[st].val = cal_nss2p(gr, st);
-				break;
-			case -11: this->grouplist[gr].sumstat[st].val = cal_mpw2p(gr, st);
-				break;
-			case -12: this->grouplist[gr].sumstat[st].val = cal_mpb2p(gr, st);
-				break;
-			case -13: this->grouplist[gr].sumstat[st].val = cal_fst2p(gr, st);
-				break;
-			case -14: this->grouplist[gr].sumstat[st].val = cal_aml3p(gr, st);
-				break;
-
-			// Q1
-			case 21: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 22: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq1(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-			// HET
-			case 23: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 24: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 25: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 26: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snhet(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-			// FST
-			case 27: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 28: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 29: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 30: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snfst(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-			// NEI
-			case 31: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 32: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 33: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 34: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snnei(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-			// Q2
-			case 35: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 36: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 37: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 38: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snq2(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-			// AML
-			case 39: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 40: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 41: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 42: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snaml(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-			// F3
-			case 43: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 44: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 45: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 46: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf3r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
-			// F4
-			case 47: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_p0L(gr, numsnp);
-				break;
-			case 48: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL0(gr, numsnp);
-				break;
-			case 49: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_varL0(gr, numsnp);
-				break;
-			case 50: numsnp = this->grouplist[gr].sumstat[st].numsnp;
-				if (not this->grouplist[gr].sumstatsnp[numsnp].defined) cal_snf4r(gr, numsnp);
-				this->grouplist[gr].sumstat[st].val = this->cal_moyL(gr, numsnp);
-				break;
+		auto&& onestat = stats[categ];
+		if (checkStatType(this->grouplist[gr].type,onestat.t)) this->grouplist[gr].sumstat[st].val = onestat.st(*this,gr, st);
 
 
-		}
 //		StatsnpC& stsnp = this->grouplist[gr].sumstatsnp[numsnp];
 //		if (stsnp.sw != this->grouplist[gr].nloc) { cout << "categ " << categ << " numsnp " << numsnp << " stsnp.sw " << stsnp.sw  << " nloc : " << this->grouplist[gr].nloc << endl; }
 	

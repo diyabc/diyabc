@@ -21,89 +21,12 @@ vector<string> histparname;
 vector<int> histparcat;
 extern int debuglevel;
 
-/**
- * Méthodes de StatC 
- */
-
-/**
- * Copie du contenu d'une classe StatC
- */
-/*  StatC::StatC (StatC const & source) {
-	this->cat = source.cat;
-	this->samp = source.samp;
-	this->samp1 = source.samp1;
-	this->samp2 = source.samp2;
-	this->group = source.group;
-	this->numsnp = source.numsnp;
-	this->val = source.val;
-}*/
-
-/**
- * Definition de l'operateur = pour une instance de la classe StatC
- */
-StatC& StatC::operator=(StatC const& source) {
-	if (this == &source) return *this;
-	this->cat = source.cat;
-	this->numsnp = source.numsnp;
-	this->samp = source.samp;
-	this->samp1 = source.samp1;
-	this->samp2 = source.samp2;
-	this->samp3 = source.samp3;
-	this->group = source.group;
-	this->val = source.val;
-	return *this;
-}
-
-/**
- * Méthodes de StatsnpC 
- */
-
-/**
- * Definition de l'operateur = pour une instance de la classe StatsnpC
- */
-StatsnpC& StatsnpC::operator=(StatsnpC const& source) {
-	if (this == &source) return *this;
-	this->cat = source.cat;
-	this->samp = source.samp;
-	this->samp1 = source.samp1;
-	this->samp2 = source.samp2;
-	this->samp3 = source.samp3;
-	this->group = source.group;
-	this->n = source.n;
-	this->defined = source.defined;
-	this->sw = source.sw;
-	this->sw0 = source.sw0;
-	this->sw1 = source.sw1;
-	this->sw12 = source.sw12;
-	this->mx = source.mx;
-	this->mx1 = source.mx1;
-	this->mx12 = source.mx12;
-	this->num = source.num;
-	this->den = source.den;
-	return *this;
-}
 
 
 /**
  * Méthodes de PriorC 
  */
 
-
-/**
- * Copie du contenu d'une classe PriorC
- */
-/*
-  PriorC::PriorC( const & source) {
-	this->loi = source.loi;
-	this->mini = source.mini;
-	this->maxi = source.maxi;
-	this->mean = source.mean;
-	this->sdshape = source.sdshape;
-	this->ndec = source.ndec;
-	this->constant = source.constant;
-	this->fixed = source.fixed;
-}
-*/
 /**
  * Definition de l'operateur = pour une instance de la classe PriorC
  */

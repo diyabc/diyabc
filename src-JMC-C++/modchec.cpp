@@ -45,291 +45,291 @@ extern ofstream fprog;
 long double** ssphistar;
 vector<vector<long double>> ssref;
 
-bool resetstats(string s) {
-	cout << "debut de resetstats\n";
-	cout << s << "\n";
-	int j, ns, nq, gr, lonentstat, *groupmodif, ngroupmodif, *nustat;
-	vector<string> ss, qq, ss1;
-	vector<vector<StatsnpC>> statsnp;
-	vector<vector<string>> statname;
-	StatsnpC stsnp;
-	bool trouve;
-	int catsnp, gg, gs, gt;
-	statsnp.resize(header.ngroupes + 1);
-	for (gr = 0; gr <= header.ngroupes; gr++) statsnp[gr].resize(0);
-	//recopiage des anciennes stat
-	statname.resize(header.ngroupes + 1);
-	for (gr = 1; gr <= header.ngroupes; gr++) statname[gr].resize(groupe[gr].nstat);
-	cout << "apres statname.resize\n";
-	gs = 0;
-	for (gr = 1; gr <= header.ngroupes; gr++) {
-		for (int i = 0; i < groupe[gr].nstat; i++) {
-			//cout<<"header.statname["<<gs<<"] = \n";
-			//cout<<"                         "<< header.statname[gs]<<"\n";
-			statname[gr][i] = header.statname[gs];
-			gs++;
+// bool resetstats(string s) {
+// 	cout << "debut de resetstats\n";
+// 	cout << s << "\n";
+// 	int j, ns, nq, gr, lonentstat, *groupmodif, ngroupmodif, *nustat;
+// 	vector<string> ss, qq, ss1;
+// 	vector<vector<StatsnpC>> statsnp;
+// 	vector<vector<string>> statname;
+// 	StatsnpC stsnp;
+// 	bool trouve;
+// 	int catsnp, gg, gs, gt;
+// 	statsnp.resize(header.ngroupes + 1);
+// 	for (gr = 0; gr <= header.ngroupes; gr++) statsnp[gr].resize(0);
+// 	//recopiage des anciennes stat
+// 	statname.resize(header.ngroupes + 1);
+// 	for (gr = 1; gr <= header.ngroupes; gr++) statname[gr].resize(groupe[gr].nstat);
+// 	cout << "apres statname.resize\n";
+// 	gs = 0;
+// 	for (gr = 1; gr <= header.ngroupes; gr++) {
+// 		for (int i = 0; i < groupe[gr].nstat; i++) {
+// 			//cout<<"header.statname["<<gs<<"] = \n";
+// 			//cout<<"                         "<< header.statname[gs]<<"\n";
+// 			statname[gr][i] = header.statname[gs];
+// 			gs++;
 
-		}
-	}
-	nustat = new int[header.ngroupes + 1];
-	for (gr = 1; gr <= header.ngroupes; gr++) nustat[gr] = 0;
-	//repérage des groupes modifiés
-	groupmodif = new int[header.ngroupes];
-	for (gr = 0; gr < header.ngroupes; gr++) groupmodif[gr] = 0;
-	ngroupmodif = 0;
-	splitwords(s, " ", ss);
-	ns = ss.size();
-	for (int i = 0; i < ns; i++) {
-		splitwords(ss[i], "_", qq);
-		nq = qq.size();
-		if (nq != 3) return false;
-		gr = atoi(qq[1].c_str());
-		if (ngroupmodif == 0) {
-			groupmodif[ngroupmodif] = gr;
-			ngroupmodif++;
-		}
-		else {
-			gg = 0;
-			while ((gg < ngroupmodif)and (gr != groupmodif[gg])) gg++;
-			if (gg == ngroupmodif) {
-				groupmodif[gg] = gr;
-				ngroupmodif++;
-			}
-		}
-	}
-	//comptage des stat
-	if ((ngroupmodif > 0)and (debuglevel == 2)) {
-		cout << "ngroupmodif = " << ngroupmodif << "\n";
-		for (gg = 0; gg < ngroupmodif; gg++) cout << "groupmodif[" << gg << "] = " << groupmodif[gg] << "\n";
-	}
-	for (gg = 0; gg < ngroupmodif; gg++) groupe[groupmodif[gg]].nstat = 0;
-	//for (gr=1;gr<=header.ngroupes;gr++) {groupe[gr].nstat=0;} 
-	cout << header.ngroupes << " groupe(s)\n";
-	//delete [] ss;
-	//ss =splitwords(s," ",&ns);
-	if (debuglevel == 2) cout << "ns=" << ns << "\n";
-	for (int i = 0; i < ns; i++) {
-		splitwords(ss[i], "_", qq);
-		nq = qq.size();
-		if (nq != 3) return false;
-		if (debuglevel == 2) cout << "nq=" << nq << "   qq[1]=" << qq[1] << "\n";
-		gr = atoi(qq[1].c_str());
-		if (debuglevel == 2) cout << "gr=" << gr << "\n";
-		groupe[gr].nstat++;
-	}
-	header.nstat = 0;
-	for (gr = 1; gr <= header.ngroupes; gr++) header.nstat += groupe[gr].nstat;
-	if (debuglevel == 2) {
-		cout << "dans resetstat nstat = " << header.nstat << "\n";
-		for (gr = 1; gr <= header.ngroupes; gr++) cout << "      groupe " << gr << "   nstat=" << groupe[gr].nstat << "\n";
-	}
+// 		}
+// 	}
+// 	nustat = new int[header.ngroupes + 1];
+// 	for (gr = 1; gr <= header.ngroupes; gr++) nustat[gr] = 0;
+// 	//repérage des groupes modifiés
+// 	groupmodif = new int[header.ngroupes];
+// 	for (gr = 0; gr < header.ngroupes; gr++) groupmodif[gr] = 0;
+// 	ngroupmodif = 0;
+// 	splitwords(s, " ", ss);
+// 	ns = ss.size();
+// 	for (int i = 0; i < ns; i++) {
+// 		splitwords(ss[i], "_", qq);
+// 		nq = qq.size();
+// 		if (nq != 3) return false;
+// 		gr = atoi(qq[1].c_str());
+// 		if (ngroupmodif == 0) {
+// 			groupmodif[ngroupmodif] = gr;
+// 			ngroupmodif++;
+// 		}
+// 		else {
+// 			gg = 0;
+// 			while ((gg < ngroupmodif)and (gr != groupmodif[gg])) gg++;
+// 			if (gg == ngroupmodif) {
+// 				groupmodif[gg] = gr;
+// 				ngroupmodif++;
+// 			}
+// 		}
+// 	}
+// 	//comptage des stat
+// 	if ((ngroupmodif > 0)and (debuglevel == 2)) {
+// 		cout << "ngroupmodif = " << ngroupmodif << "\n";
+// 		for (gg = 0; gg < ngroupmodif; gg++) cout << "groupmodif[" << gg << "] = " << groupmodif[gg] << "\n";
+// 	}
+// 	for (gg = 0; gg < ngroupmodif; gg++) groupe[groupmodif[gg]].nstat = 0;
+// 	//for (gr=1;gr<=header.ngroupes;gr++) {groupe[gr].nstat=0;} 
+// 	cout << header.ngroupes << " groupe(s)\n";
+// 	//delete [] ss;
+// 	//ss =splitwords(s," ",&ns);
+// 	if (debuglevel == 2) cout << "ns=" << ns << "\n";
+// 	for (int i = 0; i < ns; i++) {
+// 		splitwords(ss[i], "_", qq);
+// 		nq = qq.size();
+// 		if (nq != 3) return false;
+// 		if (debuglevel == 2) cout << "nq=" << nq << "   qq[1]=" << qq[1] << "\n";
+// 		gr = atoi(qq[1].c_str());
+// 		if (debuglevel == 2) cout << "gr=" << gr << "\n";
+// 		groupe[gr].nstat++;
+// 	}
+// 	header.nstat = 0;
+// 	for (gr = 1; gr <= header.ngroupes; gr++) header.nstat += groupe[gr].nstat;
+// 	if (debuglevel == 2) {
+// 		cout << "dans resetstat nstat = " << header.nstat << "\n";
+// 		for (gr = 1; gr <= header.ngroupes; gr++) cout << "      groupe " << gr << "   nstat=" << groupe[gr].nstat << "\n";
+// 	}
 
-	for (gg = 0; gg < ngroupmodif; gg++)
-		groupe[groupmodif[gg]].sumstat = vector<StatC>(groupe[groupmodif[gg]].nstat);
+// 	for (gg = 0; gg < ngroupmodif; gg++)
+// 		groupe[groupmodif[gg]].sumstat = vector<StatC>(groupe[groupmodif[gg]].nstat);
 
-	if (debuglevel == 2) {
-		cout << "dans resetstat nstat = " << header.nstat << "\n";
-		for (gr = 1; gr <= header.ngroupes; gr++) cout << "      groupe " << gr << "   nstat=" << groupe[gr].nstat << "\n";
-	}
+// 	if (debuglevel == 2) {
+// 		cout << "dans resetstat nstat = " << header.nstat << "\n";
+// 		for (gr = 1; gr <= header.ngroupes; gr++) cout << "      groupe " << gr << "   nstat=" << groupe[gr].nstat << "\n";
+// 	}
 
-	//delete [] ss;
-	//ss =splitwords(s," ",&ns);
-	//delete []header.statname;
-	lonentstat = header.entetestat.length();
-	header.entetestat = "";
-	header.statname = vector<string>(header.nstat);
-	gs = 0;
-	gt = 0;
-	for (gr = 1; gr <= header.ngroupes; gr++) {
-		gg = 0;
-		while ((gg < ngroupmodif)and (gr != groupmodif[gg])) gg++;
-		if (gg == ngroupmodif) {
-			for (int i = 0; i < groupe[gr].nstat; i++) {
-				header.statname[gs] = statname[gr][i];
-				header.entetestat += centre(header.statname[gs], 14);
-				gs++;
-			}
-		}
-		else {
-			for (int i = 0; i < groupe[gr].nstat; i++) {
-				header.statname[gs] = ss[gt];
-				gt++;
-				header.entetestat += centre(header.statname[gs], 14);
-				gs++;
-			}
-		}
-	}
-	header.entete.erase(header.entete.length() - lonentstat, lonentstat);
-	header.entete += header.entetestat;
-	cout << "\n" << header.entete << "\n";
-	for (int i = 0; i < ns; i++) {
-		if (debuglevel == 2)cout << "\nss[" << i << "] = " << ss[i] << "\n";
-		splitwords(ss[i], "_", qq);
-		nq = qq.size();
-		gr = atoi(qq[1].c_str());
-		j = 0;
-		while (qq[0] != stat_type[j]) j++;
-		if (debuglevel == 2) cout << "ss[" << i << "] = " << ss[i] << "   j=" << j << "\n";
-		if (groupe[gr].type == 0) { //MICROSAT
-			if (stat_num[j] < 5) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
-				nustat[gr]++;
-			}
-			else if (stat_num[j] < 12) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				splitwords(qq[2], "&", ss1);
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
-				nustat[gr]++;
-			}
-			else if (stat_num[j] == 12) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				splitwords(qq[2], "&", ss1);
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
-				nustat[gr]++;
-			}
-		}
-		else if (groupe[gr].type == 1) { //DNA SEQUENCE
-			if (debuglevel == 2) cout << "DNA SEQUENCE stat_num[" << j << "] = " << stat_num[j] << "   qq[2]=" << qq[2] << "\n";
-			if (debuglevel == 2) cout << "gr=" << gr << "   nustat[gr]=" << nustat[gr] << "\n";
-			if (stat_num[j] > -9) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
-				nustat[gr]++;
-			}
-			else if (stat_num[j] > -14) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				splitwords(qq[2], "&", ss1);
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
-				nustat[gr]++;
-			}
-			else if (stat_num[j] == -14) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				splitwords(qq[2], "&", ss1);
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
-				nustat[gr]++;
-			}
-			//cout<<"fin\n";
-		}
-		else if (groupe[gr].type == 2) { //SNP
-			catsnp = (stat_num[j] - 21) / 4;
-			if (debuglevel == 2) cout << "snp catsnp=" << catsnp << "   stat_num[" << j << "]=" << stat_num[j] << "\n";
-			if (stat_num[j] < 25) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
-				trouve = false;
-				if (debuglevel == 2) cout << "statsnp[" << gr << "].size=" << statsnp[gr].size() << "\n";
-				if (statsnp[gr].size() > 0) {
-					for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
-						trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp));
-						if (trouve) {
-							groupe[gr].sumstat[nustat[gr]].numsnp = jj;
-							break;
-						}
-					}
-				}
-				if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-				if (not trouve) {
-					stsnp.cat = catsnp;
-					stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
-					stsnp.defined = false;
-					groupe[gr].sumstat[nustat[gr]].numsnp = statsnp[gr].size();
-					cout << "statsnp[" << statsnp[gr].size() << "]   cat=" << stsnp.cat << "   samp=" << stsnp.samp << "\n";
-					statsnp[gr].push_back(stsnp);
-				}
-				nustat[gr]++;
+// 	//delete [] ss;
+// 	//ss =splitwords(s," ",&ns);
+// 	//delete []header.statname;
+// 	lonentstat = header.entetestat.length();
+// 	header.entetestat = "";
+// 	header.statname = vector<string>(header.nstat);
+// 	gs = 0;
+// 	gt = 0;
+// 	for (gr = 1; gr <= header.ngroupes; gr++) {
+// 		gg = 0;
+// 		while ((gg < ngroupmodif)and (gr != groupmodif[gg])) gg++;
+// 		if (gg == ngroupmodif) {
+// 			for (int i = 0; i < groupe[gr].nstat; i++) {
+// 				header.statname[gs] = statname[gr][i];
+// 				header.entetestat += centre(header.statname[gs], 14);
+// 				gs++;
+// 			}
+// 		}
+// 		else {
+// 			for (int i = 0; i < groupe[gr].nstat; i++) {
+// 				header.statname[gs] = ss[gt];
+// 				gt++;
+// 				header.entetestat += centre(header.statname[gs], 14);
+// 				gs++;
+// 			}
+// 		}
+// 	}
+// 	header.entete.erase(header.entete.length() - lonentstat, lonentstat);
+// 	header.entete += header.entetestat;
+// 	cout << "\n" << header.entete << "\n";
+// 	for (int i = 0; i < ns; i++) {
+// 		if (debuglevel == 2)cout << "\nss[" << i << "] = " << ss[i] << "\n";
+// 		splitwords(ss[i], "_", qq);
+// 		nq = qq.size();
+// 		gr = atoi(qq[1].c_str());
+// 		j = 0;
+// 		while (qq[0] != stat_type[j]) j++;
+// 		if (debuglevel == 2) cout << "ss[" << i << "] = " << ss[i] << "   j=" << j << "\n";
+// 		if (groupe[gr].type == 0) { //MICROSAT
+// 			if (stat_num[j] < 5) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
+// 				nustat[gr]++;
+// 			}
+// 			else if (stat_num[j] < 12) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				splitwords(qq[2], "&", ss1);
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
+// 				nustat[gr]++;
+// 			}
+// 			else if (stat_num[j] == 12) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				splitwords(qq[2], "&", ss1);
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
+// 				nustat[gr]++;
+// 			}
+// 		}
+// 		else if (groupe[gr].type == 1) { //DNA SEQUENCE
+// 			if (debuglevel == 2) cout << "DNA SEQUENCE stat_num[" << j << "] = " << stat_num[j] << "   qq[2]=" << qq[2] << "\n";
+// 			if (debuglevel == 2) cout << "gr=" << gr << "   nustat[gr]=" << nustat[gr] << "\n";
+// 			if (stat_num[j] > -9) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
+// 				nustat[gr]++;
+// 			}
+// 			else if (stat_num[j] > -14) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				splitwords(qq[2], "&", ss1);
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
+// 				nustat[gr]++;
+// 			}
+// 			else if (stat_num[j] == -14) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				splitwords(qq[2], "&", ss1);
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
+// 				nustat[gr]++;
+// 			}
+// 			//cout<<"fin\n";
+// 		}
+// 		else if (groupe[gr].type == 2) { //SNP
+// 			catsnp = (stat_num[j] - 21) / 4;
+// 			if (debuglevel == 2) cout << "snp catsnp=" << catsnp << "   stat_num[" << j << "]=" << stat_num[j] << "\n";
+// 			if (stat_num[j] < 25) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(qq[2].c_str());
+// 				trouve = false;
+// 				if (debuglevel == 2) cout << "statsnp[" << gr << "].size=" << statsnp[gr].size() << "\n";
+// 				if (statsnp[gr].size() > 0) {
+// 					for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
+// 						trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp));
+// 						if (trouve) {
+// 							groupe[gr].sumstat[nustat[gr]].numsnp = jj;
+// 							break;
+// 						}
+// 					}
+// 				}
+// 				if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
+// 				if (not trouve) {
+// 					stsnp.cat = catsnp;
+// 					stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
+// 					stsnp.defined = false;
+// 					groupe[gr].sumstat[nustat[gr]].numsnp = statsnp[gr].size();
+// 					cout << "statsnp[" << statsnp[gr].size() << "]   cat=" << stsnp.cat << "   samp=" << stsnp.samp << "\n";
+// 					statsnp[gr].push_back(stsnp);
+// 				}
+// 				nustat[gr]++;
 
-			}
-			else if ((stat_num[j] > 24)and (stat_num[j] < 33)) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				splitwords(qq[2], "&", ss1);
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
-				trouve = false;
-				if (debuglevel == 2) cout << "statsnp[" << gr << "].size=" << statsnp[gr].size() << "\n";
-				if (statsnp[gr].size() > 0) {
-					for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
-						trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp)and (statsnp[gr][jj].samp1 == groupe[gr].sumstat[nustat[gr]].samp1));
-						if (trouve) {
-							groupe[gr].sumstat[nustat[gr]].numsnp = jj;
-							break;
-						}
-					}
-				}
-				//cout<<"statsnp.size = "<<statsnp.size()<<"   trouve = "<<trouve<<"\n";
-				if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-				if (not trouve) {
-					stsnp.cat = catsnp;
-					stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
-					stsnp.samp1 = groupe[gr].sumstat[nustat[gr]].samp1;
-					stsnp.defined = false;
-					groupe[gr].sumstat[nustat[gr]].numsnp = statsnp[gr].size();
-					cout << "statsnp[" << statsnp[gr].size() << "]   cat=" << stsnp.cat << "   samp=" << stsnp.samp << "   samp1=" << stsnp.samp1 << "\n";
-					statsnp[gr].push_back(stsnp);
-				}
-				//cout<<"numsnp = "<<statsnp.size()<<"\n";
-				nustat[gr]++;
+// 			}
+// 			else if ((stat_num[j] > 24)and (stat_num[j] < 33)) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				splitwords(qq[2], "&", ss1);
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
+// 				trouve = false;
+// 				if (debuglevel == 2) cout << "statsnp[" << gr << "].size=" << statsnp[gr].size() << "\n";
+// 				if (statsnp[gr].size() > 0) {
+// 					for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
+// 						trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp)and (statsnp[gr][jj].samp1 == groupe[gr].sumstat[nustat[gr]].samp1));
+// 						if (trouve) {
+// 							groupe[gr].sumstat[nustat[gr]].numsnp = jj;
+// 							break;
+// 						}
+// 					}
+// 				}
+// 				//cout<<"statsnp.size = "<<statsnp.size()<<"   trouve = "<<trouve<<"\n";
+// 				if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
+// 				if (not trouve) {
+// 					stsnp.cat = catsnp;
+// 					stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
+// 					stsnp.samp1 = groupe[gr].sumstat[nustat[gr]].samp1;
+// 					stsnp.defined = false;
+// 					groupe[gr].sumstat[nustat[gr]].numsnp = statsnp[gr].size();
+// 					cout << "statsnp[" << statsnp[gr].size() << "]   cat=" << stsnp.cat << "   samp=" << stsnp.samp << "   samp1=" << stsnp.samp1 << "\n";
+// 					statsnp[gr].push_back(stsnp);
+// 				}
+// 				//cout<<"numsnp = "<<statsnp.size()<<"\n";
+// 				nustat[gr]++;
 
-			}
-			else if (stat_num[j] > 32) {
-				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
-				splitwords(qq[2], "&", ss1);
-				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
-				groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
-				trouve = false;
-				if (debuglevel == 2) cout << "statsnp.size=" << statsnp.size() << "\n";
-				if (statsnp[gr].size() > 0) {
-					for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
-						trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp)and (statsnp[gr][jj].samp1 == groupe[gr].sumstat[nustat[gr]].samp1)and (statsnp[gr][jj].samp2 == groupe[gr].sumstat[nustat[gr]].samp2));
-						if (trouve) {
-							groupe[gr].sumstat[nustat[gr]].numsnp = jj;
-							break;
-						}
-					}
-				}
-				if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
-				if (not trouve) {
-					stsnp.cat = catsnp;
-					stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
-					stsnp.samp1 = groupe[gr].sumstat[nustat[gr]].samp1;
-					stsnp.samp2 = groupe[gr].sumstat[nustat[gr]].samp2;
-					stsnp.defined = false;
-					groupe[gr].sumstat[nustat[gr]].numsnp = statsnp[gr].size();
-					cout << "statsnp[" << gr << "][" << statsnp[gr].size() << "]   cat=" << stsnp.cat << "   samp=" << stsnp.samp << "   samp1=" << stsnp.samp1 << "   samp2=" << stsnp.samp2 << "\n";
-					statsnp[gr].push_back(stsnp);
-				}
-				nustat[gr]++;
-			}
-		}
-	}
-	for (gr = 1; gr <= header.ngroupes; gr++) {
-		if (groupe[gr].type == 2) {
-			groupe[gr].nstatsnp = statsnp[gr].size();
-			cout << "groupe[gr].nstatsnp=" << groupe[gr].nstatsnp << "\n";
-			if (groupe[gr].nstatsnp > 0) {
-				groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
-				for (int i = 0; i < groupe[gr].nstatsnp; i++) {
-					groupe[gr].sumstatsnp[i].cat = statsnp[gr][i].cat;
-					groupe[gr].sumstatsnp[i].samp = statsnp[gr][i].samp;
-					groupe[gr].sumstatsnp[i].samp1 = statsnp[gr][i].samp1;
-					groupe[gr].sumstatsnp[i].samp2 = statsnp[gr][i].samp2;
-					groupe[gr].sumstatsnp[i].defined = statsnp[gr][i].defined;
-				}
-				statsnp[gr].clear();
-			}
-			statsnp.clear();
-		}
-	}
-	cout << "fin de resetstats\n";
-	return true;
-}
+// 			}
+// 			else if (stat_num[j] > 32) {
+// 				groupe[gr].sumstat[nustat[gr]].cat = stat_num[j];
+// 				splitwords(qq[2], "&", ss1);
+// 				groupe[gr].sumstat[nustat[gr]].samp = atoi(ss1[0].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp1 = atoi(ss1[1].c_str());
+// 				groupe[gr].sumstat[nustat[gr]].samp2 = atoi(ss1[2].c_str());
+// 				trouve = false;
+// 				if (debuglevel == 2) cout << "statsnp.size=" << statsnp.size() << "\n";
+// 				if (statsnp[gr].size() > 0) {
+// 					for (size_t jj = 0; jj < statsnp[gr].size(); jj++) {
+// 						trouve = ((statsnp[gr][jj].cat == catsnp)and (statsnp[gr][jj].samp == groupe[gr].sumstat[nustat[gr]].samp)and (statsnp[gr][jj].samp1 == groupe[gr].sumstat[nustat[gr]].samp1)and (statsnp[gr][jj].samp2 == groupe[gr].sumstat[nustat[gr]].samp2));
+// 						if (trouve) {
+// 							groupe[gr].sumstat[nustat[gr]].numsnp = jj;
+// 							break;
+// 						}
+// 					}
+// 				}
+// 				if (debuglevel == 2) cout << "trouve=" << trouve << "\n";
+// 				if (not trouve) {
+// 					stsnp.cat = catsnp;
+// 					stsnp.samp = groupe[gr].sumstat[nustat[gr]].samp;
+// 					stsnp.samp1 = groupe[gr].sumstat[nustat[gr]].samp1;
+// 					stsnp.samp2 = groupe[gr].sumstat[nustat[gr]].samp2;
+// 					stsnp.defined = false;
+// 					groupe[gr].sumstat[nustat[gr]].numsnp = statsnp[gr].size();
+// 					cout << "statsnp[" << gr << "][" << statsnp[gr].size() << "]   cat=" << stsnp.cat << "   samp=" << stsnp.samp << "   samp1=" << stsnp.samp1 << "   samp2=" << stsnp.samp2 << "\n";
+// 					statsnp[gr].push_back(stsnp);
+// 				}
+// 				nustat[gr]++;
+// 			}
+// 		}
+// 	}
+// 	for (gr = 1; gr <= header.ngroupes; gr++) {
+// 		if (groupe[gr].type == 2) {
+// 			groupe[gr].nstatsnp = statsnp[gr].size();
+// 			cout << "groupe[gr].nstatsnp=" << groupe[gr].nstatsnp << "\n";
+// 			if (groupe[gr].nstatsnp > 0) {
+// 				groupe[gr].sumstatsnp = vector<StatsnpC>(groupe[gr].nstatsnp);
+// 				for (int i = 0; i < groupe[gr].nstatsnp; i++) {
+// 					groupe[gr].sumstatsnp[i].cat = statsnp[gr][i].cat;
+// 					groupe[gr].sumstatsnp[i].samp = statsnp[gr][i].samp;
+// 					groupe[gr].sumstatsnp[i].samp1 = statsnp[gr][i].samp1;
+// 					groupe[gr].sumstatsnp[i].samp2 = statsnp[gr][i].samp2;
+// 					groupe[gr].sumstatsnp[i].defined = statsnp[gr][i].defined;
+// 				}
+// 				statsnp[gr].clear();
+// 			}
+// 			statsnp.clear();
+// 		}
+// 	}
+// 	cout << "fin de resetstats\n";
+// 	return true;
+// }
 
 string pseudoprior2(long double x) {
 	string spr;
@@ -682,8 +682,8 @@ void domodchec(string opt, int seed) {
 	firsttime = true;
 	cout << "ns=" << ns << "\n";
 	//cout<<phistarOK[0][0]<<"\n";
-	if (newstat) usestats = resetstats(snewstat);
-	if (not usestats) cout << "problème dans la construction des nouvelles stats\n";
+//	if (newstat) usestats = resetstats(snewstat);
+//	if (not usestats) cout << "problème dans la construction des nouvelles stats\n";
 	cout << "header.nstat = " << header.nstat << "\n";
 	enreg = vector<enregC>(nenr);
 	cout << "apres new enregC[nenr]\n";
@@ -724,7 +724,7 @@ void domodchec(string opt, int seed) {
 		if (newstat) {
 			header.readHeader(headerfilename);
 			cout << "apres readHeader scenario.size()= " << scenario.size() << "\n";
-			usestats = resetstats(snewstat);
+//			usestats = resetstats(snewstat);
 			newrefpart = 10000;
 			cout << "newrefparts=" << newrefpart << "\n";
 			numscen = new int[newrefpart];

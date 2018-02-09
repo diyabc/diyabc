@@ -22,6 +22,7 @@ set(PROJECT_general_SRCS
   randomgenerator.cpp
   reftable.cpp
   simfile.cpp
+  statdefs.cpp
   sumstat.cpp
   modchec.cpp
   )
@@ -44,6 +45,7 @@ set(PROJECT_general_HEADERS
   randomgenerator.hpp
   reftable.hpp
   simfile.hpp
+  statdefs.hpp
   )
 
 set(PROJECT_generaltest_SRCS
@@ -63,6 +65,7 @@ set(PROJECT_generaltest_SRCS
   mesutils.cpp
   modchec.cpp
   matrices.cpp
+  statdefs.cpp
   )
 
 set(PROJECT_generaltest_HEADERS
@@ -81,6 +84,7 @@ set(PROJECT_generaltest_HEADERS
   particleset.hpp
   particuleC.hpp
   reftable.hpp
+  statdefs.hpp
   )
 
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
