@@ -267,6 +267,10 @@ public:
 	long double cal_moyL0(int gr, int numsnp);
 	long double cal_moyL(int gr, int numsnp);
 	long double cal_varL0(int gr, int numsnp);
+	// long double cal_fstmoyL0(int gr, int numsnp);
+	long double cal_fstmoyL(int gr, int numsnp);
+	long double cal_fsti(int gr, int numsnp);
+	// long double cal_fstvarL0(int gr, int numsnp);
 	void docalstat(int gr);
 
 };
