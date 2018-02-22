@@ -211,11 +211,14 @@ public:
 	void cal_snaml(int gr, int numsnp);
 	void cal_snf3r(int gr, int numsnp);
 	void cal_snf4r(int gr, int numsnp);
-	void cal_snq1(int gr, int numsnp);
-	void cal_snq2(int gr, int numsnp);
 	void cal_snfstd(int gr, int numsnp, int npop);
-	void cal_snfsti(int gr, int numsnp);
 
+	double q1(int gr, int loc, int sample, bool bias);
+	double q2(int gr, int loc, const vector<int>& samp, bool bias);
+	void cal_snhw(int gr, int numsnp);
+	void cal_snhb(int gr, int numsnp);
+	void cal_snfsti(int gr, int numsnp);
+	int findstat(string&& stat);
 	// MICROSAT
 	long double cal_pid1p(int gr, int st);
 	long double cal_nal1p(int gr, int st);
@@ -262,14 +265,11 @@ public:
 	long double cal_qu3L(int n, long double* x);
 	void cal_snpstatRedinit(int gr, int numsnp);	
 	void cal_snpstatRedacc(int gr, int numsnp, long double x , long double w);
-	void cal_snpstatFstacc(int gr, int numsnp, long double num, long double den, long double w);
 	long double cal_p0L(int gr, int numsnp);
 	long double cal_moyL0(int gr, int numsnp);
 	long double cal_moyL(int gr, int numsnp);
 	long double cal_varL0(int gr, int numsnp);
-	// long double cal_fstmoyL0(int gr, int numsnp);
-	long double cal_fstmoyL(int gr, int numsnp);
-	long double cal_fsti(int gr, int numsnp);
+
 	// long double cal_fstvarL0(int gr, int numsnp);
 	void docalstat(int gr);
 

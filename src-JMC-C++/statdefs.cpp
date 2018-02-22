@@ -89,9 +89,7 @@ map<string, calstatn> accnames =
         { "P0", calstatn(&ParticleC::cal_p0L) },
         { "M1", calstatn(&ParticleC::cal_moyL0) },
         { "V1", calstatn(&ParticleC::cal_varL0) },
-        { "MO", calstatn(&ParticleC::cal_moyL) },
-        { "MF", calstatn(&ParticleC::cal_fstmoyL)},
-        { "MQ", calstatn(&ParticleC::cal_fsti)}
+        { "MO", calstatn(&ParticleC::cal_moyL) }
     };
 
 
@@ -130,10 +128,6 @@ vector<statn> dna_statns {
 
 
 vector<snpstatn> snp_statns {
-    snpstatn{ "QW", 1, sortArr::HALF, // Q1 : 21, 22
-                wrapstatn(&ParticleC::cal_snq1), 
-                { "V1", "MO" }
-            }, 
     // snpstatn{ "H", 1, sortArr::HALF, // HET: 23, 24, 25, 26
     //             wrapstatn(&ParticleC::cal_snhet), 
     //             { "P0", "M1", "V1", "MO" }
@@ -142,18 +136,26 @@ vector<snpstatn> snp_statns {
                 wrapstatn(&ParticleC::cal_snhet), 
                 { "MO" }
             }, 
-    // snpstatn{ "F", 2, sortArr::HALF, // FST (biaisée) : 27, 28, 29, 30
-    //             wrapstatn(&ParticleC::cal_snfst), 
-    //             { "P0", "M1", "V1", "MO" }
-    //         }, 
+    snpstatn{ "F", 2, sortArr::HALF, // FST (biaisée) : 27, 28, 29, 30
+                wrapstatn(&ParticleC::cal_snfst), 
+                { "P0", "M1", "V1", "MO" }
+            }, 
     // snpstatn{ "NEI", 2, sortArr::HALF, // NEI : 31, 32, 33, 34
     //             wrapstatn(&ParticleC::cal_snnei), 
     //             { "P0", "M1", "V1", "MO" }
     //         }, 
-    snpstatn{ "QB", 2, sortArr::HALF, // Q2 : 35, 36, 37, 38
-                wrapstatn(&ParticleC::cal_snq2), 
-                { "P0", "M1", "V1", "MO" }
+    snpstatn{ "HW", 1, sortArr::HALF, // Q1 : 21, 22
+                wrapstatn(&ParticleC::cal_snhw), 
+                { "P0","M1","V1", "MO" }
             }, 
+    snpstatn{ "HB", 2, sortArr::HALF, // Q1 : 21, 22
+                wrapstatn(&ParticleC::cal_snhb), 
+                { "P0","M1","V1", "MO" }
+            }, 
+    // snpstatn{ "HBB", 2, sortArr::HALF, // Q2 : 35, 36, 37, 38
+    //             wrapstatn(&ParticleC::cal_snhb_biased), 
+    //             { "M1", "V1", "MO" }
+    //         }, 
     // snpstatn{ "A", 3, sortArr::HALF, // AML : 39, 40, 41, 42
     //             wrapstatn(&ParticleC::cal_snaml), 
     //             { "P0", "M1", "V1", "MO" }
@@ -167,24 +169,24 @@ vector<snpstatn> snp_statns {
     //             { "P0", "M1", "V1", "MO" }
     //         },
     snpstatn{ "FSTI", 1, sortArr::COMB, // Fst mono pop },
-                wrapstatn(&ParticleC::ParticleC::cal_snfsti),
-                { "MQ" }
+                wrapstatn(&ParticleC::cal_snfsti),
+                { "M1","V1","MO" }
             },
     snpstatn{ "FST2", 2, sortArr::COMB, // Fst bi pop}
                 wrapstatn(bind(&ParticleC::cal_snfstd,_1,_2,_3,2)),
-                { "MF" }
+                { "MO" }
             },
     snpstatn{ "FST3", 3, sortArr::COMB, // Fst tri pop}
                 wrapstatn(bind(&ParticleC::cal_snfstd,_1,_2,_3,3)),
-                { "MF" }
+                { "MO" }
             },
     snpstatn{ "FST4", 4, sortArr::COMB, // Fst quadri pop}
                 wrapstatn(bind(&ParticleC::cal_snfstd,_1,_2,_3,4)),
-                { "MF" }
+                { "MO" }
             },
     snpstatn{ "FSTG", 0, sortArr::COMB, // Fst Globale}
                 wrapstatn(bind(&ParticleC::cal_snfstd,_1,_2,_3,0)),
-                { "MF" }
+                { "MO" }
             }
 
 };
