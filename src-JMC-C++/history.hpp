@@ -33,7 +33,7 @@ struct StatsnpC {
 	reference_wrapper<const vector<int>> samp = ref(nullvec);
 	int n;
 	bool defined = false;
-	long double sw, sw0, sw1, sw12, mx, mx1, mx12;
+	long double sw, sw0, sw1, sw12, mx, mx1, mx12, mx2, sw2;
 	long double densw0, densw1, densw12, denmx, denmx1, denmx12;
 //	StatsnpC() : samp(ref(nullvec)) {}
 };

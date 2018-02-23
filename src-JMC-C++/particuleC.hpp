@@ -268,6 +268,7 @@ public:
 	long double cal_p0L(int gr, int numsnp);
 	long double cal_moyL0(int gr, int numsnp);
 	long double cal_moyL(int gr, int numsnp);
+	long double cal_varL(int gr, int numsnp);
 	long double cal_varL0(int gr, int numsnp);
 
 	// long double cal_fstvarL0(int gr, int numsnp);

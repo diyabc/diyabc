@@ -302,7 +302,8 @@ void ParticleC::cal_snnei(int gr, int numsnp) {
 }
 
 void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
-	long double num = 0, den = 0, w;
+	long double numt = 0, dent = 0, w;
+	long double num = 0, den = 0, x = 0;
 	int iloc,loc, npopr;
 	if (npop == 0) {
 		npopr = this->nsample;
@@ -363,8 +364,8 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 				n_c = (R_1 - R_2/R_1)/(C_1 - C_1_star);
 				MSI = SSI /(R_1 - C_1);
 				MSP = SSP /(C_1 - C_1_star);
-				num += (MSP - MSI);
-				den += (MSP + (n_c - 1.0)*MSI);
+				num = (MSP - MSI);
+				den = (MSP + (n_c - 1.0)*MSI);
 			} else {  //SNP
 				long double S_1 = 0, S_2 = 0;
 				long double n_c, MSI, MSP;
@@ -405,15 +406,19 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 				MSP = SSP / (n_d - 1.0);
 				auto dden = (MSP + (n_c - 1.0) * MSI);
 				if (abs(dden) > 0)
-				num += (MSP - MSI);
-				den += (MSP + (n_c - 1.0) * MSI);
-				if (iloc < 10 && samples[0] == 0 && samples[1] == 1 && samples.size() == 2) 
-					cout << "[FDC] locus " << iloc << " : " << (MSP - MSI)/(MSP + (n_c - 1.0) * MSI) << " " << (MSP - MSI) << " " << (MSP + (n_c - 1.0) * MSI) << endl;
+				num = (MSP - MSI);
+				den = (MSP + (n_c - 1.0) * MSI);
+
+				// if (iloc < 10 && samples[0] == 0 && samples[1] == 1 && samples.size() == 2) 
+				// 	cout << "[FDC] locus " << iloc << " : " << (MSP - MSI)/(MSP + (n_c - 1.0) * MSI) << " " << (MSP - MSI) << " " << (MSP + (n_c - 1.0) * MSI) << endl;
 			}
+			if (abs(den) > 0.0) x = num/den;
+			cal_snpstatRedacc(gr, numsnp, x , w);
+			numt += num;
+			dent += den;
 		}
 	}
-	statC.mx = num/den;
-	statC.sw = 1.0;
+	statC.mx = numt/dent;
 }
 
 void ParticleC::cal_snfst(int gr, int numsnp) {
@@ -656,7 +661,7 @@ double ParticleC::q2(int gr, int loc, const vector<int>& samp, bool bias) {
 			double r21 = locuslist[loc].nreads1[sample1];
 			double c2 = locuslist[loc].nreads[sample1];
 			double r22 = c2 - r21;
-			x = (r11 * r12 + r21 * r22) / (c1 * c2);
+			x = (r11 * r21 + r12 * r22) / (c1 * c2);
 		}
 		else
 		{ // Genepop/SNP
@@ -713,12 +718,10 @@ void ParticleC::cal_snfsti(int gr, int numsnp)
 {
 	StatsnpC& stsnp = grouplist[gr].sumstatsnp[numsnp];
 	auto sample = stsnp.samp.get()[0];
-	long double Hbmoy = 0.0, Hbpmoy = 0.0, Hw, Hwp, Hwv;
-	int Hbstat = findstat("HBMO");
-	int Hbpstat = findstat("HBM1");
-	int Hwstat = findstat("HWMO");
-	int Hwpstat = findstat("HWM1");
-	int Hwvstat = findstat("HWV1");
+	long double Hbmoy = 0.0, Hw, Hwv;
+	int Hbstat = findstat("HBM");
+	int Hwstat = findstat("HWM");
+	int Hwvstat = findstat("HWV");
 	int nQb = 0;
 	for(int i = 0; i < grouplist[gr].sumstat.size(); i++) {
 		auto&& samp = grouplist[gr].sumstat[i].samp.get();
@@ -729,20 +732,15 @@ void ParticleC::cal_snfsti(int gr, int numsnp)
 				Hbmoy += val;
 				nQb++;				
 			}
-			if (curstat == Hbpstat) Hbpmoy += val;
 			if (curstat == Hwstat) Hw = val;
-			if (curstat == Hwpstat) Hwp = val;
 			if (curstat == Hwvstat) Hwv = val;
 		}
 	}
 	Hbmoy /= static_cast<double>(nQb);
-	Hbpmoy /= static_cast<double>(nQb);
 	stsnp.mx = 1.0 - Hw / Hbmoy;
-	stsnp.mx1 = 1.0 - Hwp / Hbpmoy;
-	stsnp.mx12 = Hwv / (Hbpmoy * Hbpmoy);
+	stsnp.mx2 = Hwv / (Hbmoy * Hbmoy);
 	stsnp.sw = 1.0;
-	stsnp.sw1 = 1.0;
-	stsnp.sw12 = 0.0;
+	stsnp.sw2 = 0.0;
 }
 
 
@@ -2258,6 +2256,8 @@ void ParticleC::cal_snpstatRedinit(int gr, int numsnp)
 	stsnp.sw1 = 0.0;
 	stsnp.sw12 = 0.0;
 	stsnp.mx1 = 0.0;
+	stsnp.mx2 = 0.0;
+	stsnp.sw2 = 0.0;
 	stsnp.mx12 = 0.0;
 	stsnp.densw0 = 0.0;
 	stsnp.densw1 = 0.0;
@@ -2275,6 +2275,8 @@ void ParticleC::cal_snpstatRedacc(int gr, int numsnp, long double x , long doubl
 	if (w > 0.0) {
 		mo = stsnp.mx;
 		stsnp.mx += (w / stsnp.sw) * (x - mo);
+		stsnp.mx2 += w *(x - mo) * (x - stsnp.mx);
+		stsnp.sw2 += w * w;
 		if (x > 0.0) {
 			stsnp.sw1 += w;
 			stsnp.sw12 += w * w;
@@ -2331,10 +2333,17 @@ long double ParticleC::cal_moyL0(int gr, int numsnp) {
 
 
 long double ParticleC::cal_varL0(int gr, int numsnp) {
-	StatsnpC& stsnp = this->grouplist[gr].sumstatsnp[numsnp];
+	StatsnpC& stsnp = grouplist[gr].sumstatsnp[numsnp];
 	long double sw2diff = stsnp.sw1 * stsnp.sw1 - stsnp.sw12;
 	if (sw2diff < 0.000000001) return 0.0;	
 	return ( stsnp.mx12 * stsnp.sw1) / sw2diff;
+}
+
+long double ParticleC::cal_varL(int gr, int numsnp) {
+	StatsnpC& stsnp = grouplist[gr].sumstatsnp[numsnp];
+	long double sw2diff = stsnp.sw * stsnp.sw - stsnp.sw2;
+	if (sw2diff < 0.000000001) return 0.0;	
+	return ( stsnp.mx2 * stsnp.sw) / sw2diff;
 }
 
 // long double ParticleC::cal_varL0(StatsnpC stsnp) {
