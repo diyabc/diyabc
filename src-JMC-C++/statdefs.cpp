@@ -133,10 +133,6 @@ vector<snpstatn> snp_statns {
                 wrapstatn(&ParticleC::cal_snhw), 
                 { "P0", "M","V" ,"M1","V1"}
             }, 
-    snpstatn{ "FSTI", 1, sortArr::COMB, // Fst mono pop },
-                wrapstatn(&ParticleC::cal_snfsti),
-                { "M","V" }
-            },
     // snpstatn{ "H", 1, sortArr::HALF, // HET: 23, 24, 25, 26
     //             wrapstatn(&ParticleC::cal_snhet), 
     //             { "P0", "M1", "V1", "MO" }
@@ -153,6 +149,10 @@ vector<snpstatn> snp_statns {
                 wrapstatn(&ParticleC::cal_snhb), 
                 { "P0", "M","M1", "V1" }
             }, 
+    snpstatn{ "FST1", 1, sortArr::COMB, // Fst mono pop },
+                wrapstatn(&ParticleC::cal_snfsti),
+                { "M","V" }
+            },
     snpstatn{ "FST2", 2, sortArr::COMB, // Fst bi pop}
                 wrapstatn(bind(&ParticleC::cal_snfstd,_1,_2,_3,2)),
                 { "M", "V" }
