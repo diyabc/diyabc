@@ -125,6 +125,8 @@ target_link_libraries(general-test dcmt ${Boost_LIBRARIES})
 target_link_libraries(initRNGproject dcmt)    
 target_link_libraries(testRNGproject dcmt ${Boost_LIBRARIES})    
 
+link_libraries("-static")
+
 if (MSVC)
   target_link_libraries(general wingetopt)
   target_link_libraries(general-test wingetopt)
