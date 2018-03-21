@@ -527,12 +527,12 @@ void ParticleC::cal_snf3r(int gr, int numsnp)
 				int np = samplesize(loc, sample);
 				if (this->grouplist[gr].type == 3)
 				{ //Poolseq
-					double a1p = this->locuslist[loc].nreads1[sample];
-					double c1p = this->locuslist[loc].nreads[sample];
-					double a2p = this->locuslist[loc].nreads1[sample1];
-					double c2p = this->locuslist[loc].nreads[sample1];
-					double a3p = this->locuslist[loc].nreads1[sample2];
-					double c3p = this->locuslist[loc].nreads[sample2];
+					double a1p = this->locuslist[loc].nreads1[sample2];
+					double c1p = this->locuslist[loc].nreads[sample2];
+					double a2p = this->locuslist[loc].nreads1[sample];
+					double c2p = this->locuslist[loc].nreads[sample];
+					double a3p = this->locuslist[loc].nreads1[sample1];
+					double c3p = this->locuslist[loc].nreads[sample1];
 					//						double alpha = np * a1p * ( a1p - c1p ) / ( np - 1 ) / c1p / (c1p - 1);
 					double alpha = ((np * a1p * (a1p - 1)) / (c1p * (c1p - 1)) - (a1p / c1p)) / (np - 1);
 					double betaBC = (a2p * a3p) / (c2p * c3p);
