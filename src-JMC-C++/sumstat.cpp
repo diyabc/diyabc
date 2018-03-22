@@ -719,9 +719,9 @@ void ParticleC::cal_snfsti(int gr, int numsnp)
 	StatsnpC& stsnp = grouplist[gr].sumstatsnp[numsnp];
 	auto sample = stsnp.samp.get()[0];
 	long double Hbmoy = 0.0, Hw, Hwv;
-	int Hbstat = findstat("HBM");
-	int Hwstat = findstat("HWM");
-	int Hwvstat = findstat("HWV");
+	int Hbstat = findstat("HBm");
+	int Hwstat = findstat("HWm");
+	int Hwvstat = findstat("HWv");
 	int nQb = 0;
 	for(int i = 0; i < grouplist[gr].sumstat.size(); i++) {
 		auto&& samp = grouplist[gr].sumstat[i].samp.get();
