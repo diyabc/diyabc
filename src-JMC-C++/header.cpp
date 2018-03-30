@@ -686,6 +686,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			auto&& onestat = stats[i];
 			if (!checkStatType(groupe[gr].type,onestat.t) || 
 				(nsamp < onestat.npop) ||
+				(onestat.name.substr(0,2) == "ML" && nsamp <= stoi(onestat.name.substr(2,1))) ||
 				((nsamp < 5) && (onestat.npop == 0))) continue;			
 			auto&& lpops = sortAlgos[onestat.comb](nsamp,onestat.npop);
 			stringRF << onestat.name;
@@ -708,8 +709,6 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 					ststr = "0";
 				}
 				stringRF << " " << ststr;
-				s1 = onestat.name + "_" + to_string(gr) + "_" + ststr;
-				this->entetestat += centre(s1, 14);
 				if (auto&& onestatsnp = onestat.snps) {
 					int k = 0;
 					auto&& lsns = (*onestatsnp).get();
@@ -725,7 +724,11 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 						statc.numsnp = numsnp++;
 						groupe[gr].sumstatsnp.push_back(StatsnpC { popl });
 					}
+					s1 = onestat.name + "_" +  ststr;
+				} else {
+					s1 = onestat.name + "_" + to_string(gr) + "_" + ststr;
 				}
+				this->entetestat += centre(s1, 14);
 				groupe[gr].sumstat.push_back(statc);
 			}
 			stringRF <<"\n";				

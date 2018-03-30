@@ -212,6 +212,7 @@ public:
 	void cal_snf3r(int gr, int numsnp);
 	void cal_snf4r(int gr, int numsnp);
 	void cal_snfstd(int gr, int numsnp, int npop);
+	void cal_snfl(int gr, int numsnp, int npop);
 
 	double q1(int gr, int loc, int sample, bool bias);
 	double q2(int gr, int loc, const vector<int>& samp, bool bias);

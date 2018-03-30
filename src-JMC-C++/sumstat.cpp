@@ -300,7 +300,40 @@ void ParticleC::cal_snnei(int gr, int numsnp) {
 		}
 	}
 }
+void ParticleC::cal_snfl(int gr, int numsnp, int npop) {
+	int iloc,loc, npopr;
+	long double w;
+	if (npop == 0) {
+		npopr = this->nsample;
+	} else npopr = min(npop,this->nsample);
+	auto& statC = grouplist[gr].sumstatsnp[numsnp];
+	vector<int> samples;
+	if (npopr == nsample) {
+		samples.resize(npopr);
+		iota(samples.begin(),samples.end(),0);
+	} else {
+		samples = 	grouplist[gr].sumstatsnp[numsnp].samp.get();
+		samples.resize(npopr);
+	}
+	grouplist[gr].sumstatsnp[numsnp].n = grouplist[gr].nloc;
+	for (iloc = 0; iloc < grouplist[gr].nloc; iloc++) {
+		loc = grouplist[gr].loc[iloc];
+		w = locuslist[loc].weight;
+		if (w > 0.0) {
+			auto freq0 = locuslist[loc].freq[samples[0]][0];
+			bool fixed = freq0 == 0.0 || freq0 == 1.0;
+			if (fixed) {
+				if (samples.size() > 1) {
+					for (auto i = 1; i < samples.size(); i++) 
+						fixed = fixed && locuslist[loc].freq[samples[i]][0] == freq0;
+				}
+			}
+			statC.sw++;
+			if (fixed) statC.sw0++;
+		}
+	}
 
+}
 void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 	long double numt = 0, dent = 0, w;
 	long double num = 0, den = 0, x = 0;
