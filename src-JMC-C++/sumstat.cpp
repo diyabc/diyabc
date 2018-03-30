@@ -437,8 +437,6 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 				n_c = (S_1 - S_2 / S_1) / (n_d - 1.0);
 				MSI = SSI / (S_1 - n_d);
 				MSP = SSP / (n_d - 1.0);
-				auto dden = (MSP + (n_c - 1.0) * MSI);
-				if (abs(dden) > 0)
 				num = (MSP - MSI);
 				den = (MSP + (n_c - 1.0) * MSI);
 
@@ -702,7 +700,7 @@ double ParticleC::q2(int gr, int loc, const vector<int>& samp, bool bias) {
 			double y21 = locuslist[loc].freq[sample1][0] * n2;
 			double y12 = n1 - y11;
 			double y22 = n2 - y21;
-			x = (y11 * y12 + y21 * y22) / (n1 * n2);
+			x = (y11 * y21 + y12 * y22) / (n1 * n2);
 		}
 	}
 	return x;
