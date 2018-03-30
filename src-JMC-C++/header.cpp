@@ -703,7 +703,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 					ststr = accumulate(next(popl.begin()),popl.end(),
 						to_string(popl[0]+1),
 						[] (string a, int b) {
-							return a + "&" + to_string(b+1);
+							return a + "." + to_string(b+1);
 						});
 				} else {
 					ststr = "0";
