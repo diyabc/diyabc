@@ -246,7 +246,6 @@ int main(int argc, char* argv[]) {
 	bool erreur_scenario = false;
 	try {
 		cout << "debut\n";
-		initstat_typenum();
 		RNG_must_be_saved = false;
 		bool firsttime;
 		int k, seed;
@@ -254,7 +253,7 @@ int main(int argc, char* argv[]) {
 		int computer_identity = 0; // should be 0 if diyabc runs on a single computer
 		char action = 'a';
 		bool flagp = false, flagi = false, flags = false, simOK, stoprun = false;
-		string message, soptarg, estpar, comppar, confpar, acplpar, biaspar, modpar, rngpar, randforpar;
+		string message, soptarg, estpar, comppar, confpar, acplpar, biaspar, modpar, rngpar, randforpar, randforstats;
 
 		debut = clock();
 		srand(time(NULL));
@@ -438,7 +437,8 @@ int main(int argc, char* argv[]) {
 					break;
 
 				case 'R':
-					nrecneeded = atoi(optarg);
+					// nrecneeded = atoi(optarg);
+					randforstats = soptarg;
 					action = 'r';
 					randomforest = true;
 					reftablefilename = path + "reftableRF.bin";
@@ -502,6 +502,17 @@ int main(int argc, char* argv[]) {
 					break;
 			}
 		}
+		if (!randforstats.empty()) {
+            vector<string> ss;
+
+            splitwords(randforstats, ";", ss);
+            snp_statns.erase(remove_if(
+				snp_statns.begin(),snp_statns.end(),
+				[&ss](auto&& snpstat) { 
+					return find(ss.begin(),ss.end(), snpstat.name) == ss.end(); }),snp_statns.end());
+        }
+		initstat_typenum();
+
 		if (not flagp) {
 			cout << "option -p is compulsory\n";
 			exit(1);

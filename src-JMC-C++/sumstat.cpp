@@ -629,8 +629,7 @@ void ParticleC::cal_snf4r(int gr, int numsnp)
 					c = this->locuslist[loc].freq[sample2][0];
 					d = this->locuslist[loc].freq[sample3][0];
 				}
-				double resps = (a - b) * (c - d);
-				x = resps;
+				x = (a - b) * (c - d);
 			}
 			this->cal_snpstatRedacc(gr, numsnp, x, w);			
 		}
