@@ -51,6 +51,10 @@ add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEA
 target_link_libraries(general dcmt)
 target_compile_features(general PUBLIC cxx_std_17)
 
+if (MSVC)
+  target_link_libraries(general wingetopt)
+endif()
+
 find_package(OpenMP)
 if (OpenMP_FOUND)
 #   add_library(OpenMP::OpenMP_BLOUBH SHARED IMPORTED)

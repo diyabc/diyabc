@@ -49,3 +49,8 @@ Notice-DIYABC-v2/Notice_DIYABC_principal.toc
 .vs
 .vscode
 node_modules
+.fake
+paket-files
+packages
+paket.lock
+obj

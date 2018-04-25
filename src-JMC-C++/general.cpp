@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include <atomic>
+#include <algorithm>
 
 #include <string.h>
 #include <iso646.h>

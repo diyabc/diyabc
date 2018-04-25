@@ -758,7 +758,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 		if (!trouve)
 			fileRF << s1 << "\n";
 	}
-	fileRF << grstringRF.rdbuf() << "\n";
+	fileRF << grstringRF.rdbuf();
 
 	splitwords(this->entetestat, " ", statname);
 	//for(int i=0;i<(int)statname.size();i++) cout<<this->statname[i]<<"  ";cout<<"\n";
@@ -769,7 +769,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 	//cout<<"\n\nthis->entetestat=\n"<<this->entetestat<<"\n";
 
 	cout << "\n\nthis->entete=\n" << this->entete << "\n";
-	fileRF <<"\n"<<this->entete<<"\n";
+	fileRF <<this->entete<<"\n";
 	fileRF.close();
 
 	return 0;
@@ -777,7 +777,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 
 int HeaderC::readHeaderGroupStat(ifstream& file) {
 	string s1;
-	vector<string> ss, ss1;
+	vector<string> ss, ss1, popnum;
 	int j, k, nss, gr,numsnp;
 	//Partie group statistics
 	if (debuglevel == 2) cout << "debut des group stat\n";
@@ -812,31 +812,35 @@ int HeaderC::readHeaderGroupStat(ifstream& file) {
 			});
 			if (onestati != stats.end()) {
 				int i = &*(onestati)-&*(stats.begin());
-				vector<int> p;
-				transform(next(ss.begin()),ss.end(),back_inserter(p),[](string& s){ return stoi(s)-1;} );
-				auto&& popl = *(poplist.insert(p).first);
-				StatC statc { 
-					k++,
-					gr,
-					0,
-					((ss.size() == 1) && (stoi(ss[0]) == 0)) ? nullvec : popl
-				};
-				if (auto&& onestatsnp = onestati->snps) {
-					auto&& lsns = (*onestatsnp).get();
-					auto&& statfound = find_if(groupe[gr].sumstat.begin(),groupe[gr].sumstat.end(),[&](StatC& sns) {
-						if (auto&& onestatsnp1 = stats[sns.cat].snps) {
-							auto&& lsns1 = (*onestatsnp1).get();
-							return 	(lsns1 == lsns) && (sns.samp.get() == popl);	
-						} else return false;
-					});
-					if (statfound != groupe[gr].sumstat.end()) {
-						statc.numsnp = statfound->numsnp;
-					} else {
-						statc.numsnp = numsnp++;
-						groupe[gr].sumstatsnp.push_back(StatsnpC { popl });
+				for(auto&& popstr : vector<string>(next(ss.begin()),ss.end())) {
+					vector<int> p;
+					splitwords(popstr,".",popnum);
+					transform(popnum.begin(),popnum.end(),back_inserter(p),[](string& s){ return stoi(s)-1;} );
+					auto&& popl = *(poplist.insert(p).first);
+					StatC statc { 
+						i,
+						gr,
+						0,
+						((ss.size() == 1) && (stoi(ss[0]) == 0)) ? nullvec : popl
+					};
+					if (auto&& onestatsnp = onestati->snps) {
+						auto&& lsns = (*onestatsnp).get();
+						auto&& statfound = find_if(groupe[gr].sumstat.begin(),groupe[gr].sumstat.end(),[&](StatC& sns) {
+							if (auto&& onestatsnp1 = stats[sns.cat].snps) {
+								auto&& lsns1 = (*onestatsnp1).get();
+								return 	(lsns1 == lsns) && (sns.samp.get() == popl);	
+							} else return false;
+						});
+						if (statfound != groupe[gr].sumstat.end()) {
+							statc.numsnp = statfound->numsnp;
+						} else {
+							statc.numsnp = numsnp++;
+							groupe[gr].sumstatsnp.push_back(StatsnpC { popl });
+						}
 					}
+					groupe[gr].sumstat.push_back(statc);
+					k++;
 				}
-				groupe[gr].sumstat.push_back(statc);
 			}
 			if (debuglevel == 2) cout << "fin de la stat " << k << "\n";
 		}

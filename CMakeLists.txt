@@ -20,5 +20,14 @@ add_library(dcmt ${PROJECT_dcmt_SRCS})
 
 project (diyabc)
 
+IF(MSVC)
+  add_subdirectory (wingetopt)
+  link_directories (${dcmt_BINARY_DIR} ${wingetopt_BINARY_DIR})
+  # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Za")
+ELSE() 
+  link_directories (${dcmt_BINARY_DIR})
+ENDIF()
+
+
 add_subdirectory (src-JMC-C++)
 
