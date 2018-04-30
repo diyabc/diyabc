@@ -55,6 +55,7 @@ public:
 	int readHeaderGroupPrior(ifstream& file);
 	int readHeaderAllStat(ifstream& file, string headerfilename);
 	int readHeaderGroupStat(ifstream& file);
+	int readHeaderLine(string& ss, bool statname);
 	int readHeaderEntete(ifstream& file);
 	int buildSuperScen();
 	int buildMutParam();

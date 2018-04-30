@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <numeric>
 #include <algorithm>
+#include <regex>
 
 #include <cstdio>
 #include <cmath>
@@ -989,24 +990,63 @@ int HeaderC::buildMutParam() {
 	return 0;
 }
 
+int HeaderC::readHeaderLine(string& hl, bool getstatname)
+{
+    regex word_regex("\\S+");
+    auto words_begin =
+        sregex_iterator(hl.begin(), hl.end(), word_regex);
+    auto words_end = std::sregex_iterator();
+
+    if (nparamtot - nparamut > 0)
+        entetehist = accumulate(
+            next(words_begin, 2),
+            next(words_begin, nparamtot - nparamut + 1),
+            next(words_begin)->str(),
+            [](string a, smatch b) { return a + " " + b.str(); });
+
+    if (nparamut > 0)
+        entetemut = accumulate(
+            next(words_begin, nparamtot - nparamut + 2),
+            next(words_begin, nparamtot + 1),
+            next(words_begin, nparamtot - nparamut + 1)->str(),
+            [](string a, smatch b) { return a + " " + b.str(); });
+
+    entetestat = accumulate(
+        next(words_begin, nparamtot + 2),
+        words_end,
+        next(words_begin, nparamtot + 1)->str(),
+        [](string a, smatch b) { return a + " " + b.str(); });
+
+    if (getstatname)
+    {
+        statname = vector<string>();
+        transform(next(words_begin, nparamtot + 1),
+                  words_end,
+                  back_inserter(statname),
+                  [](smatch a) { return a.str(); });
+    }
+	return 0;
+}
+
 int HeaderC::readHeaderEntete(ifstream& file) {
 	string s1;
 	vector<string> ss;
 	int nss;
 	//Entete du fichier reftable
 	getline(file, s1); //ligne vide
-	getline(file, this->entete); //ligne entete
+	getline(file, entete); //ligne entete
 	//cout<<this->entete<<"\n";
-	this->statname = vector<string>(this->nstat);
-	splitwords(this->entete, " ", ss);
-	nss = ss.size();
+	readHeaderLine(entete,true);
+	// this->statname = vector<string>(this->nstat);
+	// splitwords(this->entete, " ", ss);
+	// nss = ss.size();
 
 	if (debuglevel == 2) cout << "nss=" << nss << "   nparamtot=" << nparamtot << "   nparamut=" << nparamut << "   nstat=" << nstat << "\n";
-	for (int i = nstat - 1; i >= 0; i--) this->statname[i] = ss[--nss];
-	this->entetehist = this->entete.substr(0, this->entete.length() - 14 * (nparamut + nstat));
-	if (nparamut > 0) this->entetemut = this->entete.substr(this->entetehist.length(), 14 * nparamut);
-	else this->entetemut = "";
-	this->entetestat = this->entete.substr(this->entetehist.length() + this->entetemut.length(), 14 * nstat);
+	// // for (int i = nstat - 1; i >= 0; i--) this->statname[i] = ss[--nss];
+	// // this->entetehist = this->entete.substr(0, this->entete.length() - 14 * (nparamut + nstat));
+	// // if (nparamut > 0) this->entetemut = this->entete.substr(this->entetehist.length(), 14 * nparamut);
+	// // else this->entetemut = "";
+	// this->entetestat = this->entete.substr(this->entetehist.length() + this->entetemut.length(), 14 * nstat);
 	if (debuglevel == 2) cout << "les trois entetes\n";
 	if (debuglevel == 2) cout << ">>>" << this->entetehist << "<<<\n";
 	if (debuglevel == 2) cout << ">>>" << this->entetemut << "<<<\n";
