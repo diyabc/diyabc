@@ -508,7 +508,9 @@ void ReftableC::bintotxt() {
 	fprintf(f1, "%s\n", header.entete.c_str());//printf("%s\n",header.entete.c_str());
 	splitwords(header.entete, " ", ss);
 	this->sethistparamname(header);
-	while (not fifo.eof()) {
+	int j = 0;
+	while (not fifo.eof() && j < nrec) {
+		j++;
 		bidon = this->readrecord(enr);
 		if (bidon != 0) cout << "probleme à la lecture du reftable\n";
 		//cout<<"numscen="<<enr.numscen<<"\n\n";
