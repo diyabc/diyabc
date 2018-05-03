@@ -31,3 +31,4 @@ ENDIF()
 
 add_subdirectory (src-JMC-C++)
 
+add_subdirectory (abcranger)

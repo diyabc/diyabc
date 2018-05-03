@@ -51,4 +51,11 @@ Target.create "Test_x" (fun _ ->
     Shell.cd __SOURCE_DIRECTORY__
 )
 
+let rangertestbed = __SOURCE_DIRECTORY__ + @"../ranger-testbed/"
+
+Target.create "Ranger_Testbed" (fun _ ->
+    !! (rangertestbed + "ranger_*")
+    |> File.deleteAll
+)
+
 Target.runOrDefault "Test_x"
