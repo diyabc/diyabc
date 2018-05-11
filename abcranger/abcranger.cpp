@@ -53,7 +53,7 @@ float abcranger(string headerpath, string reftablepath, string statobspath, int 
     headerStream >> noskipws;
     const std::string hS(istream_iterator<char>{headerStream}, {});
     
-    const regex scen_re("\\bscenario\\s+(\\d+)\\s+.*\\n((?:(?!(?:scenario|\\n)).*\\n)+)");
+    const regex scen_re(R"#(\bscenario\s+(\d+)\s+.*\n((?:(?!(?:scenario|\n)).*\n)+))#");
     sregex_token_iterator itscen(begin(hS), end(hS), scen_re, {1,2});
     //    print(itscen, {});
 
@@ -68,16 +68,17 @@ float abcranger(string headerpath, string reftablepath, string statobspath, int 
         scendesc[stoi(num)-1] = desc;
     }
     //cout << scendesc[0];
-    const regex nparamtot("historical parameters priors \\((\\d+)\\D");
+    const regex nparamtot(R"#(historical parameters priors \((\d+)\D)#");
     smatch base_match;
     regex_search(begin(hS), end(hS),base_match,nparamtot);
     auto nparamtoth = stoi(base_match[1]);
 //    cout << nparamtoth << endl;
-    const regex reparamlist("\\bhistorical parameters priors.*\\n((?:\\w+\\W[^\\n]*\\n){" + to_string(nparamtoth) + "})");
+    string reparamlistrestr = R"#(\bhistorical parameters priors.*\n((?:\w+\W[^\n]*\n){)#" + to_string(nparamtoth) + "})";
+    const regex reparamlist(reparamlistrestr);
     regex_search(begin(hS), end(hS),base_match,reparamlist);
     //cout << base_match[1] << endl;
     const string paramlistmatch = base_match[1];
-    const regex reparam("(\\w+)\\W+\\w\\W+\\w\\w\\[([^,\\]]+),([^,\\]]+)[,\\]][^\\n]*\\n");
+    const regex reparam(R"#((\w+)\W+\w\W+\w\w\[([^,\]]+),([^,\]]+)[,\]][^\n]*\n)#");
     sregex_token_iterator reparamit(begin(paramlistmatch),end(paramlistmatch), reparam, {1,2,3});
     it = reparamit;
     int reali = 1;
@@ -95,7 +96,7 @@ float abcranger(string headerpath, string reftablepath, string statobspath, int 
     }
     int realparamtot = reali - 1;
     vector<vector<int>> parambyscenh(nscenh);
-    const regex splitre("\\W");
+    const regex splitre(R"#(\W)#");
     for(int i = 0; i < nscenh; i++) {
         sregex_token_iterator it(begin(scendesc[i]),end(scendesc[i]),splitre,-1);
         for(; it != endregexp; ++it) {
@@ -111,10 +112,10 @@ float abcranger(string headerpath, string reftablepath, string statobspath, int 
     //     for(auto p : scen) cout << p << " ";
     //     cout << endl;       
     // }
-    const regex restatsname("\\n\\s*\\nscenario\\s+");
+    const regex restatsname(R"#(\n\s*\nscenario\s+)#");
     regex_search(begin(hS), end(hS),base_match,restatsname);
     const string allstatsname = base_match.suffix();
-    const regex splitre2("\\s+");
+    const regex splitre2(R"#(\s+)#");
     vector<string> allcolspre;
     for(sregex_token_iterator it(allstatsname.begin(),allstatsname.end(),splitre2,-1); it != endregexp; it++)
         allcolspre.push_back(*it);
@@ -172,7 +173,7 @@ float abcranger(string headerpath, string reftablepath, string statobspath, int 
     ifstream statobsStream(statobspath,ios::in);
     statobsStream >> noskipws;
     const std::string sS(istream_iterator<char>{statobsStream}, {});
-    const regex stat_re("\\n?(-?\\d+\\.\\d+\\s+)");
+    const regex stat_re(R"#(\n?(-?\d+\.\d+\s+))#");
     sregex_token_iterator itstat(begin(sS), end(sS), stat_re, {1});
     vector<double> statobs(nstat);
     it = itstat;
