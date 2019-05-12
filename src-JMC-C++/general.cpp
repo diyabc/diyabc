@@ -446,14 +446,6 @@ int main(int argc, char* argv[]) {
 					cout << "simulating data sets with all summary statistics\n";
 					break;
 
-				case 'F':
-					randforpar = soptarg;
-					randomforest = true;
-					reftablefilename = path + "reftableRF.bin";
-					statobsfilename = path + "statobsRF.txt";
-					action = 'F';
-					break;
-
 				case 'k':
 					action = 'k';
 					break;
