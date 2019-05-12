@@ -9,7 +9,7 @@
 
 #ifdef _MSC_VER
 #define _AMD64_
-#include "../windirent.h"
+#include "windirent.h"
 #else
 #include <dirent.h>
 #endif

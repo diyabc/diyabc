@@ -15,7 +15,6 @@ set(PROJECT_general_SRCS
   mesutils.cpp
   particleset.cpp
   particuleC.cpp
-  randforest.cpp
   randomgenerator.cpp
   reftable.cpp
   simfile.cpp
@@ -38,7 +37,6 @@ set(PROJECT_general_HEADERS
   modchec.hpp
   particleset.hpp
   particuleC.hpp
-  randforest.hpp
   randomgenerator.hpp
   reftable.hpp
   simfile.hpp

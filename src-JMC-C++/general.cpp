@@ -55,7 +55,6 @@ extern "C" {
 #include "randomgenerator.hpp"
 #include "data.hpp"
 #include "history.hpp"
-#include "randforest.hpp"
 #include "mesutils.hpp"
 
 #include "statdefs.hpp"
@@ -782,14 +781,6 @@ int main(int argc, char* argv[]) {
 					exit(1);
 				}
 				doconf(confpar, seed);
-				break;
-
-			case 'F': k = readheaders();
-				if (k == 1) {
-					cout << "no file reftableRF.bin in the current directory\n";
-					exit(1);
-				}
-				dorandfor(randforpar, seed);
 				break;
 
 			case 'k': k = readheadersim();
