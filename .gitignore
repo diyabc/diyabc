@@ -54,3 +54,5 @@ paket-files
 packages
 paket.lock
 obj
+
+/.vscode
