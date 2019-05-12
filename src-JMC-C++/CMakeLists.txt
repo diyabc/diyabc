@@ -44,6 +44,15 @@ set(PROJECT_general_HEADERS
   )
 
 
+IF(MSVC)
+  add_compile_options(/permissive-)
+  # https://stackoverflow.com/questions/14172856/compile-with-mt-instead-of-md-using-cmake
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+#else()
+#  link_libraries(c++ c++abi)
+endif()
+
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
 add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 target_link_libraries(general dcmt)
@@ -53,17 +62,12 @@ if (MSVC)
   target_link_libraries(general wingetopt)
 endif()
 
+find_package(Threads)
+target_link_libraries(general Threads::Threads)
+
 find_package(OpenMP)
 if (OpenMP_FOUND)
-#   add_library(OpenMP::OpenMP_BLOUBH SHARED IMPORTED)
    target_link_libraries(general OpenMP::OpenMP_CXX) 
-#  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-#  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-#  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-# else()
-#   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
-#   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
-#  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}") 
 endif()
 
-install(TARGETS general RUNTIME DESTINATION .)
+#install(TARGETS general RUNTIME DESTINATION .)
