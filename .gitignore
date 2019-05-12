@@ -56,3 +56,23 @@ paket.lock
 obj
 
 /.vscode
+.paket/paket.targets
+build.cmd
+build.fsx
+build.proj
+build.fsx.lock
+.paket/Paket.Restore.targets
+test/f3reich/pool/RNG_state_0000.bin
+paket.dependencies
+paket.references
+src-JMC-C++/compare_refvec.cpp
+src-JMC-C++/deleg_cons.cpp
+src-JMC-C++/find_if.cpp
+src-JMC-C++/generate_permutations
+src-JMC-C++/generate_permutations.cpp
+test/RNG_state_0000.bin
+test/f3reich/pool/f0.pool
+test/f3reich/pool/header.txt
+test/f3reich/snp/RNG_state_0000.bin
+test/f3reich/snp/f0.snp
+test/f3reich/snp/header.txt
