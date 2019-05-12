@@ -28,9 +28,4 @@ ELSE()
   link_directories (${dcmt_BINARY_DIR})
 ENDIF()
 
-
 add_subdirectory (src-JMC-C++)
-
-add_subdirectory (abcranger)
-
-add_subdirectory(regextest)
