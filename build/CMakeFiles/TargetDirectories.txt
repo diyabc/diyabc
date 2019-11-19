@@ -1,6 +1,0 @@
-/home/fradav/Dev/C++/diyabc/build/CMakeFiles/rebuild_cache.dir
-/home/fradav/Dev/C++/diyabc/build/CMakeFiles/dcmt.dir
-/home/fradav/Dev/C++/diyabc/build/CMakeFiles/edit_cache.dir
-/home/fradav/Dev/C++/diyabc/build/src-JMC-C++/CMakeFiles/rebuild_cache.dir
-/home/fradav/Dev/C++/diyabc/build/src-JMC-C++/CMakeFiles/general.dir
-/home/fradav/Dev/C++/diyabc/build/src-JMC-C++/CMakeFiles/edit_cache.dir
