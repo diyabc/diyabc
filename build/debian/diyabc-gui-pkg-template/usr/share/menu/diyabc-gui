@@ -1,8 +1,0 @@
-?package(diyabc-gui): \
-   needs="X11" \
-   section="Applications/Science" \
-   command="/usr/bin/diyabc-gui" \
-   icon="/usr/share/icons/diyabc/coccicon.xpm" \
-   title="Diyabc" \
-   longtitle="Diyabc: Version VVERSION" \
-   description="Do It Yourself ABC."

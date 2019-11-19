@@ -687,7 +687,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 			auto&& onestat = stats[i];
 			if (!checkStatType(groupe[gr].type,onestat.t) || 
 				(nsamp < onestat.npop) ||
-				(onestat.name.substr(0,2) == "ML" && nsamp <= stoi(onestat.name.substr(2,1))) ||
+				// (onestat.name.substr(0,2) == "ML" && nsamp < stoi(onestat.name.substr(2,1))) ||
 				((nsamp < 5) && (onestat.npop == 0))) continue;			
 			auto&& lpops = sortAlgos[onestat.comb](nsamp,onestat.npop);
 			stringRF << onestat.name;

@@ -1,3 +1,0 @@
-Execution started, waiting parameter is : 4 
-..........
-End of execution

@@ -1,8 +1,0 @@
-?package(diyabc-git-zip-packageCOMMANDVERSION): \
-   needs="X11" \
-   section="Applications/Biology" \
-   command="/usr/local/bin/diyabc-git-zip-package" \
-   icon="/usr/local/src/diyabc-git/docs/icons/coccicon.xpm" \
-   title="Diyabc-git-zip-package" \
-   longtitle="Diyabc-zip-package: create a standalone zip package from lastest sources from CBGP git repo" \
-   description="The zip package can be uses on computers with equivalent OS version"

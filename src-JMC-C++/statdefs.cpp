@@ -119,7 +119,7 @@ vector<statn> dna_statns {
     statn{ "PSS" , 1, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_pss1p) }, // -6
     statn{ "MNS" , 1, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_mns1p) }, // -7
     statn{ "VNS" , 1, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_vns1p) }, // -8
-    statn{ "NH2" , 1, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_nha2p) }, // -9
+    statn{ "NH2" , 2, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_nha2p) }, // -9
     statn{ "NS2" , 2, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_nss2p) }, // -10
     statn{ "MP2" , 2, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_mpw2p) }, // -11
     statn{ "MPB" , 2, sortArr::HALF, statType::DNA, calstatn(&ParticleC::cal_mpb2p) }, // -12
@@ -139,6 +139,9 @@ vector<snpstatn> snp_statns{
              {"p"}},
     snpstatn{"ML4", 4, sortArr::COMB, // Fixed locii four pop },
              wrapstatn(bind(&ParticleC::cal_snfl, _1, _2, _3, 4)),
+             {"p"}},
+    snpstatn{"MLG", 0, sortArr::COMB, // Fixed locii four pop },
+             wrapstatn(bind(&ParticleC::cal_snfl, _1, _2, _3, 0)),
              {"p"}},
     // snpstatn{"H", 1, sortArr::HALF, // HET: 23, 24, 25, 26
     //          wrapstatn(&ParticleC::cal_snhet),

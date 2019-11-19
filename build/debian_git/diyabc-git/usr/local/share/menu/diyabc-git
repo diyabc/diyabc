@@ -1,8 +1,0 @@
-?package(diyabc-gitCOMMANDVERSION): \
-   needs="X11" \
-   section="Applications/Biology" \
-   command="/usr/local/bin/diyabc-git" \
-   icon="/usr/local/src/diyabc-git/docs/icons/coccicon.xpm" \
-   title="Diyabc-git" \
-   longtitle="Diyabc-git: DIYABC up to date by CBGP git repo" \
-   description="Do It Yourself ABC, updated on CBGP git server"

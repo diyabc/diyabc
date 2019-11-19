@@ -656,6 +656,7 @@ double ParticleC::q1(int gr, int loc, int sample, bool bias) {
 			auto s1 = r1 * (r1 - 1);
 			auto s2 = r2 * (r2 - 1);
 			x = ((np / (c1 * (c1 - 1))) * (s1 + s2) - 1) / (np - 1);
+
 		}
 		else // snp
 		{
@@ -714,7 +715,7 @@ void ParticleC::cal_snhw(int gr, int numsnp) {
 		loc = grouplist[gr].loc[iloc];
 		w = locuslist[loc].weight;
 		if (w > 0.0) {
-			x = 1 - q1(gr, loc, samp[0], false);
+			x = 1.0 - q1(gr, loc, samp[0], false);
 			cal_snpstatRedacc(gr, numsnp, x, w);
 		}
 	}
@@ -729,7 +730,7 @@ void ParticleC::cal_snhb(int gr, int numsnp) {
 		loc = grouplist[gr].loc[iloc];
 		w = locuslist[loc].weight;
 		if (w > 0.0) {
-			x = 1 - q2(gr, loc, samp, false);
+			x = 1.0 - q2(gr, loc, samp, false);
 			cal_snpstatRedacc(gr, numsnp, x, w);
 		}
 	}
@@ -2314,7 +2315,7 @@ void ParticleC::cal_snpstatRedacc(int gr, int numsnp, long double x , long doubl
 			stsnp.mx1 += (w / stsnp.sw1) * (x - mo);
 			stsnp.mx12 +=  w * (x - mo) * (x - stsnp.mx1);
 		}
-	}
+	} 
 	
 }
 	
@@ -2484,7 +2485,8 @@ void ParticleC::docalstat(int gr) {
 	else if (this->grouplist[gr].type == 3) this->calfreqpool(gr);
 	//cout << "apres calfreq\n";
 	for (int st = 0; st < this->grouplist[gr].nstat; st++) {
-		if ((this->grouplist[gr].sumstat[st].cat == -7)or (this->grouplist[gr].sumstat[st].cat == -8)) {
+		if ((stats[this->grouplist[gr].sumstat[st].cat].name == "MNS")or (stats[this->grouplist[gr].sumstat[st].cat].name == "VNS")) {
+		// if ((this->grouplist[gr].sumstat[st].cat == -7)or (this->grouplist[gr].sumstat[st].cat == -8)) {
 			this->afsdone.resize(this->nsample);
 			this->t_afs.resize(this->nsample);
 			this->n_afs.resize(this->nsample);

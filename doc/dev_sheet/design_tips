@@ -1,4 +1,0 @@
-sur le cluster, les sauvegardes sont faites par un crontab sur github en tant que l'utilisateur cbgp
-
-sur windows, python 2.5 ne marche pas avec pyqt pour 2.5, il faut installer python2.5, puis python 2.6 puis 
-pyqt pour 2.6 et laisser le path des libs python vers 2.6 comme ça python 2.5 utilise pyqt2.6
