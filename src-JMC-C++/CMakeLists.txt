@@ -43,16 +43,6 @@ set(PROJECT_general_HEADERS
   statdefs.hpp
   )
 
-
-IF(MSVC)
-  add_compile_options(/permissive-)
-  # https://stackoverflow.com/questions/14172856/compile-with-mt-instead-of-md-using-cmake
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-#else()
-#  link_libraries(c++ c++abi)
-endif()
-
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
 add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 target_link_libraries(general dcmt)
@@ -69,5 +59,3 @@ find_package(OpenMP)
 if (OpenMP_FOUND)
    target_link_libraries(general OpenMP::OpenMP_CXX) 
 endif()
-
-#install(TARGETS general RUNTIME DESTINATION .)
