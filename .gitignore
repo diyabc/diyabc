@@ -76,4 +76,6 @@ test/f3reich/pool/header.txt
 test/f3reich/snp/RNG_state_0000.bin
 test/f3reich/snp/f0.snp
 test/f3reich/snp/header.txt
-build-general
+/build-general
+/diyabc-tests
+/build
