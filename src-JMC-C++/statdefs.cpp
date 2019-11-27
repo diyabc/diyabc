@@ -140,9 +140,9 @@ vector<snpstatn> snp_statns{
     snpstatn{"ML4", 4, sortArr::COMB, // Fixed locii four pop },
              wrapstatn(bind(&ParticleC::cal_snfl, _1, _2, _3, 4)),
              {"p"}},
-    snpstatn{"MLG", 0, sortArr::COMB, // Fixed locii four pop },
-             wrapstatn(bind(&ParticleC::cal_snfl, _1, _2, _3, 0)),
-             {"p"}},
+    // snpstatn{"MLG", 0, sortArr::COMB, // Fixed locii four pop },
+    //          wrapstatn(bind(&ParticleC::cal_snfl, _1, _2, _3, 0)),
+    //          {"p"}},
     // snpstatn{"H", 1, sortArr::HALF, // HET: 23, 24, 25, 26
     //          wrapstatn(&ParticleC::cal_snhet),
     //          {"m", "v"}},
