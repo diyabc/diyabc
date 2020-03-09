@@ -77,5 +77,7 @@ test/f3reich/snp/RNG_state_0000.bin
 test/f3reich/snp/f0.snp
 test/f3reich/snp/header.txt
 /build-general
-/diyabc-tests
 /build
+
+/diyabc-tests/*
+!/diyabc-tests/MER/
