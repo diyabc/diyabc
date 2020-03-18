@@ -34,7 +34,7 @@ extern string* stat_type;
 extern int* stat_num;
 extern atomic<int> numloop, rejectedbymrc, rejectedbymaf;
 
-extern int debuglevel;
+extern int debuglevel, coverage;
 extern string reftablelogfilename;
 extern ofstream fpar;
 extern DataC dataobs, datasim;
@@ -2937,7 +2937,7 @@ string ParticleC::dodataSNPool() {
 	//short int g;          
 	int nph, nnh, npr, nnr, nt;
 	double rp;
-	datasim.lambdapoolseq = 50.0;
+	datasim.lambdapoolseq = static_cast<double>(coverage);
 	//cout<<"debut de dodatasnpool  nloc="<<datasim.nloc<<"\n";
 	sgp = "<NM=" + DoubleToString(datasim.sexratio / (1.0 - datasim.sexratio)) + "NF>  <MAF=hudson> <MRC=" + IntToString(datasim.mrc) + ">\n";
 	sgp += "POOL POP_NAME:HAPLOID_SAMPLE_SIZE ";

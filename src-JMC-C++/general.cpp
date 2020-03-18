@@ -157,7 +157,7 @@ vector<enregC> enreg, enregOK;
 string headerfilename, headersimfilename, reftablefilename, datafilename, statobsfilename, reftablelogfilename, path, ident, stopfilename, progressfilename, scsufilename;
 string reftabscen, paramfilename, statfilename;
 bool multithread = false, randomforest = false;
-int nrecneeded, nenr = 100, nenrOK, *neOK, *netot;
+int nrecneeded, nenr = 100, coverage = 50, nenrOK, *neOK, *netot;
 int debuglevel = 0;
 int num_threads = 0;
 string sremtime, scurfile;
@@ -266,6 +266,7 @@ int main(int argc, char* argv[]) {
 					cout << "-p <directory of header.txt>\n";
 					cout << "-r <number of required data sets in the reftable>\n";
 					cout << "-i <name given to the analysis\n";
+					cout << "-c <coverage percentage for poolseq poisson law\n";
 					cout << "-g <minimum number of particles simulated in a single bunch (default=100)>\n";
 					cout << "-m <multithreaded version of the program\n";
 					cout << "-q to merge all reftable_$j.bin \n";
@@ -284,79 +285,79 @@ int main(int argc, char* argv[]) {
 					cout << "           s:<seed of the first RNG (1 by default)>\n";
 					cout << "           f:<forcing creation of new RNG's and overriding the old ones>\n";
 
-					cout << "\n-e for ABC PARAMETER ESTIMATION (with parameters as a string including the following options separated par a semi-colon)\n";
-					cout << "           s:<chosen scenario[s separated by a comma]>\n";
-					cout << "           n:<number of simulated datasets taken from reftable>\n";
-					cout << "           m:<number of simulated datasets used for the local regression>\n";
-					cout << "           t:<number of the transformation (1,2,3 or 4)>\n";
-					cout << "           p:<o for original, c for composite, s for scaled, oc,os for both, ocs for all>\n";
+					// cout << "\n-e for ABC PARAMETER ESTIMATION (with parameters as a string including the following options separated par a semi-colon)\n";
+					// cout << "           s:<chosen scenario[s separated by a comma]>\n";
+					// cout << "           n:<number of simulated datasets taken from reftable>\n";
+					// cout << "           m:<number of simulated datasets used for the local regression>\n";
+					// cout << "           t:<number of the transformation (1,2,3 or 4)>\n";
+					// cout << "           p:<o for original, c for composite, s for scaled, oc,os for both, ocs for all>\n";
 
-					cout << "\n-c for ABC COMPUTATION OF POSTERIOR PROBALITY OF SCENARIOS (idem)\n";
-					cout << "           s:<chosen scenarios separated by a comma>\n";
-					cout << "           n:<number of simulated datasets taken from reftable>\n";
-					cout << "           d:<number of simulated datasets used in the direct approach>\n";
-					cout << "           l:<number of simulated datasets used in the logistic regression>\n";
-					cout << "           m:<number of requested logistic regressions>\n";
+					// cout << "\n-c for ABC COMPUTATION OF POSTERIOR PROBALITY OF SCENARIOS (idem)\n";
+					// cout << "           s:<chosen scenarios separated by a comma>\n";
+					// cout << "           n:<number of simulated datasets taken from reftable>\n";
+					// cout << "           d:<number of simulated datasets used in the direct approach>\n";
+					// cout << "           l:<number of simulated datasets used in the logistic regression>\n";
+					// cout << "           m:<number of requested logistic regressions>\n";
 
-					cout << "\n-F to run a comparison of scenarios based on random forests(idem)\n";
-					cout << "           s:<chosen scenario[s separated by a comma]>\n";
-					cout << "           n:<number of simulated datasets taken from reftable>\n";
-					cout << "           t:<number of trees (default=500)>\n";
-					cout << "           b:<size of the bootstrap sample per tree>\n";
-					cout << "           k:<number of summary statistics to draw at each node (defaut=sqrt(number of stat))\n";
-					cout << "           d:<if present, add linear discriminant scores to summary statistics\n";
-					cout << "           o:<number of most effective summary statistics to be shown (default=30case)\n";
+					// cout << "\n-F to run a comparison of scenarios based on random forests(idem)\n";
+					// cout << "           s:<chosen scenario[s separated by a comma]>\n";
+					// cout << "           n:<number of simulated datasets taken from reftable>\n";
+					// cout << "           t:<number of trees (default=500)>\n";
+					// cout << "           b:<size of the bootstrap sample per tree>\n";
+					// cout << "           k:<number of summary statistics to draw at each node (defaut=sqrt(number of stat))\n";
+					// cout << "           d:<if present, add linear discriminant scores to summary statistics\n";
+					// cout << "           o:<number of most effective summary statistics to be shown (default=30case)\n";
 
-					cout << "\n-b for BIAS/PRECISION COMPUTATIONS (idem)\n";
-					cout << "           s:<chosen scenario<\n";
-					cout << "           n:<number of simulated datasets taken from reftable>\n";
-					cout << "           m:<number of simulated datasets used for the local regression>\n";
-					cout << "           t:<number of the transformation (1,2,3 or 4)>\n";
-					cout << "           p:<o for original, c for composite, s for scaled, oc,os for both, ocs for all>\n";
-					cout << "           d:<number of requested test data sets>\n";
-					cout << "           h:<histparameter values/priors (see below)>\n";
-					cout << "                histparameter values (separated by a space): <parameter name>=<parameter value>\n";
-					cout << "                histparameter priors (separated by a space): <parameter name>=<parameter prior as in header.txt>\n";
-					cout << "           u:<mutparameter values/priors for successive groups (see below)> groups are named G1, G2 and separated by a star : G1*G2-...\n";
-					cout << "                mutparameter values/priors of a given as a set of 6 values/priors : Gx(vx1,vx2,vx3,vx4,vx5,vx6) with :\n";
-					cout << "                vx1=<mean mutation rate/prior for group x>    vx2=<shape value/locus mutation rate prior for group x>\n";
-					cout << "                vx3=<mean P value/mean P prior for group x>   vx4=<shape value/locus P prior for group x>\n";
-					cout << "                vx5 and vx6 correspond to sni mutation rate.\n";
-					cout << "                For a DNA sequence group, replace P and sni by k1 and k2 respectively\n";
-					cout << "           po to draw parameters for the pseudo-observed data sets from parameter posterior distributions\n";
+					// cout << "\n-b for BIAS/PRECISION COMPUTATIONS (idem)\n";
+					// cout << "           s:<chosen scenario<\n";
+					// cout << "           n:<number of simulated datasets taken from reftable>\n";
+					// cout << "           m:<number of simulated datasets used for the local regression>\n";
+					// cout << "           t:<number of the transformation (1,2,3 or 4)>\n";
+					// cout << "           p:<o for original, c for composite, s for scaled, oc,os for both, ocs for all>\n";
+					// cout << "           d:<number of requested test data sets>\n";
+					// cout << "           h:<histparameter values/priors (see below)>\n";
+					// cout << "                histparameter values (separated by a space): <parameter name>=<parameter value>\n";
+					// cout << "                histparameter priors (separated by a space): <parameter name>=<parameter prior as in header.txt>\n";
+					// cout << "           u:<mutparameter values/priors for successive groups (see below)> groups are named G1, G2 and separated by a star : G1*G2-...\n";
+					// cout << "                mutparameter values/priors of a given as a set of 6 values/priors : Gx(vx1,vx2,vx3,vx4,vx5,vx6) with :\n";
+					// cout << "                vx1=<mean mutation rate/prior for group x>    vx2=<shape value/locus mutation rate prior for group x>\n";
+					// cout << "                vx3=<mean P value/mean P prior for group x>   vx4=<shape value/locus P prior for group x>\n";
+					// cout << "                vx5 and vx6 correspond to sni mutation rate.\n";
+					// cout << "                For a DNA sequence group, replace P and sni by k1 and k2 respectively\n";
+					// cout << "           po to draw parameters for the pseudo-observed data sets from parameter posterior distributions\n";
 
-					cout << "\n-f for CONFIDENCE IN SCENARIO CHOICE COMPUTATIONS (idem)\n";
-					cout << "           s:<chosen scenarios among which to choose>\n";
-					cout << "           r:<chosen scenario to be tested<\n";
-					cout << "           n:<number of simulated datasets taken from reftable>\n";
-					cout << "           a:<number of simulated datasets taken from reftable>\n";
-					cout << "           t:<number of requested test data sets>\n";
-					cout << "           d:<number of simulated datasets used in the direct approach>\n";
-					cout << "           l:<number of simulated datasets used in the logistic regression>\n";
-					cout << "           m:<number of requested logistic regressions>\n";
-					cout << "           h:<histparameter values/priors (as in bias/precision)>\n";
-					cout << "           u:<mutparameter values/priors for successive groups (as in bias/precision)\n";
-					cout << "           f:<0 if logistic regression on SS, 1 if logistic regression on FDA components>\n";
-					cout << "           po to draw parameters for the pseudo-observed data sets from parameter posterior distributions\n";
-					cout << "           z:<number of simulated datasets used for the local regression>\n";
-					cout << "           b:<number of simulated datasets used for the prior predictive error>\n";
-					cout << "           c:<number of simulated datasets used for the posterior predictive error>\n";
+					// cout << "\n-f for CONFIDENCE IN SCENARIO CHOICE COMPUTATIONS (idem)\n";
+					// cout << "           s:<chosen scenarios among which to choose>\n";
+					// cout << "           r:<chosen scenario to be tested<\n";
+					// cout << "           n:<number of simulated datasets taken from reftable>\n";
+					// cout << "           a:<number of simulated datasets taken from reftable>\n";
+					// cout << "           t:<number of requested test data sets>\n";
+					// cout << "           d:<number of simulated datasets used in the direct approach>\n";
+					// cout << "           l:<number of simulated datasets used in the logistic regression>\n";
+					// cout << "           m:<number of requested logistic regressions>\n";
+					// cout << "           h:<histparameter values/priors (as in bias/precision)>\n";
+					// cout << "           u:<mutparameter values/priors for successive groups (as in bias/precision)\n";
+					// cout << "           f:<0 if logistic regression on SS, 1 if logistic regression on FDA components>\n";
+					// cout << "           po to draw parameters for the pseudo-observed data sets from parameter posterior distributions\n";
+					// cout << "           z:<number of simulated datasets used for the local regression>\n";
+					// cout << "           b:<number of simulated datasets used for the prior predictive error>\n";
+					// cout << "           c:<number of simulated datasets used for the posterior predictive error>\n";
 
 
-					cout << "\n-d for ABC PRIOR/SCENARIO CHECKING (idem)\n";
-					cout << "           a:<p for PCA, l for locate observed, pl for both>\n";
+					// cout << "\n-d for ABC PRIOR/SCENARIO CHECKING (idem)\n";
+					// cout << "           a:<p for PCA, l for locate observed, pl for both>\n";
 
-					cout << "\n-j for ABC MODEL CHECKING (idem)\n";
-					cout << "           s:<chosen scenario[s separated by a comma]>\n";
-					cout << "           n:<number of simulated datasets taken from reftable>\n";
-					cout << "           m:<number of simulated datasets used for the local regression>\n";
-					cout << "           q:<number of datasets simulated from posterior>\n";
-					cout << "           t:<number of the transformation (1,2,3 or 4)>\n";
-					cout << "           v:<list of summary stat names separated by a comma (if empty keep those of reftable)>\n";
+					// cout << "\n-j for ABC MODEL CHECKING (idem)\n";
+					// cout << "           s:<chosen scenario[s separated by a comma]>\n";
+					// cout << "           n:<number of simulated datasets taken from reftable>\n";
+					// cout << "           m:<number of simulated datasets used for the local regression>\n";
+					// cout << "           q:<number of datasets simulated from posterior>\n";
+					// cout << "           t:<number of the transformation (1,2,3 or 4)>\n";
+					// cout << "           v:<list of summary stat names separated by a comma (if empty keep those of reftable)>\n";
 
 					cout << "\n-k to SIMULATE DATA FILES\n";
 					cout << "\n-o to simulate summary statistics from a text file containing scenario and parameter values\n";
-					cout << "\n-R <number of required data sets in a reftable file (reftableRF.bin) with all possible summary statistics> (also produces a corresponding statobsRF.txt)\n";
+					cout << "\n-R <activate all stats (if empty) or selected stats families\n";
 					action = 'h';
 					break;
 
@@ -410,31 +411,38 @@ int main(int argc, char* argv[]) {
 					multithread = true;
 					break;
 
+
+
 				case 'c':
-					comppar = soptarg;
-					action = 'c';
+					coverage = atoi(optarg);
 					break;
 
-				case 'e':
-					estpar = soptarg;
-					action = 'e';
-					break;
 
-				case 'b':
-					biaspar = soptarg;
-					action = 'b';
-					break;
+				// case 'c':
+				// 	comppar = soptarg;
+				// 	action = 'c';
+				// 	break;
 
-				case 'f':
-					confpar = soptarg;
-					action = 'f';
-					break;
+				// case 'e':
+				// 	estpar = soptarg;
+				// 	action = 'e';
+				// 	break;
 
-				case 'd':
-					acplpar = soptarg;
-					action = 'd';
-					cout << "option -d " << optarg << "      " << soptarg << "\n";
-					break;
+				// case 'b':
+				// 	biaspar = soptarg;
+				// 	action = 'b';
+				// 	break;
+
+				// case 'f':
+				// 	confpar = soptarg;
+				// 	action = 'f';
+				// 	break;
+
+				// case 'd':
+				// 	acplpar = soptarg;
+				// 	action = 'd';
+				// 	cout << "option -d " << optarg << "      " << soptarg << "\n";
+				// 	break;
 
 				case 'R':
 					// nrecneeded = atoi(optarg);
@@ -465,10 +473,10 @@ int main(int argc, char* argv[]) {
 					action = 'Q';
 					break;
 
-				case 'j':
-					modpar = soptarg;
-					action = 'j';
-					break;
+				// case 'j':
+				// 	modpar = soptarg;
+				// 	action = 'j';
+				// 	break;
 
 				case 't':
 					num_threads = atoi(optarg);
@@ -510,14 +518,14 @@ int main(int argc, char* argv[]) {
 			exit(1);
 		}
 		if (not flagi) {
-			if (action == 'e') ident = strdup("estim1");
-			if (action == 'c') ident = strdup("compar1");
-			if (action == 'b') ident = strdup("bias1");
-			if (action == 'f') ident = strdup("conf1");
-			if (action == 'd') ident = strdup("pcaloc1");
-			if (action == 'j') ident = strdup("modchec1");
+			// if (action == 'e') ident = strdup("estim1");
+			// if (action == 'c') ident = strdup("compar1");
+			// if (action == 'b') ident = strdup("bias1");
+			// if (action == 'f') ident = strdup("conf1");
+			// if (action == 'd') ident = strdup("pcaloc1");
+			// if (action == 'j') ident = strdup("modchec1");
 			if (action == 'o') ident = strdup("statfile.txt");
-			if (action == 'F') ident = strdup("rf1");
+			// if (action == 'F') ident = strdup("rf1");
 		}
 		if (not flags) seed = time(NULL); // TODO: remove this
 		if (num_threads > 0) omp_set_num_threads(num_threads);
@@ -773,35 +781,35 @@ int main(int argc, char* argv[]) {
 				dobias(biaspar, seed);
 				break;
 
-			case 'f': k = readheaders();
-				if (k == 1) {
-					cout << "no file reftable.bin in the current directory\n";
-					exit(1);
-				}
-				doconf(confpar, seed);
-				break;
+			// case 'f': k = readheaders();
+			// 	if (k == 1) {
+			// 		cout << "no file reftable.bin in the current directory\n";
+			// 		exit(1);
+			// 	}
+			// 	doconf(confpar, seed);
+			// 	break;
 
 			case 'k': k = readheadersim();
 				dosimfile(seed);
 				break;
 
-			case 'd': k = readheaders();
-				if (k == 1) {
-					cout << "no file reftable.bin in the current directory\n";
-					exit(1);
-				}
-				cout << "avant doacpl soptarg=" << soptarg << "\n";
-				doacpl(acplpar);
-				break;
+			// case 'd': k = readheaders();
+			// 	if (k == 1) {
+			// 		cout << "no file reftable.bin in the current directory\n";
+			// 		exit(1);
+			// 	}
+			// 	cout << "avant doacpl soptarg=" << soptarg << "\n";
+			// 	doacpl(acplpar);
+			// 	break;
 
-			case 'j': k = readheaders();
-				if (k == 1) {
-					cout << "no file reftable.bin in the current directory\n";
-					exit(1);
-				}
-				nenr = 10;
-				domodchec(modpar, seed);
-				break;
+			// case 'j': k = readheaders();
+			// 	if (k == 1) {
+			// 		cout << "no file reftable.bin in the current directory\n";
+			// 		exit(1);
+			// 	}
+			// 	nenr = 10;
+			// 	domodchec(modpar, seed);
+			// 	break;
 
 			case 'q': //header.readHeader(headerfilename);
 				k = rt.readheader(reftablefilename, reftablelogfilename, reftabscen);
