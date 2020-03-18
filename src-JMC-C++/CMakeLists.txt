@@ -4,11 +4,7 @@ project (general)
 
 set(PROJECT_general_SRCS
   acploc.cpp
-  bias.cpp
-  comparscen.cpp
-  conf.cpp
   data.cpp
-  estimparam.cpp
   header.cpp
   history.cpp
   matrices.cpp
@@ -21,26 +17,24 @@ set(PROJECT_general_SRCS
   statdefs.cpp
   sumstat.cpp
   modchec.cpp
+  estimparam.cpp
   )
 
 set(PROJECT_general_HEADERS
   acploc.hpp
-  bias.hpp
-  comparscen.hpp
-  conf.hpp
   data.hpp
-  estimparam.hpp
   header.hpp
   history.hpp
   matrices.hpp
   mesutils.hpp
-  modchec.hpp
   particleset.hpp
   particuleC.hpp
   randomgenerator.hpp
   reftable.hpp
   simfile.hpp
   statdefs.hpp
+  modchec.hpp
+  estimparam.hpp
   )
 
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})

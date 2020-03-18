@@ -46,12 +46,7 @@ extern "C" {
 #include "header.hpp"
 #include "particleset.hpp"
 #include "reftable.hpp"
-#include "estimparam.hpp"
-#include "comparscen.hpp"
-#include "bias.hpp"
-#include "conf.hpp"
 #include "simfile.hpp"
-#include "modchec.hpp"
 #include "randomgenerator.hpp"
 #include "data.hpp"
 #include "history.hpp"
@@ -756,30 +751,30 @@ int main(int argc, char* argv[]) {
 				doinitRNG(rngpar);
 				break;
 
-			case 'e': k = readheaders();
-				if (k == 1) {
-					cout << "no file reftable.bin in the current directory\n";
-					exit(1);
-				}
-				doestim(estpar);
-				break;
+			// case 'e': k = readheaders();
+			// 	if (k == 1) {
+			// 		cout << "no file reftable.bin in the current directory\n";
+			// 		exit(1);
+			// 	}
+			// 	doestim(estpar);
+			// 	break;
 
-			case 'c': k = readheaders();
-				if (k == 1) {
-					cout << "no file reftable.bin in the current directory\n";
-					exit(1);
-				}
-				docompscen(comppar);
-				break;
+			// case 'c': k = readheaders();
+			// 	if (k == 1) {
+			// 		cout << "no file reftable.bin in the current directory\n";
+			// 		exit(1);
+			// 	}
+			// 	docompscen(comppar);
+			// 	break;
 
-			case 'b': k = readheaders();
-				if (k == 1) {
-					cout << "no file reftable.bin in the current directory\n";
-					exit(1);
-				}
+			// case 'b': k = readheaders();
+			// 	if (k == 1) {
+			// 		cout << "no file reftable.bin in the current directory\n";
+			// 		exit(1);
+			// 	}
 
-				dobias(biaspar, seed);
-				break;
+			// 	dobias(biaspar, seed);
+			// 	break;
 
 			// case 'f': k = readheaders();
 			// 	if (k == 1) {
