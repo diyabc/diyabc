@@ -32,7 +32,7 @@ using namespace std;
 
 extern string* stat_type;
 extern int* stat_num;
-extern atomic<int> numloop, rejectedbymrc;
+extern atomic<int> numloop, rejectedbymrc, rejectedbymaf;
 
 extern int debuglevel;
 extern string reftablelogfilename;
@@ -2475,14 +2475,18 @@ int ParticleC::dosimulpart(int numscen) {
 					cout << "LOCUS A POIDS NUL\n";
 					simulOK[loc] = 0;
 					gtexist[loc] = true;
-					loc--;
+					if (not ((this->locuslist[loc].type >= 10)and (this->locuslist[loc].type < 15)and (this->maf > 0.0)))
+						loc--;
 				}
 				if ((debuglevel == 11)and (loc < 10)) cout << "ntentes = " << this->ntentes << "\n";
 				if ((debuglevel == 11)and (loc < 10)) cout << "nlocutil = " << nlocutil << "\n";
 			}
 		}
 		if ((this->locuslist[loc].type >= 10)and (this->locuslist[loc].type < 15)and (this->maf > 0.0)) {
-			if (not this->mafreached(loc)) loc--;
+			if (not this->mafreached(loc)) {
+				loc--;
+				rejectedbymaf++;
+			}
 		}
 		//cout<<"mrc="<<this->mrc<<"\n";
 		numloop++;

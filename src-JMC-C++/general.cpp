@@ -138,7 +138,7 @@ mt_struct** mtss;
 int countRNG;
 atomic<int> numloop {0};
 atomic<int> rejectedbymrc {0};
-
+atomic<int> rejectedbymaf {0};
 void freeRNG(void) {
 	free_mt_struct_array(mtss, countRNG);
 }
@@ -709,9 +709,15 @@ int main(int argc, char* argv[]) {
 					}
 					//cout<<"fin du while\n";
 					//cout<<"avant delete [] enreg\n";
-					cout << "Total number of simulated loci : " << numloop << endl;
-					cout << "Number of rejected loci : " << rejectedbymrc << endl;
-					cout << "Number of valid loci " << numloop - rejectedbymrc << endl;
+						cout << "Total number of simulated loci : " << numloop << endl;
+					if (rejectedbymrc > 0) {
+						cout << "Number of mrc-rejected loci : " << rejectedbymrc << endl;
+						cout << "Number of valid loci " << numloop - rejectedbymrc << endl;
+					}
+					if (rejectedbymaf > 0) {
+						cout << "Number of maf-rejected loci : " << rejectedbymaf << endl;
+						cout << "Number of valid loci " << numloop - rejectedbymaf << endl;						
+					}
 					enreg.clear();
 					//cout<<"apres delete [] enreg\n";
 					//ps.libere(nenr);

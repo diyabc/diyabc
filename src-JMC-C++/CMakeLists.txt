@@ -52,10 +52,8 @@ if (MSVC)
   target_link_libraries(general wingetopt)
 endif()
 
-find_package(Threads)
-target_link_libraries(general Threads::Threads)
-
 find_package(OpenMP)
-if (OpenMP_FOUND)
-   target_link_libraries(general OpenMP::OpenMP_CXX) 
+
+if(${OpenMP_Found})
+  target_link_libraries(general OpenMP::OpenMP_CXX OpenMP::OpenMP_C)
 endif()
