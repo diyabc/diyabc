@@ -95,7 +95,7 @@ map<string, calstatn> accnames =
 
 
 vector<statn> microsat_statns = {
-    statn{ "PID" , 1, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_pid1p) }, // 0
+    // statn{ "PID" , 1, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_pid1p) }, // 0
     statn{ "NAL" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_nal1p) }, // 1 
     statn{ "HET" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_het1p) }, // 2
     statn{ "VAR" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_var1p) }, // 3
@@ -104,7 +104,7 @@ vector<statn> microsat_statns = {
     statn{ "H2P" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_het2p) }, // 6
     statn{ "V2P" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_var2p) }, // 7
     statn{ "FST" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_Fst2p) }, // 8
-    statn{ "LIK" , 2, sortArr::ALL, statType::MICROSAT, calstatn(&ParticleC::cal_lik2p) }, // 9
+    statn{ "LIK" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_lik2p) }, // 9
     statn{ "DAS" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_das2p) }, // 10
     statn{ "DM2" , 2, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_dmu2p) }, // 11
     statn{ "AML" , 3, sortArr::HALF, statType::MICROSAT, calstatn(&ParticleC::cal_Aml3p) }  // 12
