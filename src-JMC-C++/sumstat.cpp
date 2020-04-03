@@ -1994,7 +1994,7 @@ long double ParticleC::cal_fst2p(int gr, int st) {
 }
 
 void ParticleC::cal_freq(int gr, int st) {
-	int iloc, kloc, nhaplo, isamp, sample, dmax, j, cat;
+	int iloc, kloc, nhaplo, isamp, dmax, j, cat;
 	long double d;
 	auto&& samp = this->grouplist[gr].sumstat[st].samp.get();
 	int samp0 = samp[0];
@@ -2007,15 +2007,12 @@ void ParticleC::cal_freq(int gr, int st) {
 		cat = this->locuslist[kloc].type % 5;
 		dmax = samplesize(kloc, samp0) + samplesize(kloc, samp1) + samplesize(kloc, samp2);
 		//cout<<"Locus "<<kloc<<"   (cal_freq)\n";
-		this->locuslist[kloc].freq = vector<vector<long double>>(3);
-		this->locuslist[kloc].haplomic = vector<vector<int>>(3);
+		this->locuslist[kloc].freq = vector<vector<long double>>(dataobs.nsample);
+		this->locuslist[kloc].haplomic = vector<vector<int>>(dataobs.nsample);
 		this->locuslist[kloc].kmin = 100;
 		nhaplo = 0;
 		if (this->locuslist[kloc].dnavar == 0) { // construction pour ne pas deleter du vide (haplomic)
-			for (isamp = 0; isamp < 3; isamp++) {
-				if (isamp == 0) sample = samp0;
-				else if (isamp == 1) sample = samp1;
-				else sample = samp2;
+			for (auto sample: samp) {
 				this->locuslist[kloc].freq[sample] = vector<long double>(1);
 				this->locuslist[kloc].freq[sample][0] = 1.0;
 				this->locuslist[kloc].haplomic[sample] = vector<int>(dataobs.ssize[cat][sample]);
@@ -2027,10 +2024,7 @@ void ParticleC::cal_freq(int gr, int st) {
 		}
 		else {
 			haplo = new string[dmax];
-			for (isamp = 0; isamp < 3; isamp++) {
-				if (isamp == 0) sample = samp0;
-				else if (isamp == 1) sample = samp1;
-				else sample = samp2;
+			for (auto sample: samp) {
 				for (int i = 0; i < dataobs.ssize[cat][sample]; i++) {
 					if (this->locuslist[kloc].haplodna[sample][i] != SEQMISSING) {
 						if (nhaplo == 0) {
@@ -2055,10 +2049,7 @@ void ParticleC::cal_freq(int gr, int st) {
 					}
 				}
 			}
-			for (isamp = 0; isamp < 3; isamp++) {
-				if (isamp == 0) sample = samp0;
-				else if (isamp == 1) sample = samp1;
-				else sample = samp2;
+			for (auto sample: samp) {
 				this->locuslist[kloc].freq[sample] = vector<long double>(nhaplo);
 				for (j = 0; j < nhaplo; j++) this->locuslist[kloc].freq[sample][j] = 0.0;
 				d = 1.0 / (long double)samplesize(kloc, sample);
