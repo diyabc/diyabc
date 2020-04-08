@@ -981,7 +981,7 @@ void ParticleSetC::dosimultabref(int npart, bool dnatrue, bool multithread, bool
 				//cout<<"scenario "<<enreg[ipart].numscen<<"\n";
 				if (debuglevel == 5) cout << header.nparamtot << "   " << rt.nhistparam[iscen] << "   " << np << "\n";
 				pa = 0;
-				for (int j = 1; j < nph; j++) {
+				for (int j = 1; j < nph - rt.mutparam.size(); j++) {
 					trouve = false;
 					ip = -1;
 					while ((not trouve)and (ip < rt.nhistparam[iscen] - 1)) {
@@ -1005,7 +1005,7 @@ void ParticleSetC::dosimultabref(int npart, bool dnatrue, bool multithread, bool
 					else fprintf(pFile, "              ");
 				}
 				if (debuglevel == 5) cout << "pa=" << pa << "   rt.nparam[iscen]=" << rt.nparam[iscen] << "\n";
-				for (int j = 0; j < npm; j++) fprintf(pFile, "  %12.3e", enreg[ipart].param[pa + j]);
+				for (int j = 0; j < rt.mutparam.size(); j++) fprintf(pFile, "  %12.3e", enreg[ipart].param[pa + j]);
 				for (int st = 0; st < header.nstat; st++) fprintf(pFile, "  %12.6f", enreg[ipart].stat[st]);
 				fprintf(pFile, "\n");
 				if (debuglevel == 5) {
