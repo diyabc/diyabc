@@ -22,6 +22,7 @@
 #include "particuleC.hpp"
 #include "statdefs.hpp"
 
+MwcGen mw;
 extern int debuglevel;
 extern DataC dataobs;
 extern vector<statn> stats;
@@ -1294,7 +1295,11 @@ long double ParticleC::cal_Aml3p(int gr, int st) {
 	c = pente_lik(gr, st, i2);
 	lik2 = c.first;
 	p2 = c.second;
-	if (abs(lik1) + abs(lik2) < 1.0E-10) return -9999.0;
+	if (abs(lik1) + abs(lik2) < 1.0E-10) 
+	{ 
+		return mw.gunif(0.0,1.0);
+		// return -9999.0;
+	}
 	if ((p1 < 0.0)and (p2 < 0.0)) return 0.0;
 	if ((p1 > 0.0)and (p2 > 0.0)) return 1.0;
 	do {
@@ -2110,7 +2115,8 @@ long double ParticleC::cal_aml3p(int gr, int st) {
 	//cout<<"lik1="<<lik1<<"   lik2="<<lik2<<"\n";
 	if (abs(lik1) + abs(lik2) < 1.0E-10) {
 		libere_freq(gr);
-		return -9999.0;
+		// TODO return uniform random number between 0.0 and 1.0
+		return mw.gunif(0.0,1.0);
 	}
 	if ((p1 < 0.0)and (p2 < 0.0)) {
 		libere_freq(gr);
