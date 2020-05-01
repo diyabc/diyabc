@@ -1144,7 +1144,7 @@ string* ParticleSetC::simuldataSNP(int npart, bool multithread, int seed) {
 		this->particule[p].grouplist = vector<LocusGroupC>(this->particule[p].ngr + 1);
 		for (int gr = 0; gr < this->particule[p].ngr + 1; gr++) {
 			this->particule[p].grouplist[gr].type = 2;
-			this->particule[p].grouplist[gr].nloc = groupe[gr].nloc;
+			if (gr < groupe.size()) this->particule[p].grouplist[gr].nloc = groupe[gr].nloc;
 
 		} //cout<<"avant setloci\n";
 		this->setloci(p);//cout<<"apres setloci\n";

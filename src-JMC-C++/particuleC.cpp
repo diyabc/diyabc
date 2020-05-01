@@ -2480,6 +2480,9 @@ int ParticleC::dosimulpart(int numscen) {
 				}
 				if ((debuglevel == 11)and (loc < 10)) cout << "ntentes = " << this->ntentes << "\n";
 				if ((debuglevel == 11)and (loc < 10)) cout << "nlocutil = " << nlocutil << "\n";
+				if (not gt[loc].nodes.empty()) { gt[loc].nodes.clear(); gt[loc].nodes.resize(0); gt[loc].nodes.shrink_to_fit(); }
+				if (not gt[loc].branches.empty()) { gt[loc].branches.clear(); gt[loc].branches.resize(0);  gt[loc].branches.shrink_to_fit(); }
+
 			}
 		}
 		if ((this->locuslist[loc].type >= 10)and (this->locuslist[loc].type < 15)and (this->maf > 0.0)) {
