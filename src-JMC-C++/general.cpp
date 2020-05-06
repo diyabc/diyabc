@@ -339,8 +339,8 @@ int main(int argc, char* argv[]) {
 					// cout << "           c:<number of simulated datasets used for the posterior predictive error>\n";
 
 
-					// cout << "\n-d for ABC PRIOR/SCENARIO CHECKING (idem)\n";
-					// cout << "           a:<p for PCA, l for locate observed, pl for both>\n";
+					cout << "\n-d for ABC PRIOR/SCENARIO CHECKING (idem)\n";
+					cout << "           a:<p for PCA, l for locate observed, pl for both>\n";
 
 					// cout << "\n-j for ABC MODEL CHECKING (idem)\n";
 					// cout << "           s:<chosen scenario[s separated by a comma]>\n";
@@ -433,11 +433,11 @@ int main(int argc, char* argv[]) {
 				// 	action = 'f';
 				// 	break;
 
-				// case 'd':
-				// 	acplpar = soptarg;
-				// 	action = 'd';
-				// 	cout << "option -d " << optarg << "      " << soptarg << "\n";
-				// 	break;
+				case 'd':
+					acplpar = soptarg;
+					action = 'd';
+					cout << "option -d " << optarg << "      " << soptarg << "\n";
+					break;
 
 				case 'R':
 					// nrecneeded = atoi(optarg);
@@ -517,7 +517,7 @@ int main(int argc, char* argv[]) {
 			// if (action == 'c') ident = strdup("compar1");
 			// if (action == 'b') ident = strdup("bias1");
 			// if (action == 'f') ident = strdup("conf1");
-			// if (action == 'd') ident = strdup("pcaloc1");
+			if (action == 'd') ident = strdup("pcaloc1");
 			// if (action == 'j') ident = strdup("modchec1");
 			if (action == 'o') ident = strdup("statfile.txt");
 			// if (action == 'F') ident = strdup("rf1");
@@ -788,14 +788,14 @@ int main(int argc, char* argv[]) {
 				dosimfile(seed);
 				break;
 
-			// case 'd': k = readheaders();
-			// 	if (k == 1) {
-			// 		cout << "no file reftable.bin in the current directory\n";
-			// 		exit(1);
-			// 	}
-			// 	cout << "avant doacpl soptarg=" << soptarg << "\n";
-			// 	doacpl(acplpar);
-			// 	break;
+			case 'd': k = readheaders();
+				if (k == 1) {
+					cout << "no file reftable.bin in the current directory\n";
+					exit(1);
+				}
+				cout << "avant doacpl soptarg=" << soptarg << "\n";
+				doacpl(acplpar);
+				break;
 
 			// case 'j': k = readheaders();
 			// 	if (k == 1) {
