@@ -1257,11 +1257,11 @@ int DataC::readfile(string filename) {
 	this->nsample = 1;
 	int* nindi = new int[1000];
 	nindi[0] = 0;
-	getline(file, s);
 	nech = 1;
 	this->nmisshap = 0;
 	this->nmissnuc = 0;
 	while (not file.eof()) {
+		getline(file, s);
 		if (trim(s) != "") {
 			s1 = majuscules(s);
 			s1 = purgetab(s1);
@@ -1296,7 +1296,6 @@ int DataC::readfile(string filename) {
 				}
 			}
 		}
-		getline(file, s);
 	}
 	file.close();
 	//cout<<"  nmisshap="<<nmisshap<<"\n";
