@@ -450,7 +450,7 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 			dent += den;
 		}
 	}
-	statC.mx = numt/dent;
+	statC.mx = (abs(den) > 0.0) ? numt/dent : 0.0;
 }
 
 void ParticleC::cal_snfst(int gr, int numsnp) {
@@ -768,9 +768,11 @@ void ParticleC::cal_snfsti(int gr, int numsnp)
 			if (curstat == Hwvstat) Hwv = val;
 		}
 	}
-	Hbmoy /= static_cast<double>(nQb);
-	stsnp.mx = 1.0 - Hw / Hbmoy;
-	stsnp.mx2 = Hwv / (Hbmoy * Hbmoy);
+	if (abs(nQb) > 0.0) {
+		Hbmoy /= static_cast<double>(nQb);
+		stsnp.mx = 1.0 - Hw / Hbmoy;
+		stsnp.mx2 = Hwv / (Hbmoy * Hbmoy);
+	} 
 	stsnp.sw = 1.0;
 	stsnp.sw2 = 0.0;
 }
