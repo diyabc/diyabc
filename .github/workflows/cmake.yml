@@ -82,3 +82,16 @@ jobs:
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: '${{ runner.workspace }}/b/ninja-bash/'
           useShell: bash
+      - name: Upload windows binary:
+        uses: actions/upload-artifact@v2os 
+        with:
+          name: diyabc-${{ matrix.os }}.exe
+          path: ${{ runner.workspace }}/b/ninja/src-JMC-C++/general.exe
+        if: contains( matrix.os, 'windows')
+      - name: Upload binary:
+        uses: actions/upload-artifact@v2os 
+        with:
+          name: diyabc-${{ matrix.os }}
+          path: ${{ runner.workspace }}/b/ninja/src-JMC-C++/general
+        if: "! contains( matrix.os, 'windows')"
+  
