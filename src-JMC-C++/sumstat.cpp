@@ -450,7 +450,7 @@ void ParticleC::cal_snfstd(int gr, int numsnp, int npop) {
 			dent += den;
 		}
 	}
-	statC.mx = (abs(den) > 0.0) ? numt/dent : 0.0;
+	statC.mx = (abs(dent) > 0.0) ? numt/dent : 0.0;
 }
 
 void ParticleC::cal_snfst(int gr, int numsnp) {
