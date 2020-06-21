@@ -2476,7 +2476,7 @@ int ParticleC::dosimulpart(int numscen) {
 					simulOK[loc] = 0;
 					gtexist[loc] = true;
 					if (not ((this->locuslist[loc].type >= 10)and (this->locuslist[loc].type < 15)and (this->maf > 0.0)))
-						loc--;
+						if (loc > 0) loc--;
 				}
 				if ((debuglevel == 11)and (loc < 10)) cout << "ntentes = " << this->ntentes << "\n";
 				if ((debuglevel == 11)and (loc < 10)) cout << "nlocutil = " << nlocutil << "\n";
@@ -2487,7 +2487,7 @@ int ParticleC::dosimulpart(int numscen) {
 		}
 		if ((this->locuslist[loc].type >= 10)and (this->locuslist[loc].type < 15)and (this->maf > 0.0)) {
 			if (not this->mafreached(loc)) {
-				loc--;
+				if (loc > 0) loc--;
 				rejectedbymaf++;
 			}
 		}
@@ -2495,7 +2495,7 @@ int ParticleC::dosimulpart(int numscen) {
 		numloop++;
 		if ((this->locuslist[loc].type >= 15)and (this->mrc > 0)) {
 			if (not this->mrcreached(loc)) {/*cout<<"------------>locus "<<loc<<" rejected for insufficient MRC\n";*/
-				loc--;
+				if (loc > 0) loc--;
 				rejectedbymrc++;
 			}
 		}

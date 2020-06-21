@@ -40,7 +40,6 @@ set(PROJECT_general_HEADERS
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
 add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 target_link_libraries(general dcmt)
-target_compile_features(general PUBLIC cxx_std_17)
 
 if (MSVC)
   target_link_libraries(general wingetopt)
