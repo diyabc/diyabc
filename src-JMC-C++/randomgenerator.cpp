@@ -277,12 +277,12 @@ void read_mt_struct(ifstream& fichier, mt_struct* mt) {
 int saveRNG(mt_struct** mts, int sizeofmts, string filename) {
 	if (mts == NULL) {
 		cout << "Pas réussi à sauver le RNG car pointe sur NULL" << endl;
-		return 1;
+		exit(1);
 	}
 	ofstream fout(filename.c_str(), ios::out | ios::binary);
 	if (!fout.is_open()) {
 		cout << "Pas réussi à ouvrir le fichier de sauvegarde" << endl;
-		return 1;
+		exit(1);
 	}
 	fout.write((char*)&sizeofmts, sizeof(int));
 	for (int i = 0; i < sizeofmts; ++i) {
