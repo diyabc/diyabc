@@ -613,6 +613,7 @@ bool ParticleC::setHistParamValue() {
 	this->scen.ipv = 0;
 	if (OK) {
 		for (int p = 0; p < this->scen.nparam; p++) {
+			if (this->scen.paramvar.size() == 0) 	this->scen.paramvar = vector<double>(this->scen.nparamvar + 3);
 			//cout<<this->scen.histparam[p].name;
 			//if (this->scen.histparam[p].prior.constant) cout<<"   constant\n"; else cout<<"   variable\n";
 			if (not this->scen.histparam[p].prior.constant) {
@@ -670,6 +671,7 @@ void ParticleC::setMutParammoyValue() {
 
 			if (not this->grouplist[gr].priormutmoy.fixed) this->grouplist[gr].mutmoy = this->grouplist[gr].priormutmoy.drawfromprior(this->mw);
 			if (not this->grouplist[gr].priormutmoy.constant) {
+				if (this->scen.paramvar.size() == 0) this->scen.paramvar = vector<double>(this->scen.nparamvar + 3);
 				this->scen.paramvar[this->scen.ipv] = this->grouplist[gr].mutmoy;
 				this->scen.ipv++;
 				//cout<<"mutmoy ipv++\n";

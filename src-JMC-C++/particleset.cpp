@@ -981,10 +981,10 @@ void ParticleSetC::dosimultabref(int npart, bool dnatrue, bool multithread, bool
 				//cout<<"scenario "<<enreg[ipart].numscen<<"\n";
 				if (debuglevel == 5) cout << header.nparamtot << "   " << rt.nhistparam[iscen] << "   " << np << "\n";
 				pa = 0;
-				for (int j = 1; j < nph - rt.mutparam.size(); j++) {
+				for (int j = 1; j <= np - rt.mutparam.size(); j++) {
 					trouve = false;
 					ip = -1;
-					while ((not trouve)and (ip < rt.nhistparam[iscen] - 1)) {
+					while ((not trouve)and (ip < rt.nhistparam[iscen])) {
 						ip++;
 						trouve = (ss[j] == rt.histparam[iscen][ip].name);
 						//cout<<"->"<<ss[j]<<"<-   ?   ->"<< header.scenario[iscen].histparam[ip].name<<"<-"<<trouve<<"\n";
@@ -992,7 +992,7 @@ void ParticleSetC::dosimultabref(int npart, bool dnatrue, bool multithread, bool
 					if (trouve) {
 						trouve2 = false;
 						iq = -1;
-						while ((not trouve2)and (iq < header.nparamtot - 1)) {
+						while ((not trouve2)and (iq < header.nparamtot)) {
 							iq++;
 							trouve2 = (ss[j] == header.histparam[iq].name);
 						}

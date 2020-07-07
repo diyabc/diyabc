@@ -20,6 +20,8 @@
 
 using namespace std;
 
+extern int debuglevel;
+
 extern string path;
 vector<string> popname;
 
@@ -958,7 +960,7 @@ void DataC::do_snp(int loc) {
 		for (int i = 0; i < ss; i++) this->locus[loc].haplosnp[ech][i] = haplo[i];
 		if (not haplo.empty()) haplo.clear();
 	}
-	cout << "sortie de do_snp\n";
+	if (debuglevel >= 5)	cout << "sortie de do_snp\n";
 }
 
 void DataC::calcule_ss() {
