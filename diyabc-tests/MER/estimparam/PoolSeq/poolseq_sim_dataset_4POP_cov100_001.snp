@@ -1,4 +1,4 @@
-<NM=1NF>  <MAF=hudson> <MRC=5> WARNING initiallement MRC=0 Scenario 2 pop4 admixed (1-2) N1=7000 N2=2000 N3=4000 N4=3000 t431=200 ra=0.3 t32=300 t21=500
+<NM=1NF> <MRC=5> Example PoolSeq pseudo-observed data file used in Collin et al (2020) MER
 POOL POP_NAME:HAPLOID_SAMPLE_SIZE  POP1:200 POP2:200 POP3:200 POP4:200
     0 93    0 100    1 115    0 139
    52 60   29 66   45 61   18 75
