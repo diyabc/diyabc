@@ -37,6 +37,8 @@ set(PROJECT_general_HEADERS
   estimparam.hpp
   )
 
+find_package(OpenMP)
+
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
 add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
 target_link_libraries(general dcmt)
@@ -45,8 +47,8 @@ if (MSVC)
   target_link_libraries(general wingetopt)
 endif()
 
-find_package(OpenMP)
-
-if(${OpenMP_Found})
-  target_link_libraries(general OpenMP::OpenMP_CXX OpenMP::OpenMP_C)
+if (APPLE)
+  target_link_libraries(general /usr/local/lib/libomp.a)
+else()
+  target_link_libraries(general OpenMP::OpenMP_CXX)
 endif()
