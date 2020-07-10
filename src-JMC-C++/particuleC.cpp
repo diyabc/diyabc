@@ -2047,7 +2047,7 @@ int ParticleC::cree_haplo(int loc) {
 		ind = 0;
 		for (int i = 0; i < this->gt[loc].ngenes; i++) {
 			if (this->gt[loc].nodes[ordre[sa][ind]].state == 10000) {
-				cout << "locus " << loc << "    ordre[" << sa << "][" << ind << "] = " << ordre[sa][ind] << "\n";
+				if (debuglevel == 5) cout << "locus " << loc << "    ordre[" << sa << "][" << ind << "] = " << ordre[sa][ind] << "\n";
 				ordre.clear();
 				return 2;
 			}
