@@ -54,7 +54,7 @@ Prerequisites :
   
 ### Linux & MacOS
 ```sh
-git clone https://github.com/diyabc/diyabc.git
+git clone --recurse-submodules https://github.com/diyabc/diyabc.git
 cd diyabc
 mkdir build
 cd build
@@ -64,7 +64,7 @@ cmake --build . --config Release
 
 ### Windows
 ``` Windows
-git clone https://github.com/diyabc/diyabc.git
+git clone --recurse-submodules https://github.com/diyabc/diyabc.git
 cd diyabc
 mkdir build
 cd build
