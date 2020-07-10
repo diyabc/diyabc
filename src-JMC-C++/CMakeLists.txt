@@ -49,6 +49,8 @@ endif()
 
 if (APPLE)
   target_link_libraries(general /usr/local/lib/libomp.a)
-else()
+endif()
+
+if (NOT MAKE_STATIC_EXE)
   target_link_libraries(general OpenMP::OpenMP_CXX)
 endif()
