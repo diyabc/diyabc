@@ -41,7 +41,7 @@ option -p is compulsory
 
 ## Prebuilt binaries for Windows/MacOS/Linux
 
-There are avalaible at the [Releases](../releases) page.
+There are avalaible at the [Releases](../../releases) page.
 Please note that those are only x64 binaries. 
 
 ## Build
