@@ -63,7 +63,7 @@ cmake --build . --config Release
 ```
 
 ### Windows
-``` Windows
+```sh
 git clone --recurse-submodules https://github.com/diyabc/diyabc.git
 cd diyabc
 mkdir build
