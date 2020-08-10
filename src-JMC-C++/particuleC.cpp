@@ -2516,9 +2516,10 @@ int ParticleC::dosimulpart(int numscen) {
 			if (this->locuslist[locus].groupe > 0) {
 				sa = dataobs.misshap[i].sample;
 				indiv = dataobs.misshap[i].indiv;
-				//cout<<"MISSHAP   locus "<<locus<<"  sample "<<sa<<"  indiv "<<indiv<<"\n";
-				if (this->locuslist[locus].type < 5) this->locuslist[locus].haplomic[sa][indiv] = MICMISSING;
-				else this->locuslist[locus].haplodna[sa][indiv] = SEQMISSING;
+				// cout<<"MISSHAP   locus "<<locus<<"  sample "<<sa<<"  indiv "<<indiv<<"\n";
+				if (this->locuslist[locus].type < 5) {
+					if (indiv < this->locuslist[locus].haplomic[sa].size()) this->locuslist[locus].haplomic[sa][indiv] = MICMISSING;
+				} else if (indiv < this->locuslist[locus].haplodna[sa].size()) this->locuslist[locus].haplodna[sa][indiv] = SEQMISSING;
 			}
 		}
 	}

@@ -968,7 +968,7 @@ void ParticleSetC::dosimultabref(int npart, bool dnatrue, bool multithread, bool
 		splitwords(header.entete, " ", ss);
 		ns = ss.size();
 		if (debuglevel == 5) cout << "nph=" << nph << "   npm=" << npm << "   ns=" << ns << "\n";
-		np = ns - header.nstat - 1;
+		np = std::max(0,ns - header.nstat - 1);
 		//cout<<"ns="<<ns<<"  nparam="<<np<<"   nparamut="<<rt.nparamut<<"   nstat="<<header.nstat<<"\n";
 		//cout<<"nph="<<nph<<"    npm="<<npm<<"\n";
 		//cout<<"npart="<<this->npart<<"\n";
@@ -981,7 +981,7 @@ void ParticleSetC::dosimultabref(int npart, bool dnatrue, bool multithread, bool
 				//cout<<"scenario "<<enreg[ipart].numscen<<"\n";
 				if (debuglevel == 5) cout << header.nparamtot << "   " << rt.nhistparam[iscen] << "   " << np << "\n";
 				pa = 0;
-				for (int j = 1; j <= np - rt.mutparam.size(); j++) {
+				for (int j = 1; j <= rt.mutparam.size() - np; j++) {
 					trouve = false;
 					ip = -1;
 					while ((not trouve)and (ip < rt.nhistparam[iscen])) {
