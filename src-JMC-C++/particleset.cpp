@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
+#include <algorithm>
 
 #ifdef _OPENMP
 #include <omp.h>
