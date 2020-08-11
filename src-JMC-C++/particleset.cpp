@@ -982,7 +982,7 @@ void ParticleSetC::dosimultabref(int npart, bool dnatrue, bool multithread, bool
 				//cout<<"scenario "<<enreg[ipart].numscen<<"\n";
 				if (debuglevel == 5) cout << header.nparamtot << "   " << rt.nhistparam[iscen] << "   " << np << "\n";
 				pa = 0;
-				for (int j = 1; j <= rt.mutparam.size() - np; j++) {
+				for (int j = 1; j <= np - static_cast<int>(rt.mutparam.size()); j++) {
 					trouve = false;
 					ip = -1;
 					while ((not trouve)and (ip < rt.nhistparam[iscen])) {
