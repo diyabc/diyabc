@@ -699,7 +699,7 @@ void ParticleC::setMutParammoyValue() {
 		}
 		if (this->grouplist[gr].type == 1) { //sequence
 			if (not this->grouplist[gr].priormusmoy.fixed) {
-				cout << "not priormusmoy.fixed\n";
+				if (debuglevel == 5) cout << "not priormusmoy.fixed\n";
 				this->grouplist[gr].musmoy = this->grouplist[gr].priormusmoy.drawfromprior(this->mw);
 			}
 			if (not this->grouplist[gr].priormusmoy.constant) {
