@@ -725,10 +725,10 @@ int main(int argc, char* argv[]) {
 					//cout<<"apres delete [] enreg\n";
 					//ps.libere(nenr);
 					rt.closefile();
-					if (randomforest) {
-						cout << "ecriture du fichier csv  rt.nstat = " << rt.nstat << "\n";
-						rt.bintocsv(header);
-					}
+					// if (randomforest) {
+					// 	cout << "ecriture du fichier csv  rt.nstat = " << rt.nstat << "\n";
+					// 	rt.bintocsv(header);
+					// }
 					//cout<<"apres rt.closefile\n";
 					if (nrecneeded == rt.nrec) {
 						ofstream f1(reftablelogfilename.c_str(), ios::out);
