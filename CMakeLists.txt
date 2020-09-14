@@ -4,7 +4,18 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+
 project (dcmt)
+
+IF(MSVC AND MAKE_STATIC_EXE)
+  add_compile_options(
+    $<$<CONFIG:>:/MT> #---------|
+    $<$<CONFIG:Debug>:/MTd> #---|-- Statically link the runtime libraries
+    $<$<CONFIG:Release>:/MT> #--|
+  )
+endif()  
+
+
 set(DCMT_SOURCE_DIR dcmt)
 include_directories("${DCMT_SOURCE_DIR}/include")
 
@@ -21,6 +32,15 @@ set(PROJECT_dcmt_SRCS
 add_library(dcmt ${PROJECT_dcmt_SRCS})
 
 project (diyabc)
+
+IF(MSVC AND MAKE_STATIC_EXE)
+  add_compile_options(
+    $<$<CONFIG:>:/MT> #---------|
+    $<$<CONFIG:Debug>:/MTd> #---|-- Statically link the runtime libraries
+    $<$<CONFIG:Release>:/MT> #--|
+  )
+endif()  
+
 
 IF(MSVC)
   add_subdirectory (wingetopt)
