@@ -37,7 +37,6 @@ set(PROJECT_general_HEADERS
   estimparam.hpp
   )
 
-find_package(OpenMP)
 
 source_group("Include Files" FILES ${PROJECT_general_HEADERS})
 add_executable(general general.cpp ${PROJECT_general_SRCS} ${PROJECT_general_HEADERS})
@@ -47,12 +46,17 @@ if (MSVC)
   target_link_libraries(general wingetopt)
 endif()
 
+if (MAKE_STATIC_EXE)
+  if (APPLE AND MAKE_STATIC_EXE)
+    target_link_libraries(general /usr/local/lib/libomp.a)
+  endif()
 
-if (APPLE AND MAKE_STATIC_EXE)
-  target_link_libraries(general /usr/local/lib/libomp.a)
+  if (UNIX AND NOT APPLE) 
+    target_link_libraries(general iomp5 pthread dl -lc++ -lc++abi)
+  endif() 
 endif()
 
-# if (NOT MSVC AND NOT MAKE_STATIC_EXE)
-#   target_link_libraries(general OpenMP::OpenMP_CXX)
-# endif()
-target_link_libraries(general OpenMP::OpenMP_CXX)
+if (NOT MAKE_STATIC_EXE)
+  find_package(OpenMP REQUIRED)
+  target_link_libraries(general OpenMP::OpenMP_CXX)
+endif()
