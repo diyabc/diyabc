@@ -497,7 +497,8 @@ int main(int argc, char* argv[]) {
 					break;
 			}
 		}
-		if (!randforstats.empty()) {
+		if (!randforstats.empty() && randforstats.compare("\"\"") != 0) {
+			std::cout << "Filtering stats : " << randforstats << std::endl;
             vector<string> ss;
 
             splitwords(randforstats, ";", ss);

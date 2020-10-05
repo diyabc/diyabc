@@ -52,11 +52,11 @@ if (MAKE_STATIC_EXE)
   endif()
 
   if (UNIX AND NOT APPLE) 
-    target_link_libraries(general iomp5 pthread dl -lc++ -lc++abi)
+    target_link_libraries(general iomp5 pthread dl c++ c++abi)
   endif() 
 endif()
 
-if (NOT MAKE_STATIC_EXE)
+if (MSVC OR (NOT MAKE_STATIC_EXE))
   find_package(OpenMP REQUIRED)
   target_link_libraries(general OpenMP::OpenMP_CXX)
 endif()
