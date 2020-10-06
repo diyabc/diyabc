@@ -14,19 +14,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: windows-latest
-            triplet: x64-windows
-            vcpkgCommitId: '8a9a97315aefb3f8bc5d81bf66ca0025938b9c91'
-            vcpkgPackages: 'sqlite3'
             cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release 
           - os: ubuntu-latest
-            triplet: x64-linux
-            vcpkgCommitId: '8a9a97315aefb3f8bc5d81bf66ca0025938b9c91'
-            vcpkgPackages: 'sqlite3'
             cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release
           - os: macos-latest
-            triplet: x64-osx
-            vcpkgCommitId: '8a9a97315aefb3f8bc5d81bf66ca0025938b9c91'
-            vcpkgPackages: 'sqlite3'
             cmakeargs: '"-DOpenMP_CXX_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" "-DOpenMP_C_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" -DOpenMP_CXX_LIB_NAMES:STRING=omp -DOpenMP_C_LIB_NAMES:STRING=omp -DOpenMP_omp_LIBRARY:STRING=libomp.a -DOpenMP_CXX_LIBRARIES:STRING=libomp.a -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release'
 
     steps:
@@ -60,46 +51,19 @@ jobs:
           echo "CXXFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
-      - name: Restore artifacts, or run vcpkg, build and cache artifacts
-        uses: lukka/run-vcpkg@v4
-        id: runvcpkg
-        with:
-          vcpkgArguments: '${{ matrix.vcpkgPackages }}'
-          vcpkgTriplet: '${{ matrix.triplet }}'
-          vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
-          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
       - name: dir
         run: find $RUNNER_WORKSPACE
         shell: bash
-      - name: Prints outputs of run-vcpkg task
-        run: echo "'${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}' '${{  steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}' "
-      - name: Run CMake+Ninja with triplet (cmd)
-        if: matrix.os == 'windows-latest'
+      - name: Run CMake+Ninja
         uses: lukka/run-cmake@v3
         id: runcmake_cmd
         with:
           cmakeGenerator: 'Ninja'  
-          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+          cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          useVcpkgToolchainFile: true
-          cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
           buildWithCMakeArgs: '-- -v'
-          vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: ${{ runner.workspace }}/b/ninja/'
-      - name: Run CMake+Ninja Unix
-        if: matrix.os != 'windows-latest'
-        uses: lukka/run-cmake@v3
-        id: runcmake_bash
-        with:
-          cmakeGenerator: 'Ninja'  
-          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          useVcpkgToolchainFile: true
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
-          buildWithCMakeArgs: '-- -v'
-          vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
-          buildDirectory: '${{ runner.workspace }}/b/ninja-bash/'
-          useShell: bash
       - name: Upload windows binary
         uses: actions/upload-artifact@v2
         with:
