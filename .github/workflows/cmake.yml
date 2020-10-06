@@ -116,7 +116,7 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-          cmakeAppendedArgs: "-DOpenMP_CXX_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" "-DOpenMP_C_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" -DOpenMP_CXX_LIB_NAMES:STRING=omp -DOpenMP_C_LIB_NAMES:STRING=omp -DOpenMP_omp_LIBRARY:STRING=libomp.a -DOpenMP_CXX_LIBRARIES:STRING=libomp.a -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release
+          cmakeAppendedArgs: '"-DOpenMP_CXX_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" "-DOpenMP_C_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" -DOpenMP_CXX_LIB_NAMES:STRING=omp -DOpenMP_C_LIB_NAMES:STRING=omp -DOpenMP_omp_LIBRARY:STRING=libomp.a -DOpenMP_CXX_LIBRARIES:STRING=libomp.a -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release'
           buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: '${{ runner.workspace }}/b/ninja-bash/'
