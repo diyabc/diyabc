@@ -49,7 +49,7 @@ jobs:
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
       - name: Configure MSVC console (Windows)
-        if: matrix.config.os == 'windows-latest'
+        if: matrix.os == 'windows-latest'
         uses: ilammy/msvc-dev-cmd@v1
       - name: setup windows
         run: |
