@@ -90,13 +90,13 @@ jobs:
       - name: Upload windows binary
         uses: actions/upload-artifact@v2
         with:
-          name: diyabc-${{ matrix.os }}.exe
-          path: ${{ runner.workspace }}/b/ninja/install/*
+          name: diyabc-${{ matrix.os }}
+          path: ${{ runner.workspace }}/b/ninja/install/
         if: contains( matrix.os, 'windows')
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
           name: diyabc-${{ matrix.os }}
-          path: ${{ runner.workspace }}/b/ninja/src-JMC-C++/general
+          path: ${{ runner.workspace }}/b/ninja/install/general
         if: "! contains( matrix.os, 'windows')"
 

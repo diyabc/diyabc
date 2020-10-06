@@ -88,3 +88,6 @@ if(MSVC)
           DESTINATION ${CMAKE_BINARY_DIR}/install)
 endif()
 
+install(TARGETS general 
+  CONFIGURATIONS Release
+  RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/install)
