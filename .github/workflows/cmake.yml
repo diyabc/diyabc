@@ -14,7 +14,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: windows-latest
-            cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release
+            cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: ubuntu-latest
             cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: macos-latest
@@ -51,6 +51,12 @@ jobs:
           echo "CXXFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
+      - name: setup windows
+        run: |
+          # Set these env vars so cmake picks the correct compiler
+          echo "::set-env name=CXX::cl.exe"
+          echo "::set-env name=CC::cl.exe"
+        if: matrix.os == 'windows-latest'
       - name: Run CMake+Ninja
         uses: lukka/run-cmake@v3
         id: runcmake_cmd
@@ -60,7 +66,7 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           buildWithCMakeArgs: '-- -v'
           buildWithCMake: true
-          buildDirectory: ${{ runner.workspace }}/b/ninja/'
+          buildDirectory: ${{ runner.workspace }}/b/ninja/
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
       - name: dir
         run: find $RUNNER_WORKSPACE
