@@ -17,14 +17,17 @@ jobs:
             triplet: x64-windows
             vcpkgCommitId: '8a9a97315aefb3f8bc5d81bf66ca0025938b9c91'
             vcpkgPackages: 'sqlite3'
+            cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release 
           - os: ubuntu-latest
             triplet: x64-linux
             vcpkgCommitId: '8a9a97315aefb3f8bc5d81bf66ca0025938b9c91'
             vcpkgPackages: 'sqlite3'
+            cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release
           - os: macos-latest
             triplet: x64-osx
             vcpkgCommitId: '8a9a97315aefb3f8bc5d81bf66ca0025938b9c91'
             vcpkgPackages: 'sqlite3'
+            cmakeargs: '"-DOpenMP_CXX_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" "-DOpenMP_C_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" -DOpenMP_CXX_LIB_NAMES:STRING=omp -DOpenMP_C_LIB_NAMES:STRING=omp -DOpenMP_omp_LIBRARY:STRING=libomp.a -DOpenMP_CXX_LIBRARIES:STRING=libomp.a -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release'
 
     steps:
       - uses: actions/checkout@v1
@@ -89,10 +92,10 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-          cmakeAppendArgs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release 
+          cmakeAppendArgs: '${{ matrix.cmakeargs }}'
           buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
-          buildDirectory: '${{ runner.workspace }}/b/ninja/'
+          buildDirectory: ${{ runner.workspace }}/b/ninja/'
       - name: Run CMake+Ninja Ubuntu
         if: matrix.os == 'ubuntu-latest'
         uses: lukka/run-cmake@v3
@@ -102,7 +105,7 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-          cmakeAppendArgs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release
+          cmakeAppendArgs: '${{ matrix.cmakeargs }}'
           buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: '${{ runner.workspace }}/b/ninja-bash/'
@@ -116,7 +119,7 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-          cmakeAppendedArgs: '"-DOpenMP_CXX_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" "-DOpenMP_C_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" -DOpenMP_CXX_LIB_NAMES:STRING=omp -DOpenMP_C_LIB_NAMES:STRING=omp -DOpenMP_omp_LIBRARY:STRING=libomp.a -DOpenMP_CXX_LIBRARIES:STRING=libomp.a -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release'
+          cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
           buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: '${{ runner.workspace }}/b/ninja-bash/'
