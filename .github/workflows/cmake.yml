@@ -83,7 +83,7 @@ jobs:
           cmakeGenerator: 'Ninja'  
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          buildWithCMakeArgs: '-- -v'
+          buildWithCMakeArgs: '--target install -- -v'
           buildWithCMake: true
           buildDirectory: ${{ runner.workspace }}/b/ninja/
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
@@ -91,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: diyabc-${{ matrix.os }}.exe
-          path: ${{ runner.workspace }}/b/ninja/src-JMC-C++/general.exe
+          path: ${{ runner.workspace }}/b/ninja/install/*
         if: contains( matrix.os, 'windows')
       - name: Upload binary
         uses: actions/upload-artifact@v2

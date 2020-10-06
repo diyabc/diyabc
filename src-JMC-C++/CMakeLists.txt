@@ -60,3 +60,25 @@ if (MSVC OR (NOT MAKE_STATIC_EXE))
   find_package(OpenMP REQUIRED)
   target_link_libraries(general OpenMP::OpenMP_CXX)
 endif()
+
+cmake_policy(SET CMP0087 NEW)
+
+if(MSVC)
+  install(CODE [[
+    message("Target to install : $<TARGET_FILE:general>")
+    file(GET_RUNTIME_DEPENDENCIES
+        RESOLVED_DEPENDENCIES_VAR resolved_deps
+        EXECUTABLES  $<TARGET_FILE:general>)
+    message("Resolved dependencies : ${resolved_deps}")
+    ]]
+  )
+  install
+  install(TARGETS general 
+    CONFIGURATIONS Release
+    RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/install)
+  install(FILES resolved_deps
+          TYPE LIB
+          DESTINATION ${CMAKE_BINARY_DIR}/install)
+  )    
+endif()
+
