@@ -46,7 +46,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
         run: |
-          brew install ninja
+          brew install ninja libomp
           echo "CFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "CXXFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
