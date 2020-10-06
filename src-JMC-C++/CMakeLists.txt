@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
-project (general)
+project (general VERSION 1.0.4)
 
 set(PROJECT_general_SRCS
   acploc.cpp
@@ -61,6 +61,11 @@ if (MSVC OR (NOT MAKE_STATIC_EXE))
   target_link_libraries(general OpenMP::OpenMP_CXX)
 endif()
 
+install(TARGETS general 
+  CONFIGURATIONS Release
+  RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/install/
+)
+
 cmake_policy(SET CMP0087 NEW)
 
 if(MSVC)
@@ -86,8 +91,6 @@ if(MSVC)
   )
   install(FILES ${resolved_deps}
           DESTINATION ${CMAKE_BINARY_DIR}/install)
+
 endif()
 
-install(TARGETS general 
-  CONFIGURATIONS Release
-  RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/install)

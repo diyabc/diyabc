@@ -1,6 +1,11 @@
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 3.12.0)
+
+cmake_policy(SET CMP0048 NEW)
 
 set(CMAKE_CXX_STANDARD 17)
+
+set(CPACK_GENERATOR "ZIP")
+include(CPack)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
