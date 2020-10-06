@@ -1,7 +1,7 @@
 # Copyright (c) 2019-2020 Luca Cappa
 # Released under the term specified in file LICENSE.txt
 # SPDX short identifier: MIT
-name: hosted-basic-autocache
+name: diyabc-build
 on: [push]
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
         shell: bash
       - name: setup x64-linux
         run: |
-          sudo sh -c "wget -qO- https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz | tar xJ --checkpoint -C $HOME" 
+          sudo sh -c "wget -qO- https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz | tar xJ --totals -C $HOME" 
           echo $HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin >> $GITHUB_PATH
           echo "CC=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang" >> $GITHUB_ENV
           echo "CXX=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang++" >> $GITHUB_ENV
@@ -62,8 +62,10 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           buildWithCMakeArgs: '-- -v'
+          buildWithCMake: true
           buildDirectory: ${{ runner.workspace }}/b/ninja/'
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
+          useShell: false
       - name: Upload windows binary
         uses: actions/upload-artifact@v2
         with:
