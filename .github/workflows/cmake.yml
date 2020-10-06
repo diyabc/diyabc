@@ -33,7 +33,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.HOME }}/${{ matrix.clang-dir }}
-          key: ${{ matrix.clang }}-v1
+          key: ${{ matrix.clang-dir }}-v1
         if: matrix.os == 'ubuntu-latest'
       - name: restore/cache mkl
         uses: actions/cache@v2
