@@ -32,8 +32,8 @@ jobs:
       - name: restore/cache clang
         uses: actions/cache@v2
         with:
-          path: ${{ env.HOME }}/${{ matrix.clang-dir }}
-          key: ${{ matrix.clang-dir }}-v1
+          path: ${{ github.workspace }}/${{ matrix.clang-dir }}
+          key: ${{ matrix.clang-dir }}-v3
         if: matrix.os == 'ubuntu-latest'
       - name: restore/cache mkl
         uses: actions/cache@v2
@@ -43,8 +43,8 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup x64-linux
         run: |
-          if [ ! -d $HOME/${{ matrix.clang-dir }} ]; then 
-            sudo sh -c "wget -qO- ${{ matrix.clang-download }} | tar xJ --totals -C $HOME"
+          if [ ! -d ${{ github.workspace }}/${{ matrix.clang-dir }} ]; then 
+            sudo sh -c "wget -qO- ${{ matrix.clang-download }} | tar xJ --totals -C ${{ github.workspace }}"
           fi
           if [ ! -d /opt/intel/lib/intel64 ]; then
             wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
@@ -53,9 +53,9 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y ${{ matrix.mkl-version }}
           fi
-          echo $HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin >> $GITHUB_PATH
-          echo "CC=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang" >> $GITHUB_ENV
-          echo "CXX=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang++" >> $GITHUB_ENV
+          echo ${{ github.workspace }}/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin >> $GITHUB_PATH
+          echo "CC=${{ github.workspace }}/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang" >> $GITHUB_ENV
+          echo "CXX=${{ github.workspace }}/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
