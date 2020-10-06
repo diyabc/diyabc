@@ -26,20 +26,30 @@ jobs:
           submodules: true
 
       - uses: lukka/get-cmake@latest
+      - name: restore/cache clang and mkl for ubuntu
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.home }}/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04
+            /opt/intel
+          key: clang-mkl
+        if: matrix.os == 'ubuntu-latest'
       - name: setup x64-linux
         run: |
-          sudo sh -c "wget -qO- https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz | tar xJ --totals -C $HOME" 
+          [ -d $HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04 ] || (sudo sh -c "wget -qO- https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz | tar xJ --totals -C $HOME")
+          if [! -d /opt/intel/lib/intel64 ]; then
+            wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+            sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
+            sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
+            sudo apt-get update
+            sudo apt-get install -y intel-mkl-64bit-2020.0-088
+          fi
           echo $HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin >> $GITHUB_PATH
           echo "CC=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang" >> $GITHUB_ENV
           echo "CXX=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
-          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
-          sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
-          sudo apt-get update
-          sudo apt-get install -y intel-mkl-64bit-2020.0-088
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
         run: |
@@ -50,7 +60,7 @@ jobs:
         if: matrix.os == 'macos-latest'
       - name: Configure MSVC console (Windows)
         if: matrix.os == 'windows-latest'
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@v1.4.1
       - name: setup windows
         run: |
           # Set these env vars so cmake picks the correct compiler
