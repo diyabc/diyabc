@@ -26,9 +26,6 @@ jobs:
           submodules: true
 
       - uses: lukka/get-cmake@latest
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
       - name: setup x64-linux
         run: |
           sudo sh -c "wget -qO- https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz | tar xJ --totals -C $HOME" 
@@ -51,11 +48,14 @@ jobs:
           echo "CXXFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
+      - name: Configure MSVC console (Windows)
+        if: matrix.config.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
       - name: setup windows
         run: |
           # Set these env vars so cmake picks the correct compiler
-          echo "::set-env name=CXX::cl.exe"
-          echo "::set-env name=CC::cl.exe"
+          echo "CXX=cl.exe" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
+          echo "CC=cl.exe" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
         if: matrix.os == 'windows-latest'
       - name: Run CMake+Ninja
         uses: lukka/run-cmake@v3
@@ -68,9 +68,6 @@ jobs:
           buildWithCMake: true
           buildDirectory: ${{ runner.workspace }}/b/ninja/
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
       - name: Upload windows binary
         uses: actions/upload-artifact@v2
         with:
