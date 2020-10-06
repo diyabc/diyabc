@@ -65,7 +65,6 @@ jobs:
           buildWithCMake: true
           buildDirectory: ${{ runner.workspace }}/b/ninja/'
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
-          useShell: false
       - name: Upload windows binary
         uses: actions/upload-artifact@v2
         with:
