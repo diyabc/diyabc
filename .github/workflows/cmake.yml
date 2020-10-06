@@ -32,8 +32,8 @@ jobs:
       - name: restore/cache clang
         uses: actions/cache@v2
         with:
-          path: ${{ github.home }}/${{ matrix.clang-dir }}
-          key: ${{ matrix.clang-dir }}
+          path: ${{ env.HOME }}/${{ matrix.clang-dir }}
+          key: ${{ matrix.clang }}-v1
         if: matrix.os == 'ubuntu-latest'
       - name: restore/cache mkl
         uses: actions/cache@v2
@@ -43,7 +43,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup x64-linux
         run: |
-          if [ ! -d ${{ github.home }}/${{ matrix.clang-dir }} ]; then 
+          if [ ! -d $HOME/${{ matrix.clang-dir }} ]; then 
             sudo sh -c "wget -qO- ${{ matrix.clang-download }} | tar xJ --totals -C $HOME"
           fi
           if [ ! -d /opt/intel/lib/intel64 ]; then
