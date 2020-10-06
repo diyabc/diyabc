@@ -67,18 +67,24 @@ if(MSVC)
   install(CODE [[
     message("Target to install : $<TARGET_FILE:general>")
     file(GET_RUNTIME_DEPENDENCIES
-        RESOLVED_DEPENDENCIES_VAR resolved_deps
+        RESOLVED_DEPENDENCIES_VAR _r_deps
+        UNRESOLVED_DEPENDENCIES_VAR _u_deps
+        PRE_INCLUDE_REGEXES "^.*[vV][cC]([oO][mM][pP]|[rR][uU][nN][tT][iI][mM][eE])140.*$"
+        PRE_EXCLUDE_REGEXES "^.*$"
         EXECUTABLES  $<TARGET_FILE:general>)
-    message("Resolved dependencies : ${resolved_deps}")
-    ]]
+    foreach(_file ${_r_deps})
+      file(INSTALL
+        DESTINATION ${CMAKE_BINARY_DIR}/install
+        FILES "${_file}"
+      )
+    endforeach()
+    list(LENGTH _u_deps _u_length)
+    if("${_u_length}" GREATER 0)
+      message(WARNING "Unresolved dependencies detected!")
+    endif()
+        ]]
   )
-  install
-  install(TARGETS general 
-    CONFIGURATIONS Release
-    RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/install)
-  install(FILES resolved_deps
-          TYPE LIB
+  install(FILES ${resolved_deps}
           DESTINATION ${CMAKE_BINARY_DIR}/install)
-  )    
 endif()
 
