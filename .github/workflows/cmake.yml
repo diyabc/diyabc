@@ -37,13 +37,13 @@ jobs:
         shell: bash
       - name: setup x64-linux
         run: |
-          sudo sh -c "wget -qO- https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz | tar xvJ -C /root" 
-          echo /root/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin >> $GITHUB_PATH
-          echo "CC=clang" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
+          sudo sh -c "wget -qO- https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz | tar xJ --checkpoint -C $HOME" 
+          echo $HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin >> $GITHUB_PATH
+          echo "CC=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang" >> $GITHUB_ENV
+          echo "CXX=$HOME/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
-          echo "LDFLAGS=-L/opt/intel/mkl/lib/intel64" >> $GITHUB_ENV
+          echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
           wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
           sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
           sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
