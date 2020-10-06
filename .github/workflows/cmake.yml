@@ -81,6 +81,7 @@ jobs:
           buildWithCMakeArgs: '-- -v'
           buildDirectory: '${{ runner.workspace }}/b/ninja/'
       - name: Run CMake+Ninja with triplet (cmd)
+        if: matrix.os == 'windows-latest'
         uses: lukka/run-cmake@v3
         id: runcmake_cmd
         with:
@@ -88,11 +89,12 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
+          cmakeAppendArgs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release 
           buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: '${{ runner.workspace }}/b/ninja/'
-      - name: Run CMake+Ninja with triplet (bash)
-        if: false
+      - name: Run CMake+Ninja Ubuntu
+        if: matrix.os == 'ubuntu-latest'
         uses: lukka/run-cmake@v3
         id: runcmake_bash
         with:
@@ -100,6 +102,21 @@ jobs:
           cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
+          cmakeAppendArgs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release
+          buildWithCMakeArgs: '-- -v'
+          vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
+          buildDirectory: '${{ runner.workspace }}/b/ninja-bash/'
+          useShell: bash
+      - name: Run CMake+Ninja MacOS
+        if: matrix.os == 'macos-latest'
+        uses: lukka/run-cmake@v3
+        id: runcmake_bash
+        with:
+          cmakeGenerator: 'Ninja'  
+          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          cmakeAppendedArgs: "-DOpenMP_CXX_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" "-DOpenMP_C_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" -DOpenMP_CXX_LIB_NAMES:STRING=omp -DOpenMP_C_LIB_NAMES:STRING=omp -DOpenMP_omp_LIBRARY:STRING=libomp.a -DOpenMP_CXX_LIBRARIES:STRING=libomp.a -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release
           buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: '${{ runner.workspace }}/b/ninja-bash/'
