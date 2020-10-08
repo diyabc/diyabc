@@ -27,6 +27,7 @@ jobs:
           prerelease: true
   job:
     name: diyabc-${{ matrix.os }}
+    needs: create_release
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
