@@ -1,5 +1,7 @@
 # DIYABC RF V1.0
 
+![Mac/Windows/Linux Build](https://github.com/diyabc/diyabc/workflows/diyabc-build/badge.svg)
+
 ## Command line help
 ```plain
 $ diyabc -h
