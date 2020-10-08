@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.bump_version.new_tag }}
-          release_name: Release ${{ steps.bump_version.new_tag }}
+          release_name: Release ${{ steps.bump_version.outputs.new_tag }}
           draft: true
           prerelease: true  
   job:
