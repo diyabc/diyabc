@@ -3,11 +3,37 @@
 # SPDX short identifier: MIT
 name: diyabc-build
 on: [push]
-
-
+  
 jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+        upload_url: ${{ steps.new_release.outputs.upload_url }}
+        new_tag: ${{ steps.bump_version.outputs.new_tag }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        id: bump_version
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          INITIAL_VERSION: 1.0.12
+      - name: Create release
+        id: new_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.outputs.new_tag }}
+          release_name: Release ${{ steps.bump_version.outputs.new_tag }}
+          draft: true
+          prerelease: true  
   job:
     name: diyabc-${{ matrix.os }}
+    needs: create_release
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -15,13 +41,16 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: windows-latest
+            shortos: windows
             cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: ubuntu-latest
+            shortos: linux
             clang-dir: clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04
             clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
             mkl-version: intel-mkl-64bit-2020.0-088
             cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: macos-latest
+            shortos: macos
             cmakeargs: '"-DOpenMP_CXX_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" "-DOpenMP_C_FLAGS:STRING=-Xpreprocessor -fopenmp -I/usr/local/include" -DOpenMP_CXX_LIB_NAMES:STRING=omp -DOpenMP_C_LIB_NAMES:STRING=omp -DOpenMP_omp_LIBRARY:STRING=libomp.a -DOpenMP_CXX_LIBRARIES:STRING=libomp.a -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja' 
     steps:
       - uses: actions/checkout@v1
@@ -87,16 +116,48 @@ jobs:
           buildWithCMake: true
           buildDirectory: ${{ runner.workspace }}/b/ninja/
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
-      - name: Upload windows binary
-        uses: actions/upload-artifact@v2
+      # - name: Upload windows binary
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: diyabc-${{ matrix.os }}
+      #     path: ${{ runner.workspace }}/b/ninja/install/
+      #   if: contains( matrix.os, 'windows')
+      # - name: Upload binary
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: diyabc-${{ matrix.os }}
+      #     path: ${{ runner.workspace }}/b/ninja/install/general
+      #   if: "! contains( matrix.os, 'windows')"
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        shell: bash      
+      - name: zip for windows
+        id: zip_win
+        run: |
+          Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-windows-${{ needs.create_release.outputs.new_tag }}.exe"
+          Compress-Archive -Path ${{ runner.workspace }}\b\ninja\install\* -DestinationPath  ${{ runner.workspace }}\b\ninja\install.zip
+        if: matrix.os == 'windows-latest'
+      - name: Upload Release Asset Unix
+        id: upload-release-asset-unix
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: diyabc-${{ matrix.os }}
-          path: ${{ runner.workspace }}/b/ninja/install/
-        if: contains( matrix.os, 'windows')
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
+          upload_url: ${{ needs.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ${{ runner.workspace }}/b/ninja/install/general
+          asset_name: diyabc-RF-${{ matrix.shortos }}-${{ needs.create_release.outputs.new_tag }}
+          asset_content_type: application/octet-stream
+        if: matrix.os != 'windows-latest'
+      - name: Upload Release Asset Windows
+        id: upload-release-asset-windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: diyabc-${{ matrix.os }}
-          path: ${{ runner.workspace }}/b/ninja/install/general
-        if: "! contains( matrix.os, 'windows')"
-
+          upload_url: ${{ needs.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ${{ runner.workspace }}/b/ninja/install.zip
+          asset_name: diyabc-RF-${{ matrix.shortos }}-${{ needs.create_release.outputs.new_tag }}.zip
+          asset_content_type: application/zip
+        if: matrix.os == 'windows-latest'
+  
