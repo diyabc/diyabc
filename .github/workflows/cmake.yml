@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
         upload_url: ${{ steps.new_release.outputs.upload_url }}
-        new_tag: ${{ steps.bump_version.output.new_tag }}
+        new_tag: ${{ steps.bump_version.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v2
         with:
