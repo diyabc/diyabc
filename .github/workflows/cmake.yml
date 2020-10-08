@@ -8,7 +8,7 @@ jobs:
   create_release:
     runs-on: ubuntu-latest
     outputs:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ steps.new_release.outputs.upload_url }}
         new_tag: ${{ steps.bump_version.new_tag }}
     steps:
       - uses: actions/checkout@v2
@@ -22,6 +22,7 @@ jobs:
           WITH_V: true
           INITIAL_VERSION: 1.0.12
       - name: Create release
+        id: new_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
