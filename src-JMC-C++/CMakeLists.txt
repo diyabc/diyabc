@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12.0)
 
 project (general VERSION 1.0.4)
 
@@ -61,12 +61,18 @@ if (MSVC OR (NOT MAKE_STATIC_EXE))
   target_link_libraries(general OpenMP::OpenMP_CXX)
 endif()
 
-install(TARGETS general 
-  CONFIGURATIONS Release
-  RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/install/
-)
-
 cmake_policy(SET CMP0087 NEW)
+
+# install(CODE [[
+#   file(TIMESTAMP $<TARGET_FILE:general> build_date "%Y%m%d-%H%M")
+#   file(INSTALL 
+#        DESTINATION ${CMAKE_BINARY_DIR}/install
+#        FILES $<TARGET_FILE:general>
+#        RENAME diyabc-${CMAKE_SYSTEM_NAME}-${build_date})
+#   message("Build date : ${build_date}")
+# ]])
+
+install(TARGETS general RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/install)
 
 if(MSVC)
   install(CODE [[
@@ -93,4 +99,3 @@ if(MSVC)
           DESTINATION ${CMAKE_BINARY_DIR}/install)
 
 endif()
-
