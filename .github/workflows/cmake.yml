@@ -8,6 +8,23 @@ on:
       - '*'
 
 jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    # Note this. We are going to use that in further jobs.
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
   job:
     name: diyabc-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -104,32 +121,25 @@ jobs:
       #     name: diyabc-${{ matrix.os }}
       #     path: ${{ runner.workspace }}/b/ninja/install/general
       #   if: "! contains( matrix.os, 'windows')"
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        shell: bash      
       - name: zip for windows
         id: zip_win
         run: |
-          Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-windows-${{ github.event.release.tag_name }}.exe"
+          Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-windows-${{ steps.get_version.outputs.VERSION }}.exe"
           Compress-Archive -Path ${{ runner.workspace }}\b\ninja\install -DestinationPath  ${{ runner.workspace }}\b\ninja\install.zip
         if: matrix.os == 'windows-latest'
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: true
       - name: Upload Release Asset Unix
         id: upload-release-asset-unix
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ needs.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ${{ runner.workspace }}/b/ninja/install/general
-          asset_name: diyabc-${{ matrix.shortos }}-${{ github.event.release.tag_name }}
+          asset_name: diyabc-${{ matrix.shortos }}-${{ steps.get_version.outputs.VERSION }}
           asset_content_type: application/octet-stream
         if: matrix.os != 'windows-latest'
       - name: Upload Release Asset Windows
@@ -138,9 +148,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ needs.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ${{ runner.workspace }}/b/ninja/install.zip
-          asset_name: diyabc-${{ matrix.shortos }}-${{ github.event.release.tag_name }}.zip
+          asset_name: diyabc-${{ matrix.shortos }}-${{ steps.get_version.outputs.VERSION }}.zip
           asset_content_type: application/zip
         if: matrix.os == 'windows-latest'
   
