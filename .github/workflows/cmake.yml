@@ -11,26 +11,25 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         new_tag: ${{ steps.bump_version.new_tag }}
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: '0'
-    - name: Bump version and push tag
-      id: bump_version
-      uses: anothrNick/github-tag-action@1.26.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
-        INITIAL_VERSION: 1.0.12
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.bump_version.new_tag }}
-        release_name: Release ${{ steps.bump_version.new_tag }}
-        draft: true
-        prerelease: true  
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        id: bump_version
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          INITIAL_VERSION: 1.0.12
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.new_tag }}
+          release_name: Release ${{ steps.bump_version.new_tag }}
+          draft: true
+          prerelease: true  
   job:
     name: diyabc-${{ matrix.os }}
     needs: create_release
