@@ -2,9 +2,35 @@
 # Released under the term specified in file LICENSE.txt
 # SPDX short identifier: MIT
 name: diyabc-build
-on: [release]
-
+on: [push]
+  
 jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        new_tag: ${{ steps.bump_version.new_tag }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Bump version and push tag
+      id: bump_version
+      uses: anothrNick/github-tag-action@1.26.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        INITIAL_VERSION: 1.0.12
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.bump_version.new_tag }}
+        release_name: Release ${{ steps.bump_version.new_tag }}
+        draft: true
+        prerelease: true  
   job:
     name: diyabc-${{ matrix.os }}
     needs: create_release
@@ -109,7 +135,7 @@ jobs:
       - name: zip for windows
         id: zip_win
         run: |
-          Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-windows-${{ github.event.release.tag_name }}.exe"
+          Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-windows-${{ needs.create_release.outputs.new_tag }}.exe"
           Compress-Archive -Path ${{ runner.workspace }}\b\ninja\install -DestinationPath  ${{ runner.workspace }}\b\ninja\install.zip
         if: matrix.os == 'windows-latest'
       - name: Upload Release Asset Unix
@@ -120,7 +146,7 @@ jobs:
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ${{ runner.workspace }}/b/ninja/install/general
-          asset_name: diyabc-RF-${{ matrix.shortos }}-${{ github.event.release.tag_name }}
+          asset_name: diyabc-RF-${{ matrix.shortos }}-${{ needs.create_release.outputs.new_tag }}
           asset_content_type: application/octet-stream
         if: matrix.os != 'windows-latest'
       - name: Upload Release Asset Windows
@@ -131,7 +157,7 @@ jobs:
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
           asset_path: ${{ runner.workspace }}/b/ninja/install.zip
-          asset_name: diyabc-RF-${{ matrix.shortos }}-${{ github.event.release.tag_name }}.zip
+          asset_name: diyabc-RF-${{ matrix.shortos }}-${{ needs.create_release.outputs.new_tag }}.zip
           asset_content_type: application/zip
         if: matrix.os == 'windows-latest'
   
