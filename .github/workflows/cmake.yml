@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
         upload_url: ${{ steps.new_release.outputs.upload_url }}
-        new_tag: ${{ steps.bump_version.new_tag }}
+        new_tag: ${{ steps.bump_version.output.new_tag }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -136,7 +136,7 @@ jobs:
         id: zip_win
         run: |
           Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-windows-${{ needs.create_release.outputs.new_tag }}.exe"
-          Compress-Archive -Path ${{ runner.workspace }}\b\ninja\install -DestinationPath  ${{ runner.workspace }}\b\ninja\install.zip
+          Compress-Archive -Path ${{ runner.workspace }}\b\ninja\install\* -DestinationPath  ${{ runner.workspace }}\b\ninja\install.zip
         if: matrix.os == 'windows-latest'
       - name: Upload Release Asset Unix
         id: upload-release-asset-unix
