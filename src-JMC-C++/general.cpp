@@ -152,7 +152,7 @@ vector<enregC> enreg, enregOK;
 string headerfilename, headersimfilename, reftablefilename, datafilename, statobsfilename, reftablelogfilename, path, ident, stopfilename, progressfilename, scsufilename;
 string reftabscen, paramfilename, statfilename;
 bool multithread = false, randomforest = false;
-int nrecneeded, nenr = 100, coverage = 50, nenrOK, *neOK, *netot;
+int nrecneeded, nenr = 100, coverage = 100, nenrOK, *neOK, *netot;
 int debuglevel = 0;
 int num_threads = 0;
 string sremtime, scurfile;
