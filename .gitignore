@@ -83,3 +83,4 @@ maf.txt
 *.snp.bin
 *.snpbin.txt
 first_*.txt
+/diyabc-tests
