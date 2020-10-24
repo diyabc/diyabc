@@ -124,6 +124,21 @@ jobs:
           buildWithCMake: true
           buildDirectory: ${{ runner.workspace }}/b/ninja/
           cmakeAppendedArgs: '${{ matrix.cmakeargs }}'
+      - name: Prepare tests
+        id: preptests
+        run: Rscript -e "install.packages(c('stringr','readr','testthat'), repos='https://cloud.r-project.org/')"
+      - name: Run Tests
+        id: ctest
+        working-directory: ${{ runner.workspace }}/b/ninja/
+        run: ctest -j1 -T test --output-on-failure -VV --progress 
+      - name: Failure
+        if: failure() 
+        uses: author/action-rollback@stable
+        with:
+          # Using a known release ID
+          release_id: ${{ needs.create_release.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Upload windows binary
       #   uses: actions/upload-artifact@v2
       #   with:
@@ -135,34 +150,7 @@ jobs:
       #   with:
       #     name: diyabc-${{ matrix.os }}
       #     path: ${{ runner.workspace }}/b/ninja/install/general
-      #   if: "! contains( matrix.os, 'windows')"
-      - name: Prepare tests
-        id: preptests
-        run: Rscript -e "install.packages(c('stringr','readr','testthat'), repos='https://cloud.r-project.org/')"
-      - name: Run Tests
-        id: ctest
-        working-directory: ${{ runner.workspace }}/b/ninja/
-        run: ctest -j1 -T test --output-on-failure -VV --progress
-      # - name: Run Tests
-      #   uses: lukka/run-cmake@v3
-      #   id: ctest
-      #   with:
-      #     cmakeGenerator: 'Ninja'  
-      #     cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
-      #     cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-      #     buildWithCMakeArgs: '--target test -- -v'
-      #     buildWithCMake: true
-      #     buildDirectory: ${{ runner.workspace }}/b/ninja/
-      #     cmakeAppendedArgs: '${{ matrix.cmakeargs }}'      
-      - name: Failure
-        if: failure() 
-        uses: author/action-rollback@stable
-        with:
-          # Using a known release ID
-          release_id: ${{ needs.create_release.id }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get the version
+      #   if: "! contains( matrix.os, 'windows')"      - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         shell: bash      
