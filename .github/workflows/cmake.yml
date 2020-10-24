@@ -132,7 +132,7 @@ jobs:
       #   if: "! contains( matrix.os, 'windows')"
       - name: Prepare tests
         id: preptests
-        run: Rscript -e 'install.packages(c("testthat","stringr","readr"), repos="https://cloud.r-project.org/")'
+        run: Rscript -e 'install.packages(c("stringr","readr","testthat"), repos="https://cloud.r-project.org/")'
       - name: Run Tests
         uses: lukka/run-cmake@v3
         id: ctest
