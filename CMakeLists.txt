@@ -51,3 +51,8 @@ ELSE()
 ENDIF()
 
 add_subdirectory (src-JMC-C++)
+
+include(CTest)
+enable_testing()
+
+add_test(NAME functionaltest COMMAND "Rscript" "--vanilla tests.R $<TARGET_FILE:general>" WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")

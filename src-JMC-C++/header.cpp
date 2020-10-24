@@ -647,11 +647,31 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 	//cout<<"this->entete.length()="<<this->entete.length()<<"\n";
 
 /// TODO remove the 14 chars hardcoded limit
-	this->entetehist = this->entete.substr(0, this->entete.length() - 14 * (nparamut + nstat));
-	//cout<<this->entetehist<<"\n\n";
-	if (nparamut > 0) this->entetemut = this->entete.substr(this->entetehist.length(), 14 * nparamut);
+	const std::regex splitre(R"#(\s+)#");
+	std::vector<std::string> header_lastline;
+	std::copy( std::sregex_token_iterator(std::begin(this->entete), std::end(this->entete), splitre, -1),
+			std::sregex_token_iterator(),
+			std::back_inserter(header_lastline));
+	size_t nparamhist = header_lastline.size() - 1 - nstat - nparamut;
+	this->entetehist = std::accumulate(
+		std::next(std::begin(header_lastline)),
+		std::next(std::begin(header_lastline),1 + nparamhist),
+		*std::begin(header_lastline),
+		[](const auto& a, const auto& b) { return a + " " + b; });
+
+	if (nparamut > 0)
+		this->entetemut = std::accumulate(
+			std::next(std::begin(header_lastline),2 + nparamhist),
+			std::next(std::begin(header_lastline),1 + nparamhist + nparamut),
+			*std::next(std::begin(header_lastline), 1 + nparamhist),
+			[](const auto& a, const auto& b) { return a + " " + b; });
 	else this->entetemut = "";
-	//cout<<this->entete<<"\n";
+
+	// this->entetehist = this->entete.substr(0, this->entete.length() - 14 * (nparamut + nstat));
+	// //cout<<this->entetehist<<"\n\n";
+	// if (nparamut > 0) this->entetemut = this->entete.substr(this->entetehist.length(), 14 * nparamut);
+	// else this->entetemut = "";
+	// //cout<<this->entete<<"\n";
 
 	file.seekg (0, file.beg); //remise à zéro de file
 	string headerRFfilename;

@@ -1,0 +1,109 @@
+4pops_11loci_1mito.txt
+23 parameters and 24 summary statistics
+
+3 scenarios: 13 12 13 
+scenario 1 [0.33333] (15)
+N1 N2 N3 N4
+0 sample 1
+0 sample 2
+0 sample 3
+0 sample 4
+ti4-DB4 VarNe 4 NF4
+ti4 VarNe 4 N1
+t3-DB3 VarNe 3 NF3
+t3 merge 2 3
+t2-DB2 VarNe 2 NF2
+t2 VarNe 2 N1
+tg merge 1 2
+tig2 merge 1 4
+scenario 2 [0.33333] (14)
+N1 N2 N3 N4
+0 sample 1
+0 sample 2
+0 sample 3
+0 sample 4
+t4-DB4 VarNe 4 NF4
+t4 merge 2 4 
+t3-DB3 VarNe 3 NF3
+t3 merge 2 3
+t2-DB2 VarNe 2 NF2
+t2 VarNe 2 N1
+tg merge 1 2
+scenario 3 [0.33333] (16)
+N1 N2 N3 N4 N1
+0 sample 1
+0 sample 2
+0 sample 3
+0 sample 4
+t4-DB4 VarNe 4 NF4
+t4 split 4 5 2 r
+tg2 merge 1 5
+t3-DB3 VarNe 3 NF3
+t3 merge 2 3
+t2-DB2 VarNe 2 NF2
+t2 VarNe 2 N1
+tg merge 1 2
+
+historical parameters priors (18,4)
+N1 N LU[1000,100000,0.0,0.0]
+N2 N LU[1000,100000,0.0,0.0]
+N3 N LU[1000,100000,0.0,0.0]
+N4 N LU[1000,100000,0.0,0.0]
+ti4 T UN[18,23,0.0,0.0]
+DB4 T UN[1,10,0.0,0.0]
+NF4 N LU[2,1000,0.0,0.0]
+t3 T UN[25,30,0.0,0.0]
+DB3 T UN[1,10,0.0,0.0]
+NF3 N LU[2,1000,0.0,0.0]
+t2 T UN[90,100,0.0,0.0]
+DB2 T UN[1,10,0.0,0.0]
+NF2 N LU[2,1000,0.0,0.0]
+tg T LU[90,1000,0.0,0.0]
+tig2 T LU[18,1000,0.0,0.0]
+t4 T UN[18,23,0.0,0.0]
+r A UN[0.1,0.9,0.0,0.0]
+tg2 T LU[18,1000,0.0,0.0]
+tg>=t2
+tg2>=t4
+tig2>=ti4
+tg>tg2
+DRAW UNTIL
+
+loci description (12)
+Lep04 <A> [M] G1 2 40
+Lep05 <A> [M] G1 2 40
+Lep17 <A> [M] G1 2 40
+Lep43 <A> [M] G1 2 80
+Lep07 <A> [M] G1 3 40
+Lep16 <A> [M] G1 2 40
+Lep25 <A> [M] G1 2 40
+Lep36 <A> [M] G1 2 40
+Lep31 <A> [M] G1 2 40
+MSLO07 <A> [M] G1 2 40
+MSLO15 <A> [M] G1 2 40
+Cytb <M> [S] G2 662
+
+group priors (2)
+group G1 [M]
+MEANMU UN[1.00E-005,1.00E-3,0.0005,2]
+GAMMU GA[1.00E-006,1.00E-002,Mean_u,2]
+MEANP UN[1.00E-001,3.00E-001,0.22,2]
+GAMP GA[1.00E-002,9.00E-001,Mean_P,2]
+MEANSNI LU[1.00E-008,1.00E-004,1.00E-007,2]
+GAMSNI GA[1.00E-009,1.00E-003,Mean_u_SNI,2]
+group G2 [S]
+MEANMU UN[1.00E-8,1.00E-6,5E-9,2]
+GAMMU GA[1.00E-9,1.00E-5,Mean_u,2]
+MEANK1 UN[0.050,20,10,2]
+GAMK1 GA[0.050,20,Mean_k1,2]
+MEANK2 UN[0.050,20,10,2]
+GAMK2 GA[0.050,20,Mean_k2,2]
+MODEL K2P 10 2.00
+
+group summary statistics (24)
+group G1 [M] (12)
+AML 1&2&3 1&2&4 1&3&4 2&3&4 2&3&1 2&4&1 3&4&1 3&2&1 3&2&4 4&2&1 4&3&1 4&3&2 
+group G2 [S] (12)
+SML 1&2&3 1&2&4 1&3&4 2&1&3 2&1&4 2&3&4 3&1&2 3&1&4 3&2&4 4&1&2 4&1&3 4&2&3 
+
+scenario      N1            N2            N3            N4           ti4           DB4           NF4            t3           DB3           NF3            t2           DB2           NF2            tg           tig2           t4            r            tg2          µmic_1        pmic_1       snimic_1       µseq_2       k1seq_2     AML_1_1&2&3   AML_1_1&2&4   AML_1_1&3&4   AML_1_2&3&4   AML_1_2&3&1   AML_1_2&4&1   AML_1_3&4&1   AML_1_3&2&1   AML_1_3&2&4   AML_1_4&2&1   AML_1_4&3&1   AML_1_4&3&2   SML_2_1&2&3   SML_2_1&2&4   SML_2_1&3&4   SML_2_2&1&3   SML_2_2&1&4   SML_2_2&3&4   SML_2_3&1&2   SML_2_3&1&4   SML_2_3&2&4   SML_2_4&1&2   SML_2_4&1&3   SML_2_4&2&3  

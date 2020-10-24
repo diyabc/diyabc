@@ -79,5 +79,7 @@ test/f3reich/snp/header.txt
 /build-general
 /build
 
-/diyabc-tests/*
-!/diyabc-tests/MER/
+maf.txt
+*.snp.bin
+*.snpbin.txt
+first_*.txt

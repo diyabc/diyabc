@@ -72,6 +72,10 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup x64-linux
         run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+          sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
+          sudo apt-get update
+          sudo apt-get install -y r-base r-cran-stringr r-cran-readr
           if [ ! -d ${{ github.workspace }}/${{ matrix.clang-dir }} ]; then 
             sudo sh -c "wget -qO- ${{ matrix.clang-download }} | tar xJ --totals -C ${{ github.workspace }}"
           fi
@@ -128,6 +132,17 @@ jobs:
       #     name: diyabc-${{ matrix.os }}
       #     path: ${{ runner.workspace }}/b/ninja/install/general
       #   if: "! contains( matrix.os, 'windows')"
+      - name: Tests
+        id: tests
+        run: ctest -j1 -C Release -T test --output-on-failure -VV --progress
+      - name: Failure
+        if: failure() 
+        uses: author/action-rollback@stable
+        with:
+          # Using a known release ID
+          id: ${{ needs.create_release.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
