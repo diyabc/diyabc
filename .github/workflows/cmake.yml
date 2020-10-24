@@ -89,6 +89,7 @@ jobs:
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
+          chmod -R o+w /usr/local/lib/R/site-library
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
         run: |
@@ -129,17 +130,26 @@ jobs:
       #     name: diyabc-${{ matrix.os }}
       #     path: ${{ runner.workspace }}/b/ninja/install/general
       #   if: "! contains( matrix.os, 'windows')"
-      - name: Tests
-        id: tests
-        run: |
-          Rscript -e 'install.packages(c("stringr","readr"), repos="https://cloud.r-project.org/")'
-          ctest -j1 -C Release -T test --output-on-failure -VV --progress
+      - name: Prepare tests
+        id: preptests
+        run: Rscript -e 'install.packages(c("stringr","readr"), repos="https://cloud.r-project.org/")'
+      - name: Run Tests
+        uses: lukka/run-cmake@v3
+        id: ctest
+        with:
+          cmakeGenerator: 'Ninja'  
+          cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          buildWithCMakeArgs: '--target test -- -v'
+          buildWithCMake: true
+          buildDirectory: ${{ runner.workspace }}/b/ninja/
+          cmakeAppendedArgs: '${{ matrix.cmakeargs }}'      
       - name: Failure
         if: failure() 
         uses: author/action-rollback@stable
         with:
           # Using a known release ID
-          id: ${{ needs.create_release.id }}
+          release_id: ${{ needs.create_release.id }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get the version
