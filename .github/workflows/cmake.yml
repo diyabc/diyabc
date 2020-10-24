@@ -71,6 +71,12 @@ jobs:
           path: /opt/intel
           key: ${{ matrix.mkl-version }}
         if: matrix.os == 'ubuntu-latest'
+      - name: restore/cache R site-packages
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/lib/R/site-library
+          key: ubuntu-R-site-packages
+        if: matrix.os == 'ubuntu-latest'
       - name: setup x64-linux
         run: |
           if [ ! -d ${{ github.workspace }}/${{ matrix.clang-dir }} ]; then 
@@ -134,16 +140,20 @@ jobs:
         id: preptests
         run: Rscript -e "install.packages(c('stringr','readr','testthat'), repos='https://cloud.r-project.org/')"
       - name: Run Tests
-        uses: lukka/run-cmake@v3
         id: ctest
-        with:
-          cmakeGenerator: 'Ninja'  
-          cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          buildWithCMakeArgs: '--target test -- -v'
-          buildWithCMake: true
-          buildDirectory: ${{ runner.workspace }}/b/ninja/
-          cmakeAppendedArgs: '${{ matrix.cmakeargs }}'      
+        working-directory: ${{ runner.workspace }}/b/ninja/
+        run: ctest -j1 -T test --output-on-failure -VV --progress
+      # - name: Run Tests
+      #   uses: lukka/run-cmake@v3
+      #   id: ctest
+      #   with:
+      #     cmakeGenerator: 'Ninja'  
+      #     cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
+      #     cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+      #     buildWithCMakeArgs: '--target test -- -v'
+      #     buildWithCMake: true
+      #     buildDirectory: ${{ runner.workspace }}/b/ninja/
+      #     cmakeAppendedArgs: '${{ matrix.cmakeargs }}'      
       - name: Failure
         if: failure() 
         uses: author/action-rollback@stable
