@@ -89,7 +89,7 @@ jobs:
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
-          chmod -R o+w /usr/local/lib/R/site-library
+          sudo chmod -R o+w /usr/local/lib/R/site-library
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
         run: |
@@ -132,7 +132,7 @@ jobs:
       #   if: "! contains( matrix.os, 'windows')"
       - name: Prepare tests
         id: preptests
-        run: Rscript -e "install.packages(c("stringr","readr","testthat"), repos='https://cloud.r-project.org/')"
+        run: Rscript -e "install.packages(c('stringr','readr','testthat'), repos='https://cloud.r-project.org/')"
       - name: Run Tests
         uses: lukka/run-cmake@v3
         id: ctest
