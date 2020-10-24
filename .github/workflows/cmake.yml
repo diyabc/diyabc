@@ -21,6 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           INITIAL_VERSION: 1.0.12
+          DEFAULT_BUMP: none
       - name: Create release
         id: new_release
         uses: actions/create-release@v1
@@ -72,10 +73,6 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup x64-linux
         run: |
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-          sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
-          sudo apt-get update
-          sudo apt-get install -y r-base r-cran-stringr r-cran-readr
           if [ ! -d ${{ github.workspace }}/${{ matrix.clang-dir }} ]; then 
             sudo sh -c "wget -qO- ${{ matrix.clang-download }} | tar xJ --totals -C ${{ github.workspace }}"
           fi
@@ -134,7 +131,9 @@ jobs:
       #   if: "! contains( matrix.os, 'windows')"
       - name: Tests
         id: tests
-        run: ctest -j1 -C Release -T test --output-on-failure -VV --progress
+        run: |
+          Rscript -e 'install.packages(c("stringr","readr"), repos="https://cloud.r-project.org/")'
+          ctest -j1 -C Release -T test --output-on-failure -VV --progress
       - name: Failure
         if: failure() 
         uses: author/action-rollback@stable
