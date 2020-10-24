@@ -150,7 +150,7 @@ jobs:
       - name: zip for windows
         id: zip_win
         run: |
-          Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-windows-${{ needs.create_release.outputs.new_tag }}.exe"
+          Rename-Item -Path ${{ runner.workspace }}\b\ninja\install\general.exe -NewName "diyabc-RF-windows-${{ needs.create_release.outputs.new_tag }}.exe"
           Compress-Archive -Path ${{ runner.workspace }}\b\ninja\install\* -DestinationPath  ${{ runner.workspace }}\b\ninja\install.zip
         if: matrix.os == 'windows-latest'
       - name: Upload Release Asset Unix
