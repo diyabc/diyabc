@@ -66,7 +66,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ github.workspace }}/RLibrary 
-          key: ubuntu-R-site-packages-${{ matrix.os }}-${{ steps.get-r-version.outputs.R_VERSION }}
+          key: ubuntu-R-site-packages-${{ matrix.shortos }}-${{ steps.get-r-version.outputs.R_VERSION }}
       - name: restore/cache clang
         uses: actions/cache@v2
         with:
@@ -97,7 +97,7 @@ jobs:
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
-          echo "R_LIBS=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
+          echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
         run: |
@@ -105,7 +105,7 @@ jobs:
           echo "CFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "CXXFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
-          echo "R_LIBS=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
+          echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
       - name: Configure MSVC console (Windows)
         if: matrix.os == 'windows-latest'
@@ -115,7 +115,7 @@ jobs:
           # Set these env vars so cmake picks the correct compiler
           echo "CXX=cl.exe" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
           echo "CC=cl.exe" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
-          echo "R_LIBS=${{ github.workspace }}/RLibrary" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
+          echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
         if: matrix.os == 'windows-latest'
       - name: Run CMake+Ninja
         uses: lukka/run-cmake@v3
