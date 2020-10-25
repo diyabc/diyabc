@@ -21,7 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
           INITIAL_VERSION: 1.0.12
-          DEFAULT_BUMP: none
+          DEFAULT_BUMP: patch
       - name: Create release
         id: new_release
         uses: actions/create-release@v1
