@@ -60,7 +60,7 @@ jobs:
 
       - uses: lukka/get-cmake@latest
       - name: Get R version
-        run: echo "::set-output name=R_VERSION::$(Rscript -e 'cat(as.charater(getRversion()))')"
+        run: echo "::set-output name=R_VERSION::$(Rscript -e 'cat(as.character(getRversion()))')"
         id: get-r-version
       - name: restore/cache R site-packages
         uses: actions/cache@v2
