@@ -66,7 +66,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ github.workspace }}/RLibrary 
-          key: ubuntu-R-site-packages-${{ matrix.shortos }}-${{ steps.get-r-version.outputs.R_VERSION }}
+          key: R-site-packages-${{ matrix.shortos }}-${{ steps.get-r-version.outputs.R_VERSION }}
       - name: restore/cache clang
         uses: actions/cache@v2
         with:
