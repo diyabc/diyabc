@@ -497,7 +497,7 @@ int main(int argc, char* argv[]) {
 					break;
 			}
 		}
-		if (!randforstats.empty() && randforstats.compare("\"\"") != 0) {
+		if (!randforstats.empty() && randforstats.compare("\"\"") != 0 && randforstats.compare("ALL") != 0) {
 			std::cout << "Filtering stats : " << randforstats << std::endl;
             vector<string> ss;
 
