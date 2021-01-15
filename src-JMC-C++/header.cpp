@@ -687,6 +687,8 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 	int catsnp;
 	k = 0;
 	stringstream grstringRF("");
+	size_t hnstat = 0;
+
 	for (gr = 1; gr <= this->ngroupes; gr++) {
 		// COMPTAGE DES STAT
 		//cout<<"groupe["<<gr<<"].type="<<groupe[gr].type<<"\n";
@@ -759,14 +761,15 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 		this->nstat += groupe[gr].nstat;
 		file.seekg (0, file.beg); //remise à zéro de file	
 
-		grstringRF <<"group summary statistics ("<<groupe[gr].nstat<<")\n";
+		// grstringRF <<"group summary statistics ("<<groupe[gr].nstat<<")\n";
 		grstringRF <<"group G" << gr << " ("<<groupe[gr].nstat<<")\n";
-		grstringRF << stringRF.rdbuf() << "\n";
+		grstringRF << stringRF.rdbuf();
 		//DEFINITION DES STAT
 
 		//cout<<"type du groupe : "<<groupe[gr].type<<"\n";
 		//cout<<"fin du traitement du groupe "<<gr<<"\n";
 	}
+	grstringRF << "\n";
 	file.seekg (0, file.beg); //remise à zéro de file	
 	getline(file,s1);fileRF <<s1<<"\n";
 	getline(file,s1);
@@ -779,6 +782,7 @@ int HeaderC::readHeaderAllStat(ifstream & file, string headerfilename) {
 		if (!trouve)
 			fileRF << s1 << "\n";
 	}
+	fileRF <<"group summary statistics ("<<this->nstat<<")\n";
 	fileRF << grstringRF.rdbuf();
 
 	splitwords(this->entetestat, " ", statname);

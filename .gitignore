@@ -84,3 +84,4 @@ maf.txt
 *.snpbin.txt
 first_*.txt
 /diyabc-tests
+!/diyabc-tests/MER_2021_DATASET_EXAMPLES
