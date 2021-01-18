@@ -97,7 +97,7 @@ jobs:
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
-          if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary
+          if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary; fi
           echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
@@ -106,7 +106,7 @@ jobs:
           echo "CFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "CXXFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
-          if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary
+          if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary; fi
           echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
       - name: Configure MSVC console (Windows)
