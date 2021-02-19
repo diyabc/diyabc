@@ -641,7 +641,7 @@ int main(int argc, char* argv[]) {
 								saveRNG(mtss, countRNG, RNG_filename); // Ajout Pierre le 30/11/2012
 								//dureef=walltime(&debutf);time_file += dureef;
 								rt.nrec += nenr;
-								cout << rt.nrec;
+								cout << "n simu data = " << rt.nrec;
 								//if (firsttime) writecourant();
 								//cout<<"à la place de writecourant\n";
 								ofstream f1(reftablelogfilename.c_str(), ios::out);
