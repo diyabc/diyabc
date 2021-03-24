@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <ciso646>
 
 /**
 *  Structure LocusC : définition de la structure LocusC
@@ -61,49 +62,49 @@ public:
 	};
 
 	~LocusC() {
-		if (not mutsit.empty()) mutsit.clear();
-		if (not sitmut.empty()) sitmut.clear();
-		if (not sitmut2.empty()) sitmut2.clear();
-		if (not tabsit.empty()) tabsit.clear();
-		if (not freq.empty()) {
+		if (! mutsit.empty()) mutsit.clear();
+		if (! sitmut.empty()) sitmut.clear();
+		if (! sitmut2.empty()) sitmut2.clear();
+		if (! tabsit.empty()) tabsit.clear();
+		if (! freq.empty()) {
 			int imax = (int)freq.size();
 			for (int i = 0; i < imax; i++) {
-				if (not freq[i].empty()) freq[i].clear();
+				if (! freq[i].empty()) freq[i].clear();
 			}
 		}
-		if (not haplomic.empty()) {
+		if (! haplomic.empty()) {
 			int imax = (int)haplomic.size();
 			for (int i = 0; i < imax; i++) {
-				if (not haplomic[i].empty()) haplomic[i].clear();
+				if (! haplomic[i].empty()) haplomic[i].clear();
 			}
 		}
-		if (not haplodna.empty()) {
+		if (! haplodna.empty()) {
 			int imax = (int)haplodna.size();
 			for (int i = 0; i < imax; i++) {
-				if (not haplodna[i].empty()) haplodna[i].clear();
+				if (! haplodna[i].empty()) haplodna[i].clear();
 			}
 		}
-		if (not haplodnavar.empty()) {
+		if (! haplodnavar.empty()) {
 			int imax = (int)haplodnavar.size();
 			for (int i = 0; i < imax; i++) {
-				if (not haplodnavar[i].empty()) haplodnavar[i].clear();
+				if (! haplodnavar[i].empty()) haplodnavar[i].clear();
 			}
 		}
-		if (not haplosnp.empty()) {
+		if (! haplosnp.empty()) {
 			int imax = (int)haplosnp.size();
 			for (int i = 0; i < imax; i++) {
-				if (not haplosnp[i].empty()) haplosnp[i].clear();
+				if (! haplosnp[i].empty()) haplosnp[i].clear();
 			}
 		}
-		if (not ploidie.empty()) {
+		if (! ploidie.empty()) {
 			int imax = (int)ploidie.size();
 			for (int i = 0; i < imax; i++) {
-				if (not ploidie[i].empty()) ploidie[i].clear();
+				if (! ploidie[i].empty()) ploidie[i].clear();
 			}
 		}
-		if (not samplesize.empty()) samplesize.clear();
-		if (not nreads1.empty()) nreads1.clear();
-		if (not nreads.empty()) nreads.clear();
+		if (! samplesize.empty()) samplesize.clear();
+		if (! nreads1.empty()) nreads1.clear();
+		if (! nreads.empty()) nreads.clear();
 
 	};
 
