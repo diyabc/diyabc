@@ -566,7 +566,7 @@ int main(int argc, char *argv[])
         //cout<<"apres les flags action="<<action<<"\n";
 
         /* Debut: pour le nouveau RNG      */
-        if ((action != 'n') and (action != 'h') and (action != 'a') and (action != 'q') and (action != 'Q') and (action != 'z'))
+        if ((action != 'n') and (action != 'h') and (action != 'a') and (action != 'q') and (action != 'Q') and (action != 'z') and (action != 'd'))
         {
             // Je dois lire l'état courant des RNG
             mtss = NULL;
