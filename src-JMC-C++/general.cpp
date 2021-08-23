@@ -255,6 +255,7 @@ int main(int argc, char *argv[])
     atexit(__libc_freeres);
 #endif
     string RNG_filename;
+    std::cout.setf(std::ios::unitbuf);
     bool exception_caught = false;
     bool erreur_scenario = false;
     try
