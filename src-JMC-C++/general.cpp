@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
         debut = clock();
         srand(time(NULL));
         seed = rand() % 1000;
-        ifstream header_file(soptarg + "headerRF.txt", ios::in);
+        ifstream header_file;
 
         while ((optchar = getopt(argc, argv, "i:p:z:r:e:s:b:c:qkf:g:d:hmqj:a:t:n:w:xyl:o:R:F:Q")) != -1)
         {
@@ -400,6 +400,8 @@ int main(int argc, char *argv[])
                 break;
 
             case 'p':
+                header_file.open(soptarg + "headerRF.txt", ios::in);
+
                 if (header_file.is_open())
                 {
                     headerfilename = soptarg + "headerRF.txt";
