@@ -55,6 +55,7 @@ extern "C"
 #include "randomgenerator.hpp"
 #include "reftable.hpp"
 #include "simfile.hpp"
+#include "modchec.hpp"
 
 #include "statdefs.hpp"
 
@@ -499,10 +500,10 @@ int main(int argc, char *argv[])
                 action = 'Q';
                 break;
 
-                // case 'j':
-                // 	modpar = soptarg;
-                // 	action = 'j';
-                // 	break;
+            case 'j':
+                modpar = soptarg;
+                action = 'j';
+                break;
 
             case 't':
                 num_threads = atoi(optarg);
@@ -554,7 +555,8 @@ int main(int argc, char *argv[])
             // if (action == 'f') ident = strdup("conf1");
             if (action == 'd')
                 ident = strdup("pcaloc1");
-            // if (action == 'j') ident = strdup("modchec1");
+            if (action == 'j') 
+                ident = strdup("modchec1");
             if (action == 'o')
                 ident = strdup("statfile.txt");
             // if (action == 'F') ident = strdup("rf1");
@@ -885,14 +887,14 @@ int main(int argc, char *argv[])
             doacpl(acplpar);
             break;
 
-            // case 'j': k = readheaders();
-            // 	if (k == 1) {
-            // 		cout << "no file reftable.bin in the current directory\n";
-            // 		exit(1);
-            // 	}
-            // 	nenr = 10;
-            // 	domodchec(modpar, seed);
-            // 	break;
+        case 'j': k = readheaders();
+            if (k == 1) {
+                cout << "no file reftable.bin in the current directory\n";
+                exit(1);
+            }
+            nenr = 10;
+            domodchec(modpar, seed);
+            break;
 
         case 'q': //header.readHeader(headerfilename);
             k = rt.readheader(reftablefilename, reftablelogfilename, reftabscen);
