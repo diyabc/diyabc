@@ -6,7 +6,7 @@ on: [push]
 
 env:
   LLVM_VERSION: 15.0.6
-  CLANG_DIR: clang+llvm-${{ env.LLVM_VERSION }}-x86_64-linux-gnu-ubuntu-18.04
+  CLANG_DIR: clang+llvm-${{ LLVM_VERSION }}-x86_64-linux-gnu-ubuntu-18.04
 
 jobs:
   create_release:
