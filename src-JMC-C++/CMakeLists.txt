@@ -18,6 +18,9 @@ set(PROJECT_general_SRCS
   sumstat.cpp
   modchec.cpp
   estimparam.cpp
+  bias.cpp
+  conf.cpp
+  comparscen.cpp
   )
 
 set(PROJECT_general_HEADERS
@@ -35,6 +38,9 @@ set(PROJECT_general_HEADERS
   statdefs.hpp
   modchec.hpp
   estimparam.hpp
+  bias.hpp
+  conf.hpp
+  comparscen.hpp
   )
 
 

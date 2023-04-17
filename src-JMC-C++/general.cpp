@@ -56,8 +56,10 @@ extern "C"
 #include "reftable.hpp"
 #include "simfile.hpp"
 #include "modchec.hpp"
-
+#include "estimparam.hpp"
 #include "statdefs.hpp"
+#include "bias.hpp"
+#include "conf.hpp"
 
 extern "C" void __libc_freeres(void);
 
@@ -450,20 +452,20 @@ int main(int argc, char *argv[])
                 // 	action = 'c';
                 // 	break;
 
-                // case 'e':
-                // 	estpar = soptarg;
-                // 	action = 'e';
-                // 	break;
+            case 'e':
+                estpar = soptarg;
+                action = 'e';
+                break;
 
-                // case 'b':
-                // 	biaspar = soptarg;
-                // 	action = 'b';
-                // 	break;
+            case 'b':
+                biaspar = soptarg;
+                action = 'b';
+                break;
 
-                // case 'f':
-                // 	confpar = soptarg;
-                // 	action = 'f';
-                // 	break;
+            case 'f':
+                confpar = soptarg;
+                action = 'f';
+                break;
 
             case 'd':
                 acplpar = soptarg;
@@ -549,10 +551,13 @@ int main(int argc, char *argv[])
         }
         if (not flagi)
         {
-            // if (action == 'e') ident = strdup("estim1");
+            if (action == 'e')
+                ident = strdup("estim1");
             // if (action == 'c') ident = strdup("compar1");
-            // if (action == 'b') ident = strdup("bias1");
-            // if (action == 'f') ident = strdup("conf1");
+            if (action == 'b')
+                ident = strdup("bias1");
+            if (action == 'f')
+                ident = strdup("conf1");
             if (action == 'd')
                 ident = strdup("pcaloc1");
             if (action == 'j') 
@@ -838,13 +843,13 @@ int main(int argc, char *argv[])
             doinitRNG(rngpar);
             break;
 
-            // case 'e': k = readheaders();
-            // 	if (k == 1) {
-            // 		cout << "no file reftable.bin in the current directory\n";
-            // 		exit(1);
-            // 	}
-            // 	doestim(estpar);
-            // 	break;
+        case 'e': k = readheaders();
+            if (k == 1) {
+                cout << "no file reftable.bin in the current directory\n";
+                exit(1);
+            }
+            doestim(estpar);
+            break;
 
             // case 'c': k = readheaders();
             // 	if (k == 1) {
@@ -854,22 +859,22 @@ int main(int argc, char *argv[])
             // 	docompscen(comppar);
             // 	break;
 
-            // case 'b': k = readheaders();
-            // 	if (k == 1) {
-            // 		cout << "no file reftable.bin in the current directory\n";
-            // 		exit(1);
-            // 	}
+        case 'b': k = readheaders();
+            if (k == 1) {
+                cout << "no file reftable.bin in the current directory\n";
+                exit(1);
+            }
 
-            // 	dobias(biaspar, seed);
-            // 	break;
+            dobias(biaspar, seed);
+            break;
 
-            // case 'f': k = readheaders();
-            // 	if (k == 1) {
-            // 		cout << "no file reftable.bin in the current directory\n";
-            // 		exit(1);
-            // 	}
-            // 	doconf(confpar, seed);
-            // 	break;
+        case 'f': k = readheaders();
+            if (k == 1) {
+                cout << "no file reftable.bin in the current directory\n";
+                exit(1);
+            }
+            doconf(confpar, seed);
+            break;
 
         case 'k':
             k = readheadersim();
