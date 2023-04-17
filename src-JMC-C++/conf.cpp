@@ -51,7 +51,7 @@
 
 
 extern ParticleSetC ps;
-extern enregC* enreg;
+extern std::vector<enregC> enreg;
 double time_readfile = 0.0;
 extern string scurfile, path, ident, headerfilename, progressfilename;
 extern HeaderC header;
@@ -414,7 +414,7 @@ void pperror(bool prior, int nrec, int nrecp, int nsel0, int nseld, int nselr, i
 	int nstatOK, ns, *num;
 	//long double **phistar;
 	double** stat;
-	enreg = new enregC[nrecp];
+	enreg = std::vector<enregC>(nrecp);
 	nstatOK = rt.cal_varstat();
 	cout << "nstatOK=" << nstatOK << "\n";
 	int nphistarOK;
@@ -521,7 +521,7 @@ void pperror(bool prior, int nrec, int nrecp, int nsel0, int nseld, int nselr, i
 		enreg[p].stat.clear();
 		enreg[p].param.clear();
 	}
-	delete [] enreg;
+	// delete [] enreg;
 }
 
 int calnrecpos() {
@@ -825,7 +825,7 @@ void doconf(string opt, int seed) {
 
 
 		npv = rt.nparam[rt.scenteste - 1];
-		enreg = new enregC[ntest];
+		enreg = std::vector<enregC>(ntest);
 		for (int p = 0; p < ntest; p++) {
 			enreg[p].stat = vector<float>(header.nstat);
 			enreg[p].param = vector<float>(npv);

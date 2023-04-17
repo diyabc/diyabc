@@ -44,7 +44,7 @@ using namespace std;
 
 extern ReftableC rt;
 extern ParticleSetC ps;
-extern enregC* enreg;
+extern std::vector<enregC> enreg;
 extern bool multithread;
 extern string progressfilename, path;
 extern string scurfile;
@@ -73,7 +73,7 @@ long double **simparsel, **simparcomposel, **simparscaledsel, *paramestmoyS, *pa
  * moyenne, médiane, mode, quantiles de la distribution a priori de chaque paramètre tiré selon son prior 
  * avec tirage conforme aux éventuelles conditions
 */
-enreC* enreg2;
+std::vector<enreC> enreg2;
 long double **br_O, *rrmise_O, *rmad_O, **rmse_O, *cov50_O, *cov95_O, **fac2_O, **rmb_O, *rmedad_O, **rmae_O, ***bmed_O, **bmedr_O, ***bmeda_O;
 long double **br_C, *rrmise_C, *rmad_C, **rmse_C, *cov50_C, *cov95_C, **fac2_C, **rmb_C, *rmedad_C, **rmae_C, ***bmed_C, **bmedr_C, ***bmeda_C;
 long double **br_S, *rrmise_S, *rmad_S, **rmse_S, *cov50_S, *cov95_S, **fac2_S, **rmb_S, *rmedad_S, **rmae_S, ***bmed_S, **bmedr_S, ***bmeda_S;
@@ -2071,7 +2071,7 @@ void dobias(string opt, int seed) {
 		rt.desalloue_enrsel();
 	}
 	npv = rt.nparam[rt.scenteste - 1];
-	enreg = new enregC[ntest];
+	enreg = std::vector<enregC>(ntest);
 	for (int p = 0; p < ntest; p++) {
 		enreg[p].stat = vector<float>(header.nstat);
 		enreg[p].param = vector<float>(npv);
@@ -2121,11 +2121,11 @@ void dobias(string opt, int seed) {
 		enreg[p].param.clear();
 		enreg[p].stat.clear();
 	}
-	delete []enreg;
+	// delete []enreg;
 	det_numpar();
 	cout << "naparmcom = " << nparamcom << "   nparcomp = " << nparcompo << "   nparscaled = " << nparscaled << "\n";
 	cout << "header.nstat=" << header.nstat << "    rt.nstat=" << rt.nstat << "\n";
-	enreg2 = new enreC[ntest];
+	enreg2 = std::vector<enreC>(ntest);
 	for (int p = 0; p < ntest; p++) {
 		enreg2[p].stat = new double[header.nstat];
 		enreg2[p].paramvv = new double[nparamcom];

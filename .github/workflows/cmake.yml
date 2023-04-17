@@ -3,7 +3,11 @@
 # SPDX short identifier: MIT
 name: diyabc-build
 on: [push]
-  
+
+env:
+  LLVM_VERSION: 15.0.6
+  CLANG_DIR: clang+llvm-${{ env.LLVM_VERSION }}-x86_64-linux-gnu-ubuntu-18.04
+
 jobs:
   create_release:
     runs-on: ubuntu-latest
@@ -46,9 +50,8 @@ jobs:
             cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: ubuntu-latest
             shortos: linux
-            clang-dir: clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04
-            clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz
-            mkl-version: intel-mkl-64bit-2020.0-088
+            clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ env.LLVM_VERSION }}/${{ env.CLANG_DIR }}.tar.xz
+            mkl-version: intel-oneapi-mkl-devel-2022.2.1
             cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: macos-latest
             shortos: macos
@@ -84,19 +87,19 @@ jobs:
           if [ ! -d ${{ github.workspace }}/${{ matrix.clang-dir }} ]; then 
             sudo sh -c "wget -qO- ${{ matrix.clang-download }} | tar xJ --totals -C ${{ github.workspace }}"
           fi
-          if [ ! -d /opt/intel/lib/intel64 ]; then
+          if [ ! -d /opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64 ]; then
             wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
             sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB
             sudo sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list'
             sudo apt-get update
             sudo apt-get install -y ${{ matrix.mkl-version }}
           fi
-          echo ${{ github.workspace }}/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin >> $GITHUB_PATH
-          echo "CC=${{ github.workspace }}/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang" >> $GITHUB_ENV
-          echo "CXX=${{ github.workspace }}/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang++" >> $GITHUB_ENV
+          echo ${{ github.workspace }}/${{ matrix.clang-dir }}/bin >> $GITHUB_PATH
+          echo "CC=${{ github.workspace }}/${{ matrix.clang-dir }}/bin/clang" >> $GITHUB_ENV
+          echo "CXX=${{ github.workspace }}/${{ matrix.clang-dir }}/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
-          echo "LDFLAGS=-L/opt/intel/lib/intel64" >> $GITHUB_ENV
+          echo "LDFLAGS=-L/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64/" >> $GITHUB_ENV
           if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary; fi
           echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
         if: matrix.os == 'ubuntu-latest'

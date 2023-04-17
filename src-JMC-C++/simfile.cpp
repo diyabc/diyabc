@@ -18,7 +18,7 @@
 #include "simfile.hpp"
 
 extern ParticleSetC ps;
-extern enregC* enreg;
+extern std::vector<enregC> enreg;
 extern bool multithread;
 extern string progressfilename, path, paramfilename, statfilename;
 extern HeaderC header;
