@@ -54,7 +54,7 @@ endif()
 
 if (MAKE_STATIC_EXE)
   if (APPLE AND MAKE_STATIC_EXE)
-    target_link_libraries(general /usr/local/lib/libomp.a)
+    target_link_libraries(general omp)
   endif()
 
   if (UNIX AND NOT APPLE) 

@@ -95,7 +95,7 @@ jobs:
           echo "CXX=${{ github.workspace }}/${{ matrix.clang-dir }}/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
-          echo "LDFLAGS=-L/opt/intel/oneapi/compiler/latest/linux/lib/intel64_lin/" >> $GITHUB_ENV
+          echo "LDFLAGS=-L/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/" >> $GITHUB_ENV
           if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary; fi
           echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
         if: matrix.os == 'ubuntu-latest'
