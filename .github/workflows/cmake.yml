@@ -6,7 +6,7 @@ on: [push]
 
 env:
   LLVM_VERSION: 15.0.6
-  CLANG_DIR: clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-18.04
+  CLANG_DIR: clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04
 
 jobs:
   create_release:
@@ -50,8 +50,8 @@ jobs:
             cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: ubuntu-latest
             shortos: linux
-            clang-dir: $CLANG_DIR
-            clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-$LLVM_VERSION/$CLANG_DIR.tar.xz
+            clang-dir: ${{ env.CLANG_DIR }}
+            clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ env.LLVM_VERSION }}/${{ env.CLANG_DIR }}.tar.xz
             mkl-version: intel-oneapi-mkl-devel-2022.2.1
             cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: macos-latest
@@ -106,9 +106,9 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
         run: |
-          brew install ninja libomp
-          echo "CFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
-          echo "CXXFLAGS=-Xpreprocessor -fopenmp -I/usr/local/include" >> $GITHUB_ENV
+          brew install ninja
+          echo "CFLAGS=-Xclang -fopenmp -I/usr/local/include" >> $GITHUB_ENV
+          echo "CXXFLAGS=-Xclang -fopenmp -I/usr/local/include" >> $GITHUB_ENV
           echo "LDFLAGS=-L/usr/local/lib" >> $GITHUB_ENV
           if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary; fi
           echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
