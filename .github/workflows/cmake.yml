@@ -4,10 +4,6 @@
 name: diyabc-build
 on: [push]
 
-env:
-  LLVM_VERSION: 15.0.6
-  CLANG_DIR: clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04
-
 jobs:
   create_release:
     runs-on: ubuntu-latest
@@ -50,8 +46,8 @@ jobs:
             cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: ubuntu-latest
             shortos: linux
-            clang-dir: ${{ env.CLANG_DIR }}
-            clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ env.LLVM_VERSION }}/${{ env.CLANG_DIR }}.tar.xz
+            clang-dir: clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04
+            clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04.tar.xz
             mkl-version: intel-oneapi-mkl-devel-2022.2.1
             cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: macos-latest
