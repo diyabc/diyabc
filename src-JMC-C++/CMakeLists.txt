@@ -53,16 +53,12 @@ if (MSVC)
 endif()
 
 if (MAKE_STATIC_EXE)
-  if (APPLE AND MAKE_STATIC_EXE)
-    target_link_libraries(general omp)
-  endif()
-
   if (UNIX AND NOT APPLE) 
     target_link_libraries(general iomp5 pthread dl c++ c++abi)
   endif() 
 endif()
 
-if (MSVC OR (NOT MAKE_STATIC_EXE))
+if (MSVC OR APPLE OR (NOT MAKE_STATIC_EXE))
   find_package(OpenMP REQUIRED)
   target_link_libraries(general OpenMP::OpenMP_CXX)
 endif()
