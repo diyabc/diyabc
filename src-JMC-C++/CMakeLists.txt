@@ -61,6 +61,7 @@ endif()
 if (MSVC OR APPLE OR (NOT MAKE_STATIC_EXE))
   find_package(OpenMP REQUIRED)
   target_link_libraries(general OpenMP::OpenMP_CXX)
+  include_directories(${OpenMP_CXX_INCLUDE_DIRS})
 endif()
 
 cmake_policy(SET CMP0087 NEW)
