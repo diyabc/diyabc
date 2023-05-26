@@ -257,7 +257,7 @@ void dosimstat(int seed) {
 		for (int i = 0; i < nsel; i++) {
 			if (stat[i][0] != -99.0) {
 				fs << iscen + 1 << "  ";//cout<<iscen+1<<"  ";
-				for (int j = 0; j < header.nstat; j++) fs << fixed << setw(21) << setprecision(15) << stat[i][j];
+				for (int j = 0; j < header.nstat; j++) fs << fixed << setw(23) << setprecision(15) << std::scientific << stat[i][j];
 				fs << "\n";
 				//for (int j=0;j<header.nstat;j++) cout<<fixed<<setw(14)<<setprecision(6)<<"  "<<stat[i][j];
 				//cout<<"\n";
