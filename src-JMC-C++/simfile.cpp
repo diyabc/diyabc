@@ -70,6 +70,7 @@ void dosimfile(int seed) {
 	flog = fopen(progressfilename.c_str(), "w");
 	fprintf(flog, "OK");
 	fclose(flog);
+	delete[] sgp;
 }
 
 int detpstarOK(int nsel, int scen, int npv, long double** phistar) {
@@ -219,6 +220,7 @@ void dosimstat(int seed) {
 				for (int j=0;j<nparam[numscen[nsel0]-1];j++) cout<< phistar0[nsel0][j]<<"\n";
 				cout<<"nparam="<<nparam[numscen[nsel0]-1]<<"\n\n";}*/
 			nsel0++;
+			delete [] ss;
 		}
 	}
 	fp.close();
@@ -263,7 +265,19 @@ void dosimstat(int seed) {
 				//cout<<"\n";
 			}
 		}
+		for (int i = 0; i < nsel; i++) delete [] stat[i];
+		delete [] stat;
 	}
 	fs.close();
+	// Free memory
+	for (int i = 0; i < nsel0; i++) delete [] phistar0[i];
+	delete [] phistar0;
+	for (int i = 0; i < nsel0; i++) delete [] phistar[i];
+	delete [] phistar;
+	for (int i = 0; i < nsel0; i++) delete [] phistarOK[i];
+	delete [] phistarOK;
+	delete [] numscen;
+	delete [] nrecscen;
+	delete [] nparam;
 	cout << "\nSimulated summary statistics are in file " << statfilename << "\n";
 }
