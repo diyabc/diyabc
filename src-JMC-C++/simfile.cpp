@@ -181,7 +181,7 @@ void dosimstat(int seed) {
 	fp0.open(paramfilename.c_str());
 	while (not fp0.eof()) {
 		getline(fp0, ligne);
-		if (ligne.length() > 5) nsel0++;
+		if (ligne.length() > 5 && (ligne.find("scenario") == string::npos)) nsel0++; // remove header line
 	}
 	fp0.close();
 	cout << "File " << paramfilename << " contains " << nsel0 << " lignes\n";
@@ -196,7 +196,7 @@ void dosimstat(int seed) {
 	nsel0 = 0;
 	while (not fp.eof()) {
 		getline(fp, ligne);
-		if (ligne.length() > 5) {
+		if (ligne.length() > 5 && (ligne.find("scenario") == string::npos)) {
 			ss = splitwords(ligne, " ", &nss);//cout<<"nss="<<nss<<"\n";
 			numscen[nsel0] = atoi(ss[0].c_str());//cout<<"numscen["<<nsel0<<"]="<<numscen[nsel0]<<"\n";
 			nrecscen[numscen[nsel0] - 1]++;
