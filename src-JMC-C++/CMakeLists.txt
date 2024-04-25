@@ -18,6 +18,9 @@ set(PROJECT_general_SRCS
   sumstat.cpp
   modchec.cpp
   estimparam.cpp
+  bias.cpp
+  conf.cpp
+  comparscen.cpp
   )
 
 set(PROJECT_general_HEADERS
@@ -35,6 +38,9 @@ set(PROJECT_general_HEADERS
   statdefs.hpp
   modchec.hpp
   estimparam.hpp
+  bias.hpp
+  conf.hpp
+  comparscen.hpp
   )
 
 
@@ -47,18 +53,15 @@ if (MSVC)
 endif()
 
 if (MAKE_STATIC_EXE)
-  if (APPLE AND MAKE_STATIC_EXE)
-    target_link_libraries(general /usr/local/lib/libomp.a)
-  endif()
-
   if (UNIX AND NOT APPLE) 
     target_link_libraries(general iomp5 pthread dl c++ c++abi)
   endif() 
 endif()
 
-if (MSVC OR (NOT MAKE_STATIC_EXE))
+if (MSVC OR APPLE OR (NOT MAKE_STATIC_EXE))
   find_package(OpenMP REQUIRED)
   target_link_libraries(general OpenMP::OpenMP_CXX)
+  include_directories(${OpenMP_CXX_INCLUDE_DIRS})
 endif()
 
 cmake_policy(SET CMP0087 NEW)

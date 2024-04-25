@@ -18,7 +18,7 @@
 #include "simfile.hpp"
 
 extern ParticleSetC ps;
-extern enregC* enreg;
+extern std::vector<enregC> enreg;
 extern bool multithread;
 extern string progressfilename, path, paramfilename, statfilename;
 extern HeaderC header;
@@ -70,6 +70,7 @@ void dosimfile(int seed) {
 	flog = fopen(progressfilename.c_str(), "w");
 	fprintf(flog, "OK");
 	fclose(flog);
+	delete[] sgp;
 }
 
 int detpstarOK(int nsel, int scen, int npv, long double** phistar) {
@@ -180,7 +181,7 @@ void dosimstat(int seed) {
 	fp0.open(paramfilename.c_str());
 	while (not fp0.eof()) {
 		getline(fp0, ligne);
-		if (ligne.length() > 5) nsel0++;
+		if (ligne.length() > 5 && (ligne.find("scenario") == string::npos)) nsel0++; // remove header line
 	}
 	fp0.close();
 	cout << "File " << paramfilename << " contains " << nsel0 << " lignes\n";
@@ -195,7 +196,7 @@ void dosimstat(int seed) {
 	nsel0 = 0;
 	while (not fp.eof()) {
 		getline(fp, ligne);
-		if (ligne.length() > 5) {
+		if (ligne.length() > 5 && (ligne.find("scenario") == string::npos)) {
 			ss = splitwords(ligne, " ", &nss);//cout<<"nss="<<nss<<"\n";
 			numscen[nsel0] = atoi(ss[0].c_str());//cout<<"numscen["<<nsel0<<"]="<<numscen[nsel0]<<"\n";
 			nrecscen[numscen[nsel0] - 1]++;
@@ -219,6 +220,7 @@ void dosimstat(int seed) {
 				for (int j=0;j<nparam[numscen[nsel0]-1];j++) cout<< phistar0[nsel0][j]<<"\n";
 				cout<<"nparam="<<nparam[numscen[nsel0]-1]<<"\n\n";}*/
 			nsel0++;
+			delete [] ss;
 		}
 	}
 	fp.close();
@@ -257,13 +259,25 @@ void dosimstat(int seed) {
 		for (int i = 0; i < nsel; i++) {
 			if (stat[i][0] != -99.0) {
 				fs << iscen + 1 << "  ";//cout<<iscen+1<<"  ";
-				for (int j = 0; j < header.nstat; j++) fs << fixed << setw(10) << setprecision(4) << stat[i][j];
+				for (int j = 0; j < header.nstat; j++) fs << fixed << setw(23) << setprecision(15) << std::scientific << stat[i][j];
 				fs << "\n";
 				//for (int j=0;j<header.nstat;j++) cout<<fixed<<setw(14)<<setprecision(6)<<"  "<<stat[i][j];
 				//cout<<"\n";
 			}
 		}
+		for (int i = 0; i < nsel; i++) delete [] stat[i];
+		delete [] stat;
 	}
 	fs.close();
+	// Free memory
+	for (int i = 0; i < nsel0; i++) delete [] phistar0[i];
+	delete [] phistar0;
+	for (int i = 0; i < nsel0; i++) delete [] phistar[i];
+	delete [] phistar;
+	for (int i = 0; i < nsel0; i++) delete [] phistarOK[i];
+	delete [] phistarOK;
+	delete [] numscen;
+	delete [] nrecscen;
+	delete [] nparam;
 	cout << "\nSimulated summary statistics are in file " << statfilename << "\n";
 }

@@ -2129,7 +2129,7 @@ string HeaderC::calstatobs(string statobsfilename)
             //cout<<"particuleobs.grouplist["<<gr<<"].sumstat["<<j<<"].val="<<particuleobs.grouplist[gr].sumstat[j].val<<"\n";
             if (particuleobs.grouplist[gr].sumstat[j].val != -9999.0)
             {
-                fobs << setw(12) << particuleobs.grouplist[gr].sumstat[j].val << "  ";
+                fobs << fixed << setw(23) << setprecision(15) << std::scientific  << particuleobs.grouplist[gr].sumstat[j].val << "  ";
             }
             else
             {

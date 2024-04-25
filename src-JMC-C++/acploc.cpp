@@ -18,7 +18,7 @@
 #include "header.hpp"
 
 using namespace std;
-extern enregC* enreg;
+extern std::vector<enregC> enreg;
 extern HeaderC header;
 extern ReftableC rt;
 extern string ident, path, progressfilename;
