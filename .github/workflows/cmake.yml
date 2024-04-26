@@ -46,6 +46,8 @@ jobs:
             cmakeargs: -DMAKE_STATIC_EXE:STRING=1 -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: ubuntu-latest
             shortos: linux
+            clang-dir: clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04
+            clang-download: https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04.tar.xz
             mkl-version: 2023.1.0
             cmakeargs: -DMAKE_STATIC_EXE:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
           - os: macos-latest
@@ -79,14 +81,18 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup x64-linux
         run: |
+          if [ ! -d ${{ github.workspace }}/${{ matrix.clang-dir }} ]; then 
+            sudo sh -c "wget -qO- ${{ matrix.clang-download }} | tar xJ --totals -C ${{ github.workspace }}"
+          fi
           if [ ! -d /opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64 ]; then
             wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
             echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
             sudo apt-get update
             sudo apt-get install -y intel-oneapi-compiler-shared-${{ matrix.mkl-version }}
           fi
-          echo "CC=clang-15" >> $GITHUB_ENV
-          echo "CXX=clang++-15" >> $GITHUB_ENV
+          echo ${{ github.workspace }}/${{ matrix.clang-dir }}/bin >> $GITHUB_PATH
+          echo "CC=${{ github.workspace }}/${{ matrix.clang-dir }}/bin/clang" >> $GITHUB_ENV
+          echo "CXX=${{ github.workspace }}/${{ matrix.clang-dir }}/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-static -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "CXXFLAGS=-static -stdlib=libc++ -fopenmp=libiomp5" >> $GITHUB_ENV
           echo "LDFLAGS=-L/opt/intel/oneapi/compiler/latest/linux/compiler/lib/intel64_lin/" >> $GITHUB_ENV
@@ -96,7 +102,6 @@ jobs:
       - name: setup MacOS
         run: |
           brew install ninja
-          echo "OpenMP_ROOT=$(brew --prefix)/opt/libomp" >> $GITHUB_ENV
           echo "CC=$(brew --prefix llvm@15)/bin/clang" >> $GITHUB_ENV
           echo "CXX=$(brew --prefix llvm@15)/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-Xclang -fopenmp -I/usr/local/include -DLIBOMP_ENABLE_SHARED=OFF" >> $GITHUB_ENV
