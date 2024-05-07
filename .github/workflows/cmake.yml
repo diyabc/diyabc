@@ -101,7 +101,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
       - name: setup MacOS
         run: |
-          brew install ninja
+          brew install ninja libomp
           echo "CC=$(brew --prefix llvm@15)/bin/clang" >> $GITHUB_ENV
           echo "CXX=$(brew --prefix llvm@15)/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-Xclang -fopenmp" >> $GITHUB_ENV
