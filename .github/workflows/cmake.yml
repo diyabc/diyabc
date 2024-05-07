@@ -102,7 +102,7 @@ jobs:
       - name: setup MacOS
         run: |
           brew install ninja libomp
-          echo "OpenMP_ROOT=$(brew --prefix libomp)/lib" >> $GITHUB_ENV
+          echo "OpenMP_ROOT=$(brew --prefix libomp)" >> $GITHUB_ENV
           echo "CC=$(brew --prefix llvm@15)/bin/clang" >> $GITHUB_ENV
           echo "CXX=$(brew --prefix llvm@15)/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-Xclang -fopenmp" >> $GITHUB_ENV
