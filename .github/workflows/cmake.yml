@@ -105,7 +105,7 @@ jobs:
           echo "CC=$(brew --prefix llvm@15)/bin/clang" >> $GITHUB_ENV
           echo "CXX=$(brew --prefix llvm@15)/bin/clang++" >> $GITHUB_ENV
           echo "CFLAGS=-Xclang -fopenmp" >> $GITHUB_ENV
-          echo "CXXFLAGS=-Xclang -fopenmp >> $GITHUB_ENV
+          echo "CXXFLAGS=-Xclang -fopenmp" >> $GITHUB_ENV
           if [ ! -d ${{ github.workspace }}/RLibrary ]; then mkdir ${{ github.workspace }}/RLibrary; fi
           echo "R_LIBS_USER=${{ github.workspace }}/RLibrary" >> $GITHUB_ENV
         if: matrix.os == 'macos-latest'
