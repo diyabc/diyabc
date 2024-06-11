@@ -167,7 +167,7 @@ jobs:
       #   if: "! contains( matrix.os, 'windows')"
       - name: Get the version
         id: get_version
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUPUT
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
         shell: bash      
       - name: zip for windows
         id: zip_win
