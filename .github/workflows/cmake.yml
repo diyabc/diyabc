@@ -11,7 +11,7 @@ jobs:
         upload_url: ${{ steps.new_release.outputs.upload_url }}
         new_tag: ${{ steps.bump_version.outputs.new_tag }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
       - name: Bump version and push tag
@@ -63,7 +63,7 @@ jobs:
         with:
           r-version: '4.4'
       - name: Get R version
-        run: echo "::set-output name=R_VERSION::$(Rscript -e 'cat(as.character(getRversion()))')"
+        run: echo "R_VERSION=$(Rscript -e 'cat(as.character(getRversion()))')" >> $GITHUB_OUTPUT
         id: get-r-version
       - name: restore/cache R site-packages
         uses: actions/cache@v2
@@ -164,7 +164,7 @@ jobs:
       #   if: "! contains( matrix.os, 'windows')"
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUPUT
         shell: bash      
       - name: zip for windows
         id: zip_win
