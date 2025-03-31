@@ -73,3 +73,5 @@ cd build
 cmake ..\
 cmake --build . --config Release
 ```
+
+The executable is named `general` and is located in `build/src-JMC-C++`

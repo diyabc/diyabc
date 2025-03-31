@@ -2,7 +2,14 @@
 # Released under the term specified in file LICENSE.txt
 # SPDX short identifier: MIT
 name: diyabc-build
-on: [push]
+on: 
+  push:
+    branches: [ master ]
+    tags: 
+      - 'v*'
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   create_release:
@@ -153,18 +160,6 @@ jobs:
           tag: ${{ needs.create_release.outputs.new_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Upload windows binary
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: diyabc-${{ matrix.os }}
-      #     path: ${{ runner.workspace }}/b/ninja/install/
-      #   if: contains( matrix.os, 'windows')
-      # - name: Upload binary
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: diyabc-${{ matrix.os }}
-      #     path: ${{ runner.workspace }}/b/ninja/install/general
-      #   if: "! contains( matrix.os, 'windows')"
       - name: Get the version
         id: get_version
         run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
