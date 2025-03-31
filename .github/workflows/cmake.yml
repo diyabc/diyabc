@@ -135,7 +135,7 @@ jobs:
           echo "R_LIBS_USER=${{ github.workspace }}\RLibrary" | Out-File -Append -FilePath $env:GITHUB_ENV -Encoding utf8
         if: matrix.os == 'windows-latest'
       - name: Run CMake+Ninja
-        uses: lukka/run-cmake@v4
+        uses: lukka/run-cmake@v10
         id: runcmake_cmd
         with:
           cmakeGenerator: 'Ninja'  
