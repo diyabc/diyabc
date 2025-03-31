@@ -141,8 +141,14 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           configurePresetAdditionalArgs: '-G Ninja ${{ matrix.cmakeargs }} -B ${{ runner.workspace }}/b/ninja/'
           buildPresetAdditionalArgs: '--target install -- -v'
-          configurePresetCmdString: ['-S', '${{ github.workspace }}', '-B', '${{ runner.workspace }}/b/ninja/']
-          buildPresetCmdString: ['--build', '${{ runner.workspace }}/b/ninja/']
+          configurePresetCmdString:
+            - '-S'
+            - '${{ github.workspace }}'
+            - '-B'
+            - '${{ runner.workspace }}/b/ninja/'
+          buildPresetCmdString:
+            - '--build'
+            - '${{ runner.workspace }}/b/ninja/'
       - name: Prepare tests
         id: preptests
         run: Rscript -e "for (p in c('stringr','readr','testthat')) if (!require(p, character.only=TRUE)) install.packages(p, repos='https://cloud.r-project.org/')"
@@ -190,4 +196,3 @@ jobs:
           asset_name: diyabc-RF-${{ matrix.shortos }}-${{ needs.create_release.outputs.new_tag }}.zip
           asset_content_type: application/zip
         if: matrix.os == 'windows-latest'
-  
