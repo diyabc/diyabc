@@ -138,6 +138,7 @@ jobs:
         uses: lukka/run-cmake@v10
         id: runcmake_cmd
         with:
+          configurePreset: 'ninja-multi-vcpkg'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           configurePresetAdditionalArgs: '-G Ninja ${{ matrix.cmakeargs }} -B ${{ runner.workspace }}/b/ninja/'
           buildPresetAdditionalArgs: '--target install -- -v'
